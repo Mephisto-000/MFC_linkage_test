@@ -1,1 +1,1 @@
-# Eastern_Logic_Task1
+# MFC_linkage_test
