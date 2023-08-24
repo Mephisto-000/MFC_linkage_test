@@ -119,6 +119,12 @@ public:
 	CPoint m_ptRightUpperCenterPos = (0, 0);			// 右上方滑塊中心點座標
 	CPoint m_ptBearingCenterPos = (0, 0);				//  中心圓軸中心點座標
 
+	double m_dAcceTotalAng = 0.0;                       // 加速度區總面積
+	double m_dAcceTotalTime = 0.0;                      // 加速度區塊歷時時間
+	double m_dTimeAfter = 0.0;							// 記錄下一秒累積時間長
+	double m_dTimeBefore = 0.0;                         // 記錄前一秒累積時間長
+	double m_dAddAng = 0.0;								// 記錄下一秒要增加的角度
+
 	////////////////////////////////////////////////////////////////////////////////////////
 	// 個數值設定控制項:	
 	CEdit m_editLeftRectLever;							// 左側連桿長度

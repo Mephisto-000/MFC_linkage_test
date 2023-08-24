@@ -15,7 +15,6 @@
 
 bool g_bStartState = FALSE;            // 判斷是否按下 START
 DWORD g_dwStartTime;                   // 用於儲存 timeGetTime 開始的時間
-double g_dAcceTotalAng = 0.0;          // 加速度區塊總面積
 
 
 
@@ -755,10 +754,6 @@ void CMFClinkagetestDlg::OnBnClickedButtonStart()
 {
 	// TODO: 在此加入控制項告知處理常式程式碼
 
-	// 按下 START 時記錄開始的時間
-	g_dwStartTime = timeGetTime();
-
-
 	// 更新輸入的長,寬,高
 	UpdateData(TRUE);
 	m_editLeftRectLever.GetWindowText(m_strLeftRectLeverLen);
@@ -777,6 +772,7 @@ void CMFClinkagetestDlg::OnBnClickedButtonStart()
 	m_editLeftLeverRadius.GetWindowText(m_strLeftLeverRadius);
 	m_editLeftAng.GetWindowText(m_strLeftAng);
 
+	m_editRPM.GetWindowText(m_strRPM);
 	m_editAngAcc.GetWindowText(m_strAngAcc);
 	m_editAngDec.GetWindowText(m_strAngDec);
 
@@ -799,6 +795,7 @@ void CMFClinkagetestDlg::OnBnClickedButtonStart()
 	m_dLeftLeverRadius = _ttof(m_strLeftLeverRadius);
 	m_dLeftAng = _ttof(m_strLeftAng);
 
+	m_dRPM = _ttof(m_strRPM);
 	m_dAngAcc = _ttof(m_strAngAcc);
 	m_dAngDec = _ttof(m_strAngDec);
 
@@ -849,6 +846,18 @@ void CMFClinkagetestDlg::OnBnClickedButtonStart()
 	int iWidthPaintRegion = rectPaintRegion.Width();
 	int iHeightPaintRegion = rectPaintRegion.Height();
 	double dBearingTopState = iHeightPaintRegion - (m_dBearingPosY + m_dBearingRadius);
+
+
+	// 計算加速度區總面積
+	m_dAcceTotalAng = 0.5 * (pow(RpmToAngVelocity(m_dRPM), 2) / m_dAngAcc);
+
+
+	// 計算加速度區歷時時間長
+	m_dAcceTotalTime = (2 * m_dAcceTotalAng) / RpmToAngVelocity(m_dRPM);
+
+
+	// 記錄按下 START 開始的時間
+	g_dwStartTime = timeGetTime();
 
 
 	// 設定一個時間間隔，這裡設定為 42 毫秒 (0.042 s.)
@@ -979,6 +988,22 @@ void CMFClinkagetestDlg::OnTimer(UINT_PTR nIDEvent)
 
 	// 將毫秒轉為秒
 	double seconds = static_cast<double>(dwElapsedTime) / 1000.0;
+	m_dTimeAfter = seconds;
+
+	if (m_dTimeAfter <= m_dAcceTotalTime)
+	{
+		m_dAddAng = 0.5 * RpmToAngVelocity(m_dAngAcc) * (pow(m_dTimeAfter, 2) - pow(m_dTimeBefore, 2));
+		m_dTimeBefore = m_dTimeAfter;
+	}
+	else if ((m_dTimeBefore < m_dAcceTotalTime) && (m_dTimeAfter < m_dAcceTotalTime))
+	{
+		m_dAddAng = 0.5 * RpmToAngVelocity(m_dAngAcc) * (pow(m_dAcceTotalTime, 2) - pow(m_dTimeBefore, 2))
+			+ RpmToAngVelocity(m_dRPM) * (m_dTimeAfter - m_dAcceTotalTime);
+	}
+	else
+	{
+		m_dAddAng = RpmToAngVelocity(m_dRPM) * (m_dTimeAfter - m_dTimeBefore);
+	}
 
 
 	//if (m_dLeftAng <= -360)
@@ -993,11 +1018,11 @@ void CMFClinkagetestDlg::OnTimer(UINT_PTR nIDEvent)
 
 
 
-	if (g_bStartState = TRUE)
-	{
-		m_editRPM.GetWindowText(m_strRPM);
-		m_dRPM = _ttof(m_strRPM);
-	}
+	//if (g_bStartState = TRUE)
+	//{
+	//	m_editRPM.GetWindowText(m_strRPM);
+	//	m_dRPM = _ttof(m_strRPM);
+	//}
 
 
 	/*
@@ -1023,11 +1048,14 @@ void CMFClinkagetestDlg::OnTimer(UINT_PTR nIDEvent)
 	//	m_dRightAng = seconds * m_dRPM;
 	//}
 
-	m_dLeftAng -= pow(seconds, 2) * 0.5 * m_dAngAcc;
-	m_dRightAng -= pow(seconds, 2) * 0.5 * m_dAngAcc;
+	//m_dLeftAng -= pow(seconds, 2) * 0.5 * m_dAngAcc;
+	//m_dRightAng -= pow(seconds, 2) * 0.5 * m_dAngAcc;
 
 	//m_dLeftAng -= 10;
 	//m_dRightAng -= 10;
+
+	m_dLeftAng -= m_dAddAng;
+	m_dRightAng -= m_dAddAng;
 
 
 
