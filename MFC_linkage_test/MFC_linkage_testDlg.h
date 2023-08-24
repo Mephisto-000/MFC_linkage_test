@@ -139,7 +139,7 @@ public:
 	CEdit m_editRPM;									// 每秒圈數
 	CEdit m_editAngAcc;									// 角加速度
 	CEdit m_editAngDec;									// 角減速度
-	afx_msg void OnTimer(UINT_PTR nIDEvent);			//
-	afx_msg void DrawToBuffer(CDC* pDC);				//
+	afx_msg void OnTimer(UINT_PTR nIDEvent);			// 計時函數
+	afx_msg void DrawToBuffer(CDC* pDC);				// 雙緩衝更新區域函數
 
 };
