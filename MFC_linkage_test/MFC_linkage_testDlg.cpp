@@ -15,6 +15,10 @@
 
 bool g_bStartState = FALSE;
 
+DWORD g_dwStartTime;  // 用於儲存 timeGetTime 開始的時間
+
+
+
 // 對 App About 使用 CAboutDlg 對話方塊
 
 class CAboutDlg : public CDialogEx
@@ -593,10 +597,6 @@ void CMFClinkagetestDlg::DrawToBuffer(CDC* pDC)
 {
 	// ... (保留原有的程式碼，用於在雙緩衝 DC 上進行繪圖)
 
-
-	//CDialogEx::OnPaint();
-
-
 	// 取得畫布的長寬高
 	CWnd* pPaintRegion = GetDlgItem(IDC_STATIC_PAINT);
 	CRect rectPaintRegion;
@@ -725,6 +725,9 @@ void CMFClinkagetestDlg::OnBnClickedButtonStart()
 {
 	// TODO: 在此加入控制項告知處理常式程式碼
 
+	// 按下 START 時記錄開始的時間
+	g_dwStartTime = timeGetTime();
+
 
 	// 更新輸入的長,寬,高
 	UpdateData(TRUE);
@@ -809,13 +812,12 @@ void CMFClinkagetestDlg::OnBnClickedButtonStart()
 	pPaintRegion->GetClientRect(&rectPaintRegion);
 	int iWidthPaintRegion = rectPaintRegion.Width();
 	int iHeightPaintRegion = rectPaintRegion.Height();
-
-
 	double dBearingTopState = iHeightPaintRegion - (m_dBearingPosY + m_dBearingRadius);
-	//double dBearingBottomState = iHeightPaintRegion - m_dBearingPosY;
 
 
-	SetTimer(1, 42, NULL);
+	// 設定一個時間間隔，這裡設定為 42 毫秒 (0.042 s.)
+	UINT nInterval = 42;
+	SetTimer(1, nInterval, NULL);
 
 
 	if ((dLeftClientMaxLenX >= dLeftMaxLenX) || (dRightClientMaxLenX >= dRightMaxLenX))
@@ -926,12 +928,18 @@ void CMFClinkagetestDlg::OnBnClickedButtonStop()
 }
 
 
-
-
-
 void CMFClinkagetestDlg::OnTimer(UINT_PTR nIDEvent)
 {
 	// TODO: 在此加入您的訊息處理常式程式碼和 (或) 呼叫預設值
+
+
+	// 在 OnTimer 函數中計算經過的時間
+	DWORD dwCurrentTime = timeGetTime();
+	DWORD dwElapsedTime = dwCurrentTime - g_dwStartTime;
+
+	// 將毫秒轉為秒
+	double seconds = static_cast<double>(dwElapsedTime) / 1000.0;
+
 
 	if (m_dLeftAng <= -360)
 	{
@@ -954,7 +962,15 @@ void CMFClinkagetestDlg::OnTimer(UINT_PTR nIDEvent)
 	InvalidateRect(&rectWindow, TRUE);
 	UpdateWindow();
 
-	
 
 	CDialogEx::OnTimer(nIDEvent);
 }
+
+
+
+
+
+
+
+
+

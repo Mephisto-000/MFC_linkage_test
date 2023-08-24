@@ -4,8 +4,12 @@
 
 #define _USE_MATH_DEFINES
 #include <cmath>
+#include <mmsystem.h>                                   // 包含 timeGetTime 函數的標頭
 
 #pragma once
+
+// 加入 mmysystem.h 中的 timeGetTime 時需加入以下連接庫
+#pragma comment(lib, "winmm.lib ")                     // 參看 : https://blog.csdn.net/dragoo1/article/details/123557730
 
 
 // CMFClinkagetestDlg 對話方塊
@@ -36,6 +40,12 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 	COLORREF m_PaintRegionBackgroundColor;              // 上方繪圖區背景顏色設定
+
+	
+	// 用 timeGetTime 方法
+	// 代替 OnTimer, SetTimer, KillTimer
+
+
 
 public:
 	afx_msg void OnStnClickedStaticPaint();
