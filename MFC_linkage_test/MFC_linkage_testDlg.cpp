@@ -13,9 +13,9 @@
 #endif
 
 
-bool g_bStartState = FALSE;
-
-DWORD g_dwStartTime;  // 用於儲存 timeGetTime 開始的時間
+bool g_bStartState = FALSE;            // 判斷是否按下 START
+DWORD g_dwStartTime;                   // 用於儲存 timeGetTime 開始的時間
+double g_dAcceTotalAng = 0.0;          // 加速度區塊總面積
 
 
 
@@ -317,6 +317,36 @@ double RadToAng (double dRad)
 {
 	double dAng = dRad * (180 / M_PI);
 
+	return dAng;
+}
+
+
+// 每秒轉速 rpm/s 轉換成角速度 rad/s
+double RpmToAngVelocity (double dRpm)
+{
+	double dAngVelocity = dRpm * (2 * M_PI) / 60;
+
+	return dAngVelocity;
+}
+
+
+// 角速度 rad/s 轉換成每秒轉速 rpm/s
+double AngVelovityToRpm(double dAngVelocity)
+{
+	double dRpm = dAngVelocity * 60 / (2 * M_PI);
+
+	return dRpm;
+}
+
+
+// 角度限制在 360 度內
+double LimitTo360(double dAng)
+{
+	dAng = fmod(dAng, 360.0);
+	if (dAng < 0)
+	{
+		dAng += 360.0;
+	}
 	return dAng;
 }
 
@@ -747,6 +777,9 @@ void CMFClinkagetestDlg::OnBnClickedButtonStart()
 	m_editLeftLeverRadius.GetWindowText(m_strLeftLeverRadius);
 	m_editLeftAng.GetWindowText(m_strLeftAng);
 
+	m_editAngAcc.GetWindowText(m_strAngAcc);
+	m_editAngDec.GetWindowText(m_strAngDec);
+
 
 	// 將 string 轉為 double
 	m_dLeftRectLeverLen = _ttof(m_strLeftRectLeverLen);
@@ -765,6 +798,9 @@ void CMFClinkagetestDlg::OnBnClickedButtonStart()
 	m_dRightAng = _ttof(m_strRightAng);
 	m_dLeftLeverRadius = _ttof(m_strLeftLeverRadius);
 	m_dLeftAng = _ttof(m_strLeftAng);
+
+	m_dAngAcc = _ttof(m_strAngAcc);
+	m_dAngDec = _ttof(m_strAngDec);
 
 
 	m_editLeftRectLever.EnableWindow(0);
@@ -817,6 +853,10 @@ void CMFClinkagetestDlg::OnBnClickedButtonStart()
 
 	// 設定一個時間間隔，這裡設定為 42 毫秒 (0.042 s.)
 	UINT nInterval = 42;
+	// 使用 SetTimer 函數時，就會產生一個計時器
+	// 第一個參數 1         : 計時器的名稱
+	// 第二個參數 nInterval : 時間間隔 (毫秒)
+	// 第三個參數 NULL      : 使用系統默認的回調函數 (OnTime) 
 	SetTimer(1, nInterval, NULL);
 
 
@@ -941,27 +981,61 @@ void CMFClinkagetestDlg::OnTimer(UINT_PTR nIDEvent)
 	double seconds = static_cast<double>(dwElapsedTime) / 1000.0;
 
 
-	if (m_dLeftAng <= -360)
+	//if (m_dLeftAng <= -360)
+	//{
+	//	m_dLeftAng = m_dLeftAng + 360;
+	//}
+	//
+	//if (m_dRightAng <= -360)
+	//{
+	//	m_dRightAng = m_dRightAng + 360;
+	//}
+
+
+
+	if (g_bStartState = TRUE)
 	{
-		m_dLeftAng = m_dLeftAng + 360;
-	}
-	
-	if (m_dRightAng <= -360)
-	{
-		m_dRightAng = m_dRightAng + 360;
+		m_editRPM.GetWindowText(m_strRPM);
+		m_dRPM = _ttof(m_strRPM);
 	}
 
-	m_dLeftAng -= 10;
-	m_dRightAng -= 10;
+
+	/*
+		已知加速度值，
+		
+	
+	*/
+	
+	// 加入加速度
+	// 考慮加速度至等速運動時，加速度超過等速限制
+	// 發現轉速會一直累加不會是單位圓角度
+	//double dMaxAng = RpmToAngVelocity(m_dRPM);
+	//if ((m_dLeftAng < m_dRPM) && (m_dRightAng < m_dRPM))
+	//{
+	//	m_dLeftAng -= pow(seconds, 2) * 0.5 * m_dAngAcc;
+	//	m_dRightAng -= pow(seconds, 2) * 0.5 * m_dAngAcc;
+	//}
+	//else
+	//{
+	//	//m_dLeftAng -= seconds * m_dAngAcc;
+	//	//m_dRightAng -= seconds * m_dAngAcc;
+	//	m_dLeftAng = seconds * m_dRPM;
+	//	m_dRightAng = seconds * m_dRPM;
+	//}
+
+	m_dLeftAng -= pow(seconds, 2) * 0.5 * m_dAngAcc;
+	m_dRightAng -= pow(seconds, 2) * 0.5 * m_dAngAcc;
+
+	//m_dLeftAng -= 10;
+	//m_dRightAng -= 10;
+
+
 
 	CRect rectWindow;
 	GetDlgItem(IDC_STATIC_PAINT)->GetWindowRect(&rectWindow);
 	GetDlgItem(IDC_STATIC_PAINT)->GetParent()->ScreenToClient(rectWindow);
-	//InvalidateRect(rectWindow, FALSE);
-
 	InvalidateRect(&rectWindow, TRUE);
 	UpdateWindow();
-
 
 	CDialogEx::OnTimer(nIDEvent);
 }
