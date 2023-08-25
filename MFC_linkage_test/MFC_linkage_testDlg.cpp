@@ -14,6 +14,7 @@
 
 
 bool g_bStartState = FALSE;            // 判斷是否按下 START
+bool g_bStopState = FALSE;             // 判斷是否按下 Stop
 DWORD g_dwStartTime;                   // 用於儲存 timeGetTime 開始的時間
 
 
@@ -119,6 +120,7 @@ void CMFClinkagetestDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_EDIT_RPM, m_editRPM);
 	DDX_Control(pDX, IDC_EDIT_ANGULAR_ACCELERATION, m_editAngAcc);
 	DDX_Control(pDX, IDC_EDIT_ANGULAR_DECELERATION, m_editAngDec);
+	DDX_Control(pDX, IDC_STATIC_RPM_NOW, m_staticNowRPM);
 }
 
 BEGIN_MESSAGE_MAP(CMFClinkagetestDlg, CDialogEx)
@@ -365,11 +367,11 @@ double CosAng(double dSide1, double dSide2, double dSide3)
 
 
 // 傳回左側軸連接點座標
-CPoint LeftBearingCenter (double dLeftLeverRadius, double dLeftAng, CPoint ptBearingCenter)
+CPoint LeftBearingCenter(double dLeftLeverRadius, double dLeftAng, CPoint ptBearingCenter)
 {
 	double dLeftRad = AngToRad(dLeftAng);
-	double dPosX = abs(dLeftLeverRadius * cos(dLeftRad) - ptBearingCenter.x);
-	double dPosY = abs(dLeftLeverRadius * sin(dLeftRad) - ptBearingCenter.y);
+	double dPosX = (ptBearingCenter.x - dLeftLeverRadius * cos(dLeftRad));
+	double dPosY = (ptBearingCenter.y - dLeftLeverRadius * sin(dLeftRad));
 	CPoint ptLeftBearing(dPosX, dPosY);
 
 	return ptLeftBearing;
@@ -377,11 +379,11 @@ CPoint LeftBearingCenter (double dLeftLeverRadius, double dLeftAng, CPoint ptBea
 
 
 // 傳回右側軸連接點座標
-CPoint RightBearingCenter (double dRightLeverRadius, double dRightAng, CPoint ptBearingCenter)
+CPoint RightBearingCenter(double dRightLeverRadius, double dRightAng, CPoint ptBearingCenter)
 {
 	double dRightRad = AngToRad(dRightAng);
-	double dPosX = abs(dRightLeverRadius * cos(dRightRad) - ptBearingCenter.x);
-	double dPosY = abs(dRightLeverRadius * sin(dRightRad) - ptBearingCenter.y);
+	double dPosX = (ptBearingCenter.x - dRightLeverRadius * cos(dRightRad));
+	double dPosY = (ptBearingCenter.y - dRightLeverRadius * sin(dRightRad));
 	CPoint ptRightBearing(dPosX, dPosY);
 
 	return ptRightBearing;
@@ -954,6 +956,11 @@ void CMFClinkagetestDlg::OnBnClickedButtonStop()
 {
 	// TODO: 在此加入控制項告知處理常式程式碼
 
+
+
+	/*g_bStopState = TRUE;*/
+
+
 	m_editLeftRectLever.EnableWindow(1);
 	m_editLeftRectH.EnableWindow(1);
 	m_editLeftRectLen.EnableWindow(1);
@@ -973,6 +980,30 @@ void CMFClinkagetestDlg::OnBnClickedButtonStop()
 	m_editAngAcc.EnableWindow(1);
 	m_editAngDec.EnableWindow(1);
 
+
+	// 計算減速度區總面積
+	m_dDecTotalAng = 0.5 * (pow(RpmToAngVelocity(m_dRPM), 2) / m_dAngDec);
+
+	// 計算減速度區歷時時間長
+	m_dAcceTotalTime = (2 * m_dDecTotalAng) / RpmToAngVelocity(m_dRPM);
+
+	
+	//while (m_dDecTotalAng > 0)
+	//{
+	//	m_dReduceAng = 0.5 * RpmToAngVelocity(m_dAngDec) * (pow(m_dTimeAfter, 2) - pow(m_dTimeBefore, 2));
+	//	m_dTimeBefore = m_dTimeAfter;
+
+	//	m_dLeftAng += RadToAng(m_dReduceAng);
+	//	m_dRightAng += RadToAng(m_dReduceAng);
+
+	//	m_dDecTotalAng -= m_dReduceAng;
+	//}
+
+	
+	//if (g_bStopState)
+	//{
+	//	KillTimer(1);
+	//}
 	KillTimer(1);
 }
 
@@ -990,72 +1021,45 @@ void CMFClinkagetestDlg::OnTimer(UINT_PTR nIDEvent)
 	double seconds = static_cast<double>(dwElapsedTime) / 1000.0;
 	m_dTimeAfter = seconds;
 
+
 	if (m_dTimeAfter <= m_dAcceTotalTime)
 	{
 		m_dAddAng = 0.5 * RpmToAngVelocity(m_dAngAcc) * (pow(m_dTimeAfter, 2) - pow(m_dTimeBefore, 2));
+
+		/*m_dNowRPM = AngVelovityToRpm(RpmToAngVelocity(m_dAngAcc) * m_dTimeAfter);*/
+		m_dNowRPM = m_dAngAcc * m_dTimeAfter;
+		m_strNowRPM.Format(_T(" % .7f"), m_dNowRPM);
 		m_dTimeBefore = m_dTimeAfter;
 	}
-	else if ((m_dTimeBefore < m_dAcceTotalTime) && (m_dTimeAfter < m_dAcceTotalTime))
+	else if ((m_dTimeBefore < m_dAcceTotalTime) && (m_dTimeAfter > m_dAcceTotalTime))
 	{
 		m_dAddAng = 0.5 * RpmToAngVelocity(m_dAngAcc) * (pow(m_dAcceTotalTime, 2) - pow(m_dTimeBefore, 2))
 			+ RpmToAngVelocity(m_dRPM) * (m_dTimeAfter - m_dAcceTotalTime);
+
+		m_dNowRPM = m_dRPM;
+		m_strNowRPM.Format(_T(" % .7f"), m_dNowRPM);
+		m_dTimeBefore = m_dTimeAfter;
 	}
 	else
 	{
 		m_dAddAng = RpmToAngVelocity(m_dRPM) * (m_dTimeAfter - m_dTimeBefore);
+
+		m_dNowRPM = m_dRPM;
+		m_strNowRPM.Format(_T(" % .7f"), m_dNowRPM);
+		m_dTimeBefore = m_dTimeAfter;
 	}
 
 
-	//if (m_dLeftAng <= -360)
-	//{
-	//	m_dLeftAng = m_dLeftAng + 360;
-	//}
-	//
-	//if (m_dRightAng <= -360)
-	//{
-	//	m_dRightAng = m_dRightAng + 360;
-	//}
+	//m_dLeftAng -= RadToAng(m_dAddAng);
+	//m_dRightAng -= RadToAng(m_dAddAng);
 
+	m_dLeftAng -= RadToAng(m_dAddAng);
+	m_dRightAng -= RadToAng(m_dAddAng);
 
+	m_dLeftAng = LimitTo360(m_dLeftAng);
+	m_dRightAng = LimitTo360(m_dRightAng);
 
-	//if (g_bStartState = TRUE)
-	//{
-	//	m_editRPM.GetWindowText(m_strRPM);
-	//	m_dRPM = _ttof(m_strRPM);
-	//}
-
-
-	/*
-		已知加速度值，
-		
-	
-	*/
-	
-	// 加入加速度
-	// 考慮加速度至等速運動時，加速度超過等速限制
-	// 發現轉速會一直累加不會是單位圓角度
-	//double dMaxAng = RpmToAngVelocity(m_dRPM);
-	//if ((m_dLeftAng < m_dRPM) && (m_dRightAng < m_dRPM))
-	//{
-	//	m_dLeftAng -= pow(seconds, 2) * 0.5 * m_dAngAcc;
-	//	m_dRightAng -= pow(seconds, 2) * 0.5 * m_dAngAcc;
-	//}
-	//else
-	//{
-	//	//m_dLeftAng -= seconds * m_dAngAcc;
-	//	//m_dRightAng -= seconds * m_dAngAcc;
-	//	m_dLeftAng = seconds * m_dRPM;
-	//	m_dRightAng = seconds * m_dRPM;
-	//}
-
-	//m_dLeftAng -= pow(seconds, 2) * 0.5 * m_dAngAcc;
-	//m_dRightAng -= pow(seconds, 2) * 0.5 * m_dAngAcc;
-
-	//m_dLeftAng -= 10;
-	//m_dRightAng -= 10;
-
-	m_dLeftAng -= m_dAddAng;
-	m_dRightAng -= m_dAddAng;
+	m_staticNowRPM.SetWindowText(m_strNowRPM);
 
 
 
@@ -1067,12 +1071,6 @@ void CMFClinkagetestDlg::OnTimer(UINT_PTR nIDEvent)
 
 	CDialogEx::OnTimer(nIDEvent);
 }
-
-
-
-
-
-
 
 
 

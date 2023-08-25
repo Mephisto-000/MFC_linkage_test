@@ -25,6 +25,7 @@
 #define IDC_EDIT_LEFT_REC_HEIGHT        1020
 #define IDC_EDIT_LEFT_REC_WIDTH         1021
 #define IDC_EDIT_LEFT_REC_LENGTH        1022
+#define IDC_STATIC_RPM_NOW              1023
 #define IDC_EDIT_SHAFT_X_POS            1024
 #define IDC_EDIT_SHAFT_Y_POS            1025
 #define IDC_EDIT_LEFT_ANGLE             1026
@@ -41,7 +42,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        130
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1019
+#define _APS_NEXT_CONTROL_VALUE         1024
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

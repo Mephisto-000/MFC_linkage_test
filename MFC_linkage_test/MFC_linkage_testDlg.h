@@ -60,27 +60,27 @@ public:
 	//////////////////////////////////// 輸入的資料變數 ////////////////////////////////////
 	//左側滑塊區
 	CString m_strLeftRectLeverLen = _T("");             // 左側連桿長度
-	CString m_strLeftRectH = _T("");;                   // 左側滑塊高度
-	CString m_strLeftRectLen = _T("");;                 // 左側滑塊長度 (縱軸方向)
-	CString m_strLeftRectW = _T("");;                   // 左側滑塊寬度 (橫軸方向)
+	CString m_strLeftRectH = _T("");                    // 左側滑塊高度
+	CString m_strLeftRectLen = _T("");                  // 左側滑塊長度 (縱軸方向)
+	CString m_strLeftRectW = _T("");                    // 左側滑塊寬度 (橫軸方向)
 
 	//右側滑塊區
-	CString m_strRightRectLeverLen = _T("");;           // 右側連桿長度
-	CString m_strRightRectH = _T("");;                  // 右側滑塊高度
-	CString m_strRightRectLen = _T("");;                // 右側滑塊長度 (縱軸方向)
-	CString m_strRightRectW = _T("");;                  // 右側滑塊寬度 (橫軸方向)
+	CString m_strRightRectLeverLen = _T("");            // 右側連桿長度
+	CString m_strRightRectH = _T("");                   // 右側滑塊高度
+	CString m_strRightRectLen = _T("");                 // 右側滑塊長度 (縱軸方向)
+	CString m_strRightRectW = _T("");                   // 右側滑塊寬度 (橫軸方向)
 	
 	// 中心圓軸區
-	CString m_strBearingRadius = _T("");;               // 中心圓軸半徑
-	CString m_strBearingPosX = _T("");;                 // 中心圓軸 X 位置
-	CString m_strBearingPosY = _T("");;                 // 中心圓軸 Y 位置
-	CString m_strRightLeverRadius = _T("");;            // 右側軸半徑 (中心圓軸圓心到右側連桿連接點的距離)
-	CString m_strRightAng = _T("");;                    // 右側軸角度 (右側軸與中心圓軸的水平半徑之間的夾角)
-	CString m_strLeftLeverRadius = _T("");;             // 左側軸半徑 (中心圓軸圓心到左側連桿連接點的距離)
-	CString m_strLeftAng = _T("");;                     // 左側軸角度 (左側軸與中心圓軸的水平半徑之間的夾角)
-	CString m_strRPM = _T("");;                         // 每秒圈數
-	CString m_strAngAcc = _T("");;                      // 角加速度
-	CString m_strAngDec = _T("");;                      // 角減速度
+	CString m_strBearingRadius = _T("");                // 中心圓軸半徑
+	CString m_strBearingPosX = _T("");                  // 中心圓軸 X 位置
+	CString m_strBearingPosY = _T("");                  // 中心圓軸 Y 位置
+	CString m_strRightLeverRadius = _T("");             // 右側軸半徑 (中心圓軸圓心到右側連桿連接點的距離)
+	CString m_strRightAng = _T("");                     // 右側軸角度 (右側軸與中心圓軸的水平半徑之間的夾角)
+	CString m_strLeftLeverRadius = _T("");              // 左側軸半徑 (中心圓軸圓心到左側連桿連接點的距離)
+	CString m_strLeftAng = _T("");                      // 左側軸角度 (左側軸與中心圓軸的水平半徑之間的夾角)
+	CString m_strRPM = _T("");                          // 每秒圈數
+	CString m_strAngAcc = _T("");                       // 角加速度
+	CString m_strAngDec = _T("");                       // 角減速度
 
 	// 左側滑塊區
 	double m_dLeftRectLeverLen = 0.0;                   // 左側連桿長度
@@ -125,6 +125,13 @@ public:
 	double m_dTimeBefore = 0.0;                         // 記錄前一秒累積時間長
 	double m_dAddAng = 0.0;								// 記錄下一秒要增加的角度
 
+	double m_dDecTotalAng = 0.0;                        // 減速度總面積
+	double m_dDecTotalTime = 0.0;						// 減速度區塊歷時時間
+	double m_dReduceAng = 0.0;                          // 記錄下一秒要減少的角度
+
+	double m_dNowRPM = 0.0;                             // 記錄當下轉速
+	CString m_strNowRPM = _T("");                       // 記錄當下轉速
+
 	////////////////////////////////////////////////////////////////////////////////////////
 	// 個數值設定控制項:	
 	CEdit m_editLeftRectLever;							// 左側連桿長度
@@ -148,4 +155,6 @@ public:
 	afx_msg void OnTimer(UINT_PTR nIDEvent);			// 計時函數
 	afx_msg void DrawToBuffer(CDC* pDC);				// 雙緩衝更新區域函數
 
+
+	CStatic m_staticNowRPM;                             // 顯示當下轉速
 };
