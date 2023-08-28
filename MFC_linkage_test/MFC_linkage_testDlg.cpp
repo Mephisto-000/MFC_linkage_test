@@ -322,7 +322,7 @@ double RadToAng (double dRad)
 }
 
 
-// 每秒轉速 rpm/s 轉換成角速度 rad/s
+// 每秒轉速 rpm 轉換成角速度 rad/s
 double RpmToAngVelocity (double dRpm)
 {
 	double dAngVelocity = dRpm * (2 * M_PI) / 60;
@@ -331,7 +331,7 @@ double RpmToAngVelocity (double dRpm)
 }
 
 
-// 角速度 rad/s 轉換成每秒轉速 rpm/s
+// 角速度 rad/s 轉換成每秒轉速 rpm
 double AngVelovityToRpm(double dAngVelocity)
 {
 	double dRpm = dAngVelocity * 60 / (2 * M_PI);
