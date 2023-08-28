@@ -985,7 +985,7 @@ void CMFClinkagetestDlg::OnBnClickedButtonStop()
 	m_dDecTotalAng = 0.5 * (pow(RpmToAngVelocity(m_dRPM), 2) / m_dAngDec);
 
 	// 計算減速度區歷時時間長
-	m_dAcceTotalTime = (2 * m_dDecTotalAng) / RpmToAngVelocity(m_dRPM);
+	m_dDecTotalTime = (2 * m_dDecTotalAng) / RpmToAngVelocity(m_dRPM);
 
 	
 	//while (m_dDecTotalAng > 0)
