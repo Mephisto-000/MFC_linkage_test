@@ -804,7 +804,7 @@ void CMFClinkagetestDlg::OnBnClickedButtonStart()
 		m_dAngAcc = _ttof(m_strAngAcc);
 		m_dAngDec = _ttof(m_strAngDec);
 
-		g_bFirstStart = FALSE;
+		/*g_bFirstStart = FALSE;*/
 	}
 
 	m_editLeftRectLever.EnableWindow(0);
@@ -863,8 +863,8 @@ void CMFClinkagetestDlg::OnBnClickedButtonStart()
 	m_dAcceTotalTime = (2 * m_dAcceTotalAng) / RpmToAngVelocity(m_dRPM);
 
 
-	// 記錄按下 START 開始的時間
-	g_dwStartTime = timeGetTime();
+	//// 記錄按下 START 開始的時間
+	//g_dwStartTime = timeGetTime();
 
 
 	// 設定一個時間間隔，這裡設定為 42 毫秒 (0.042 s.)
@@ -873,8 +873,21 @@ void CMFClinkagetestDlg::OnBnClickedButtonStart()
 	// 第一個參數 1         : 計時器的名稱
 	// 第二個參數 nInterval : 時間間隔 (毫秒)
 	// 第三個參數 NULL      : 使用系統默認的回調函數 (OnTime) 
-	SetTimer(1, nInterval, NULL);
+	// Bug : Start 之後再 Stop ，然後再 Start 時，無法在 Stop 的時點上做加速度疊加
+	if (g_bFirstStart == TRUE)
+	{
+		// 記錄按下 START 開始的時間
+		g_dwStartTime = timeGetTime();
+		SetTimer(1, nInterval, NULL);
+	}
+	else
+	{
+		g_dwStartTime = m_dwStopTimeRecord;
 
+	}
+
+	//SetTimer(1, nInterval, NULL);
+	g_bFirstStart = FALSE;
 
 	if ((dLeftClientMaxLenX >= dLeftMaxLenX) || (dRightClientMaxLenX >= dRightMaxLenX))
 	{
@@ -899,6 +912,7 @@ void CMFClinkagetestDlg::OnBnClickedButtonStart()
 		m_editAngAcc.EnableWindow(1);
 		m_editAngDec.EnableWindow(1);
 
+		g_bFirstStart = TRUE;
 	}
 
 	if ((dLeftClientMinLeverLen <= 0) || (dRightClientMinLeverLen <= 0))
@@ -923,6 +937,8 @@ void CMFClinkagetestDlg::OnBnClickedButtonStart()
 		m_editRPM.EnableWindow(1);
 		m_editAngAcc.EnableWindow(1);
 		m_editAngDec.EnableWindow(1);
+
+		g_bFirstStart = TRUE;
 	}
 
 
@@ -948,6 +964,8 @@ void CMFClinkagetestDlg::OnBnClickedButtonStart()
 		m_editRPM.EnableWindow(1);
 		m_editAngAcc.EnableWindow(1);
 		m_editAngDec.EnableWindow(1);
+
+		g_bFirstStart = TRUE;
 	}
 
 
@@ -1032,7 +1050,6 @@ void CMFClinkagetestDlg::OnTimer(UINT_PTR nIDEvent)
 		{
 			m_dAddAng = 0.5 * RpmToAngVelocity(m_dAngAcc) * (pow(m_dTimeAfter, 2) - pow(m_dTimeBefore, 2));
 
-			/*m_dNowRPM = AngVelovityToRpm(RpmToAngVelocity(m_dAngAcc) * m_dTimeAfter);*/
 			m_dNowRPM = m_dAngAcc * m_dTimeAfter;
 			m_strNowRPM.Format(_T(" % .7f"), m_dNowRPM);
 			m_dTimeBefore = m_dTimeAfter;
@@ -1097,12 +1114,15 @@ void CMFClinkagetestDlg::OnTimer(UINT_PTR nIDEvent)
 			m_dNowRPM = 0.0;
 			m_strNowRPM.Format(_T(" % .7f"), m_dNowRPM);
 			m_dTimeBefore = m_dTimeAfter;
+			g_bFirstStart = TRUE;
 		}
 		else
 		{
 			m_dNowRPM = 0.0;
 			m_strNowRPM.Format(_T(" % .7f"), m_dNowRPM);
 			m_dTimeBefore = m_dTimeAfter;
+			g_bFirstStart = TRUE;
+
 		}
 
 		m_dLeftAng -= RadToAng(m_dReduceAng);
