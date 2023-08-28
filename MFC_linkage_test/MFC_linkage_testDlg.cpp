@@ -851,8 +851,6 @@ void CMFClinkagetestDlg::OnBnClickedButtonStart()
 
 
 	// 計算加速度區總面積
-	//m_dAcceTotalAng = 0.5 * (pow(RpmToAngVelocity(m_dRPM), 2) / m_dAngAcc);
-	//m_dAcceTotalAng = 0.5 * (pow(RpmToAngVelocity(m_dRPM), 2) / (m_dAngAcc*(M_PI/30)));
 	m_dAcceTotalAng = 0.5 * (pow(RpmToAngVelocity(m_dRPM), 2) / RpmToAngVelocity(m_dAngAcc));
 
 
@@ -984,7 +982,7 @@ void CMFClinkagetestDlg::OnBnClickedButtonStop()
 
 
 	// 計算減速度區總面積
-	m_dDecTotalAng = 0.5 * (pow(RpmToAngVelocity(m_dRPM), 2) / m_dAngDec);
+	m_dDecTotalAng = 0.5 * (pow(RpmToAngVelocity(m_dRPM), 2) / RpmToAngVelocity(m_dAngDec));
 
 	// 計算減速度區歷時時間長
 	m_dDecTotalTime = (2 * m_dDecTotalAng) / RpmToAngVelocity(m_dRPM);
