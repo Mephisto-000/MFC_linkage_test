@@ -124,10 +124,12 @@ public:
 	double m_dTimeAfter = 0.0;							// 記錄下一秒累積時間長
 	double m_dTimeBefore = 0.0;                         // 記錄前一秒累積時間長
 	double m_dAddAng = 0.0;								// 記錄下一秒要增加的角度
+	double m_dMaxAddAng = 0.0;                          // 記錄最大增加角度
 
 	double m_dDecTotalAng = 0.0;                        // 減速度總面積
 	double m_dDecTotalTime = 0.0;						// 減速度區塊歷時時間
 	double m_dReduceAng = 0.0;                          // 記錄下一秒要減少的角度
+	DWORD m_dwStopTimeRecord = 0;                       // 記錄按下 STOP 的時間點
 
 	double m_dNowRPM = 0.0;                             // 記錄當下轉速
 	CString m_strNowRPM = _T("");                       // 記錄當下轉速

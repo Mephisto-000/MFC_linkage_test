@@ -958,27 +958,28 @@ void CMFClinkagetestDlg::OnBnClickedButtonStop()
 
 
 
-	/*g_bStopState = TRUE;*/
+	g_bStopState = TRUE;
+	m_dTimeBefore = 0;
+	m_dwStopTimeRecord = timeGetTime();
 
-
-	m_editLeftRectLever.EnableWindow(1);
-	m_editLeftRectH.EnableWindow(1);
-	m_editLeftRectLen.EnableWindow(1);
-	m_editLeftRectW.EnableWindow(1);
-	m_editRightRectLever.EnableWindow(1);
-	m_editRightRectH.EnableWindow(1);
-	m_editRightRectLen.EnableWindow(1);
-	m_editRightRectW.EnableWindow(1);
-	m_editBearingRadius.EnableWindow(1);
-	m_editBearingPosX.EnableWindow(1);
-	m_editBearingPosY.EnableWindow(1);
-	m_editRightLeverRadius.EnableWindow(1);
-	m_editRightAng.EnableWindow(1);
-	m_editLeftLeverRadius.EnableWindow(1);
-	m_editLeftAng.EnableWindow(1);
-	m_editRPM.EnableWindow(1);
-	m_editAngAcc.EnableWindow(1);
-	m_editAngDec.EnableWindow(1);
+	m_editLeftRectLever.EnableWindow(0);
+	m_editLeftRectH.EnableWindow(0);
+	m_editLeftRectLen.EnableWindow(0);
+	m_editLeftRectW.EnableWindow(0);
+	m_editRightRectLever.EnableWindow(0);
+	m_editRightRectH.EnableWindow(0);
+	m_editRightRectLen.EnableWindow(0);
+	m_editRightRectW.EnableWindow(0);
+	m_editBearingRadius.EnableWindow(0);
+	m_editBearingPosX.EnableWindow(0);
+	m_editBearingPosY.EnableWindow(0);
+	m_editRightLeverRadius.EnableWindow(0);
+	m_editRightAng.EnableWindow(0);
+	m_editLeftLeverRadius.EnableWindow(0);
+	m_editLeftAng.EnableWindow(0);
+	m_editRPM.EnableWindow(0);
+	m_editAngAcc.EnableWindow(0);
+	m_editAngDec.EnableWindow(0);
 
 
 	// 計算減速度區總面積
@@ -1004,7 +1005,7 @@ void CMFClinkagetestDlg::OnBnClickedButtonStop()
 	//{
 	//	KillTimer(1);
 	//}
-	KillTimer(1);
+	/*KillTimer(1);*/
 }
 
 
@@ -1012,54 +1013,125 @@ void CMFClinkagetestDlg::OnTimer(UINT_PTR nIDEvent)
 {
 	// TODO: 在此加入您的訊息處理常式程式碼和 (或) 呼叫預設值
 
-
-	// 在 OnTimer 函數中計算經過的時間
 	DWORD dwCurrentTime = timeGetTime();
-	DWORD dwElapsedTime = dwCurrentTime - g_dwStartTime;
 
-	// 將毫秒轉為秒
-	double seconds = static_cast<double>(dwElapsedTime) / 1000.0;
-	m_dTimeAfter = seconds;
-
-
-	if (m_dTimeAfter <= m_dAcceTotalTime)
+	if (g_bStopState == FALSE)
 	{
-		m_dAddAng = 0.5 * RpmToAngVelocity(m_dAngAcc) * (pow(m_dTimeAfter, 2) - pow(m_dTimeBefore, 2));
+		// 在 OnTimer 函數中計算經過的時間
+		DWORD dwElapsedTime = dwCurrentTime - g_dwStartTime;
 
-		/*m_dNowRPM = AngVelovityToRpm(RpmToAngVelocity(m_dAngAcc) * m_dTimeAfter);*/
-		m_dNowRPM = m_dAngAcc * m_dTimeAfter;
-		m_strNowRPM.Format(_T(" % .7f"), m_dNowRPM);
-		m_dTimeBefore = m_dTimeAfter;
-	}
-	else if ((m_dTimeBefore < m_dAcceTotalTime) && (m_dTimeAfter > m_dAcceTotalTime))
-	{
-		m_dAddAng = 0.5 * RpmToAngVelocity(m_dAngAcc) * (pow(m_dAcceTotalTime, 2) - pow(m_dTimeBefore, 2))
-			+ RpmToAngVelocity(m_dRPM) * (m_dTimeAfter - m_dAcceTotalTime);
+		// 將毫秒轉為秒
+		double seconds = static_cast<double>(dwElapsedTime) / 1000.0;
+		m_dTimeAfter = seconds;
 
-		m_dNowRPM = m_dRPM;
-		m_strNowRPM.Format(_T(" % .7f"), m_dNowRPM);
-		m_dTimeBefore = m_dTimeAfter;
+		if (m_dTimeAfter <= m_dAcceTotalTime)
+		{
+			m_dAddAng = 0.5 * RpmToAngVelocity(m_dAngAcc) * (pow(m_dTimeAfter, 2) - pow(m_dTimeBefore, 2));
+
+			/*m_dNowRPM = AngVelovityToRpm(RpmToAngVelocity(m_dAngAcc) * m_dTimeAfter);*/
+			m_dNowRPM = m_dAngAcc * m_dTimeAfter;
+			m_strNowRPM.Format(_T(" % .7f"), m_dNowRPM);
+			m_dTimeBefore = m_dTimeAfter;
+		}
+		else if ((m_dTimeBefore < m_dAcceTotalTime) && (m_dTimeAfter > m_dAcceTotalTime))
+		{
+			m_dAddAng = 0.5 * RpmToAngVelocity(m_dAngAcc) * (pow(m_dAcceTotalTime, 2) - pow(m_dTimeBefore, 2))
+				+ RpmToAngVelocity(m_dRPM) * (m_dTimeAfter - m_dAcceTotalTime);
+
+			m_dNowRPM = m_dRPM;
+			m_strNowRPM.Format(_T(" % .7f"), m_dNowRPM);
+			m_dTimeBefore = m_dTimeAfter;
+		}
+		else
+		{
+			m_dAddAng = RpmToAngVelocity(m_dRPM) * (m_dTimeAfter - m_dTimeBefore);
+
+			m_dNowRPM = m_dRPM;
+			m_strNowRPM.Format(_T(" % .7f"), m_dNowRPM);
+			m_dTimeBefore = m_dTimeAfter;
+		}
+
+
+		m_dLeftAng -= RadToAng(m_dAddAng);
+		m_dRightAng -= RadToAng(m_dAddAng);
+
+		m_dLeftAng = LimitTo360(m_dLeftAng);
+		m_dRightAng = LimitTo360(m_dRightAng);
+
 	}
 	else
 	{
-		m_dAddAng = RpmToAngVelocity(m_dRPM) * (m_dTimeAfter - m_dTimeBefore);
 
-		m_dNowRPM = m_dRPM;
-		m_strNowRPM.Format(_T(" % .7f"), m_dNowRPM);
-		m_dTimeBefore = m_dTimeAfter;
+		DWORD dwStopElapsedTime = dwCurrentTime - m_dwStopTimeRecord;
+
+		// 將毫秒轉為秒
+		double seconds = static_cast<double>(dwStopElapsedTime) / 1000.0;
+		m_dTimeAfter = seconds;
+
+		if (m_dTimeAfter <= m_dDecTotalTime)
+		{
+
+			m_dReduceAng = RpmToAngVelocity(m_dRPM) * (m_dTimeAfter - m_dTimeBefore)
+				- (0.5 * RpmToAngVelocity(m_dAngDec) * (pow(m_dTimeAfter, 2) - pow(m_dTimeBefore, 2)));
+			
+			
+			m_dNowRPM = m_dRPM -  m_dAngDec * m_dTimeAfter;
+			m_strNowRPM.Format(_T(" % .7f"), m_dNowRPM);
+			m_dTimeBefore = m_dTimeAfter;
+
+
+		}
+		else if ((m_dTimeBefore <= m_dDecTotalTime) && (m_dTimeAfter > m_dDecTotalTime))
+		{
+
+			m_dReduceAng = pow((m_dDecTotalTime - m_dTimeBefore), 2) * RpmToAngVelocity(m_dAngDec) * 0.5;
+			
+			m_dNowRPM = 0.0;
+			m_strNowRPM.Format(_T(" % .7f"), m_dNowRPM);
+			m_dTimeBefore = m_dTimeAfter;
+		}
+		else
+		{
+			m_dNowRPM = 0.0;
+			m_strNowRPM.Format(_T(" % .7f"), m_dNowRPM);
+			m_dTimeBefore = m_dTimeAfter;
+		}
+
+		m_dLeftAng -= RadToAng(m_dReduceAng);
+		m_dRightAng -= RadToAng(m_dReduceAng);
+
+		m_dLeftAng = LimitTo360(m_dLeftAng);
+		m_dRightAng = LimitTo360(m_dRightAng);
+
 	}
 
 
-	//m_dLeftAng -= RadToAng(m_dAddAng);
-	//m_dRightAng -= RadToAng(m_dAddAng);
-
-	m_dLeftAng -= RadToAng(m_dAddAng);
-	m_dRightAng -= RadToAng(m_dAddAng);
-
-	m_dLeftAng = LimitTo360(m_dLeftAng);
-	m_dRightAng = LimitTo360(m_dRightAng);
 
 	m_staticNowRPM.SetWindowText(m_strNowRPM);
+
+	if (m_dNowRPM == 0)
+	{
+
+		m_editLeftRectLever.EnableWindow(1);
+		m_editLeftRectH.EnableWindow(1);
+		m_editLeftRectLen.EnableWindow(1);
+		m_editLeftRectW.EnableWindow(1);
+		m_editRightRectLever.EnableWindow(1);
+		m_editRightRectH.EnableWindow(1);
+		m_editRightRectLen.EnableWindow(1);
+		m_editRightRectW.EnableWindow(1);
+		m_editBearingRadius.EnableWindow(1);
+		m_editBearingPosX.EnableWindow(1);
+		m_editBearingPosY.EnableWindow(1);
+		m_editRightLeverRadius.EnableWindow(1);
+		m_editRightAng.EnableWindow(1);
+		m_editLeftLeverRadius.EnableWindow(1);
+		m_editLeftAng.EnableWindow(1);
+		m_editRPM.EnableWindow(1);
+		m_editAngAcc.EnableWindow(1);
+		m_editAngDec.EnableWindow(1);
+		KillTimer(1);
+	}
 
 
 
