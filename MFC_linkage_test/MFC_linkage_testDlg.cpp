@@ -965,7 +965,14 @@ void CMFClinkagetestDlg::OnBnClickedButtonStop()
 
 
 	g_bStopState = TRUE;
-	m_dStopNowRPM = m_dAngAcc * m_dTimeAfter;
+	if (m_dTimeAfter >= m_dAcceTotalTime)
+	{
+		m_dStopNowRPM = m_dRPM;
+	}
+	else
+	{
+		m_dStopNowRPM = m_dAngAcc * m_dTimeAfter;
+	}
 	m_dTimeBefore = 0;
 	m_dwStopTimeRecord = timeGetTime();
 
@@ -1070,6 +1077,7 @@ void CMFClinkagetestDlg::OnTimer(UINT_PTR nIDEvent)
 
 			//m_dReduceAng = RpmToAngVelocity(m_dRPM) * (m_dTimeAfter - m_dTimeBefore)
 			//	- (0.5 * RpmToAngVelocity(m_dAngDec) * (pow(m_dTimeAfter, 2) - pow(m_dTimeBefore, 2)));
+
 			m_dReduceAng = RpmToAngVelocity(m_dStopNowRPM) * (m_dTimeAfter - m_dTimeBefore)
 				- (0.5 * RpmToAngVelocity(m_dAngDec) * (pow(m_dTimeAfter, 2) - pow(m_dTimeBefore, 2)));
 			
