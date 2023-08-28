@@ -14,6 +14,7 @@
 
 
 bool g_bStartState = FALSE;            // 判斷是否按下 START
+bool g_bFirstStart = TRUE;             // 判斷是否為第一次按下 START
 bool g_bStopState = FALSE;             // 判斷是否按下 Stop
 DWORD g_dwStartTime;                   // 用於儲存 timeGetTime 開始的時間
 
@@ -757,50 +758,54 @@ void CMFClinkagetestDlg::OnBnClickedButtonStart()
 	// TODO: 在此加入控制項告知處理常式程式碼
 
 	// 更新輸入的長,寬,高
-	UpdateData(TRUE);
-	m_editLeftRectLever.GetWindowText(m_strLeftRectLeverLen);
-	m_editLeftRectH.GetWindowText(m_strLeftRectH);
-	m_editLeftRectLen.GetWindowText(m_strLeftRectLen);
-	m_editLeftRectW.GetWindowText(m_strLeftRectW);
-	m_editRightRectLever.GetWindowText(m_strRightRectLeverLen);
-	m_editRightRectH.GetWindowText(m_strRightRectH);
-	m_editRightRectLen.GetWindowText(m_strRightRectLen);
-	m_editRightRectW.GetWindowText(m_strRightRectW);
-	m_editBearingRadius.GetWindowText(m_strBearingRadius);
-	m_editBearingPosX.GetWindowText(m_strBearingPosX);
-	m_editBearingPosY.GetWindowText(m_strBearingPosY);
-	m_editRightLeverRadius.GetWindowText(m_strRightLeverRadius);
-	m_editRightAng.GetWindowText(m_strRightAng);
-	m_editLeftLeverRadius.GetWindowText(m_strLeftLeverRadius);
-	m_editLeftAng.GetWindowText(m_strLeftAng);
+	if (g_bFirstStart == TRUE)
+	{
+		UpdateData(TRUE);
+		m_editLeftRectLever.GetWindowText(m_strLeftRectLeverLen);
+		m_editLeftRectH.GetWindowText(m_strLeftRectH);
+		m_editLeftRectLen.GetWindowText(m_strLeftRectLen);
+		m_editLeftRectW.GetWindowText(m_strLeftRectW);
+		m_editRightRectLever.GetWindowText(m_strRightRectLeverLen);
+		m_editRightRectH.GetWindowText(m_strRightRectH);
+		m_editRightRectLen.GetWindowText(m_strRightRectLen);
+		m_editRightRectW.GetWindowText(m_strRightRectW);
+		m_editBearingRadius.GetWindowText(m_strBearingRadius);
+		m_editBearingPosX.GetWindowText(m_strBearingPosX);
+		m_editBearingPosY.GetWindowText(m_strBearingPosY);
+		m_editRightLeverRadius.GetWindowText(m_strRightLeverRadius);
+		m_editRightAng.GetWindowText(m_strRightAng);
+		m_editLeftLeverRadius.GetWindowText(m_strLeftLeverRadius);
+		m_editLeftAng.GetWindowText(m_strLeftAng);
 
-	m_editRPM.GetWindowText(m_strRPM);
-	m_editAngAcc.GetWindowText(m_strAngAcc);
-	m_editAngDec.GetWindowText(m_strAngDec);
+		m_editRPM.GetWindowText(m_strRPM);
+		m_editAngAcc.GetWindowText(m_strAngAcc);
+		m_editAngDec.GetWindowText(m_strAngDec);
 
 
-	// 將 string 轉為 double
-	m_dLeftRectLeverLen = _ttof(m_strLeftRectLeverLen);
-	m_dLeftRectH = _ttof(m_strLeftRectH);
-	m_dLeftRectLen = _ttof(m_strLeftRectLen);
-	m_dLeftRectW = _ttof(m_strLeftRectW);
-	m_dRightRectLeverLen = _ttof(m_strRightRectLeverLen);
-	m_dRightRectH = _ttof(m_strRightRectH);
-	m_dRightRectLen = _ttof(m_strRightRectLen);
-	m_dRightRectW = _ttof(m_strRightRectW);
-	m_dBearingRadius = _ttof(m_strBearingRadius);
-	m_dBearingPosX = _ttof(m_strBearingPosX);
-	m_dBearingPosY = _ttof(m_strBearingPosY);
+		// 將 string 轉為 double
+		m_dLeftRectLeverLen = _ttof(m_strLeftRectLeverLen);
+		m_dLeftRectH = _ttof(m_strLeftRectH);
+		m_dLeftRectLen = _ttof(m_strLeftRectLen);
+		m_dLeftRectW = _ttof(m_strLeftRectW);
+		m_dRightRectLeverLen = _ttof(m_strRightRectLeverLen);
+		m_dRightRectH = _ttof(m_strRightRectH);
+		m_dRightRectLen = _ttof(m_strRightRectLen);
+		m_dRightRectW = _ttof(m_strRightRectW);
+		m_dBearingRadius = _ttof(m_strBearingRadius);
+		m_dBearingPosX = _ttof(m_strBearingPosX);
+		m_dBearingPosY = _ttof(m_strBearingPosY);
 
-	m_dRightLeverRadius = _ttof(m_strRightLeverRadius);
-	m_dRightAng = _ttof(m_strRightAng);
-	m_dLeftLeverRadius = _ttof(m_strLeftLeverRadius);
-	m_dLeftAng = _ttof(m_strLeftAng);
+		m_dRightLeverRadius = _ttof(m_strRightLeverRadius);
+		m_dRightAng = _ttof(m_strRightAng);
+		m_dLeftLeverRadius = _ttof(m_strLeftLeverRadius);
+		m_dLeftAng = _ttof(m_strLeftAng);
 
-	m_dRPM = _ttof(m_strRPM);
-	m_dAngAcc = _ttof(m_strAngAcc);
-	m_dAngDec = _ttof(m_strAngDec);
+		m_dRPM = _ttof(m_strRPM);
+		m_dAngAcc = _ttof(m_strAngAcc);
+		m_dAngDec = _ttof(m_strAngDec);
 
+		g_bFirstStart = FALSE;
+	}
 
 	m_editLeftRectLever.EnableWindow(0);
 	m_editLeftRectH.EnableWindow(0);
@@ -948,6 +953,7 @@ void CMFClinkagetestDlg::OnBnClickedButtonStart()
 
 
 	g_bStartState = TRUE;
+	g_bStopState = FALSE;
 }
 
 
@@ -959,6 +965,7 @@ void CMFClinkagetestDlg::OnBnClickedButtonStop()
 
 
 	g_bStopState = TRUE;
+	m_dStopNowRPM = m_dAngAcc * m_dTimeAfter;
 	m_dTimeBefore = 0;
 	m_dwStopTimeRecord = timeGetTime();
 
@@ -982,30 +989,20 @@ void CMFClinkagetestDlg::OnBnClickedButtonStop()
 	m_editAngDec.EnableWindow(0);
 
 
-	// 計算減速度區總面積
-	m_dDecTotalAng = 0.5 * (pow(RpmToAngVelocity(m_dRPM), 2) / RpmToAngVelocity(m_dAngDec));
+	//// 計算減速度區總面積
+	//m_dDecTotalAng = 0.5 * (pow(RpmToAngVelocity(m_dRPM), 2) / RpmToAngVelocity(m_dAngDec));
+
+	//// 計算減速度區歷時時間長
+	//m_dDecTotalTime = (2 * m_dDecTotalAng) / RpmToAngVelocity(m_dRPM);
+
 
 	// 計算減速度區歷時時間長
-	m_dDecTotalTime = (2 * m_dDecTotalAng) / RpmToAngVelocity(m_dRPM);
+	m_dDecTotalTime = m_dStopNowRPM / m_dAngDec;
 
-	
-	//while (m_dDecTotalAng > 0)
-	//{
-	//	m_dReduceAng = 0.5 * RpmToAngVelocity(m_dAngDec) * (pow(m_dTimeAfter, 2) - pow(m_dTimeBefore, 2));
-	//	m_dTimeBefore = m_dTimeAfter;
+	// 計算減速度區總面積
+	m_dDecTotalAng = 0.5 * m_dStopNowRPM * m_dDecTotalTime;
 
-	//	m_dLeftAng += RadToAng(m_dReduceAng);
-	//	m_dRightAng += RadToAng(m_dReduceAng);
 
-	//	m_dDecTotalAng -= m_dReduceAng;
-	//}
-
-	
-	//if (g_bStopState)
-	//{
-	//	KillTimer(1);
-	//}
-	/*KillTimer(1);*/
 }
 
 
@@ -1071,11 +1068,14 @@ void CMFClinkagetestDlg::OnTimer(UINT_PTR nIDEvent)
 		if (m_dTimeAfter <= m_dDecTotalTime)
 		{
 
-			m_dReduceAng = RpmToAngVelocity(m_dRPM) * (m_dTimeAfter - m_dTimeBefore)
+			//m_dReduceAng = RpmToAngVelocity(m_dRPM) * (m_dTimeAfter - m_dTimeBefore)
+			//	- (0.5 * RpmToAngVelocity(m_dAngDec) * (pow(m_dTimeAfter, 2) - pow(m_dTimeBefore, 2)));
+			m_dReduceAng = RpmToAngVelocity(m_dStopNowRPM) * (m_dTimeAfter - m_dTimeBefore)
 				- (0.5 * RpmToAngVelocity(m_dAngDec) * (pow(m_dTimeAfter, 2) - pow(m_dTimeBefore, 2)));
 			
 			
-			m_dNowRPM = m_dRPM -  m_dAngDec * m_dTimeAfter;
+			//m_dNowRPM = m_dRPM -  m_dAngDec * m_dTimeAfter;
+			m_dNowRPM = m_dStopNowRPM - m_dAngDec * m_dTimeAfter;
 			m_strNowRPM.Format(_T(" % .7f"), m_dNowRPM);
 			m_dTimeBefore = m_dTimeAfter;
 
