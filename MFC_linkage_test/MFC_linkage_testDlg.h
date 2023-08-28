@@ -160,4 +160,5 @@ public:
 
 
 	CStatic m_staticNowRPM;                             // 顯示當下轉速
+	afx_msg void OnEnKillfocusEditRightRecLever();
 };

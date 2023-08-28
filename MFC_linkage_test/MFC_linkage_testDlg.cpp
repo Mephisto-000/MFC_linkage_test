@@ -133,6 +133,7 @@ BEGIN_MESSAGE_MAP(CMFClinkagetestDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON_START, &CMFClinkagetestDlg::OnBnClickedButtonStart)
 	ON_BN_CLICKED(IDC_BUTTON_STOP, &CMFClinkagetestDlg::OnBnClickedButtonStop)
 	ON_WM_TIMER()
+	ON_EN_KILLFOCUS(IDC_EDIT_RIGHT_REC_LEVER, &CMFClinkagetestDlg::OnEnKillfocusEditRightRecLever)
 END_MESSAGE_MAP()
 
 
@@ -297,7 +298,7 @@ CRect BearingPos (double dRadius, double dBearingX, double dBearingY, int iPaint
 // 傳回圓軸圓心座標
 CPoint BearingCenter (CRect rectBearing)
 {
-	int iCenterX = (rectBearing.left + rectBearing.right) * 0.5;
+	int iCenterX = (int)((rectBearing.left + rectBearing.right) * 0.5);
 	int iCenterY = (rectBearing.top + rectBearing.bottom) * 0.5;
 	CPoint ptCenter(iCenterX, iCenterY);
 
@@ -808,7 +809,7 @@ void CMFClinkagetestDlg::OnBnClickedButtonStart()
 	}
 
 	m_editLeftRectLever.EnableWindow(0);
-	m_editLeftRectH.EnableWindow(0);
+	m_editLeftRectH.EnableWindow(FALSE);
 	m_editLeftRectLen.EnableWindow(0);
 	m_editLeftRectW.EnableWindow(0);
 	m_editRightRectLever.EnableWindow(0);
@@ -1199,3 +1200,10 @@ void CMFClinkagetestDlg::OnTimer(UINT_PTR nIDEvent)
 
 
 
+
+
+void CMFClinkagetestDlg::OnEnKillfocusEditRightRecLever()
+{
+	// TODO: 在此加入控制項告知處理常式程式碼
+	int i = 0;
+}
