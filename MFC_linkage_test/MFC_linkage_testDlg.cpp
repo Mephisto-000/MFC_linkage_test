@@ -851,7 +851,9 @@ void CMFClinkagetestDlg::OnBnClickedButtonStart()
 
 
 	// 計算加速度區總面積
-	m_dAcceTotalAng = 0.5 * (pow(RpmToAngVelocity(m_dRPM), 2) / m_dAngAcc);
+	//m_dAcceTotalAng = 0.5 * (pow(RpmToAngVelocity(m_dRPM), 2) / m_dAngAcc);
+	//m_dAcceTotalAng = 0.5 * (pow(RpmToAngVelocity(m_dRPM), 2) / (m_dAngAcc*(M_PI/30)));
+	m_dAcceTotalAng = 0.5 * (pow(RpmToAngVelocity(m_dRPM), 2) / RpmToAngVelocity(m_dAngAcc));
 
 
 	// 計算加速度區歷時時間長
