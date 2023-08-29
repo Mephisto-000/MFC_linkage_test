@@ -125,7 +125,8 @@ public:
 	double m_dTimeBefore = 0.0;                         // 記錄前一秒累積時間長
 	double m_dAddAng = 0.0;								// 記錄下一秒要增加的角度
 	double m_dMaxAddAng = 0.0;                          // 記錄最大增加角度                        
-	double m_dStopNowRPM = 0.0;							// 記錄按下 Stop 當下速度
+	double m_dStopNowRPM = 0.0;							// 記錄按下 STOP 當下速度
+	double m_dStartNowVelocity = 0.0;                   // 記錄按下 START 當下速度
 
 	double m_dDecTotalAng = 0.0;                        // 減速度總面積
 	double m_dDecTotalTime = 0.0;						// 減速度區塊歷時時間
@@ -160,5 +161,4 @@ public:
 
 
 	CStatic m_staticNowRPM;                             // 顯示當下轉速
-	afx_msg void OnEnKillfocusEditRightRecLever();
 };

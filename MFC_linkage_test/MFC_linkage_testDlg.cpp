@@ -133,7 +133,6 @@ BEGIN_MESSAGE_MAP(CMFClinkagetestDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON_START, &CMFClinkagetestDlg::OnBnClickedButtonStart)
 	ON_BN_CLICKED(IDC_BUTTON_STOP, &CMFClinkagetestDlg::OnBnClickedButtonStop)
 	ON_WM_TIMER()
-	ON_EN_KILLFOCUS(IDC_EDIT_RIGHT_REC_LEVER, &CMFClinkagetestDlg::OnEnKillfocusEditRightRecLever)
 END_MESSAGE_MAP()
 
 
@@ -879,11 +878,26 @@ void CMFClinkagetestDlg::OnBnClickedButtonStart()
 		// 記錄按下 START 開始的時間
 		g_dwStartTime = timeGetTime();
 		SetTimer(1, nInterval, NULL);
+		m_dStartNowVelocity = 0.0;
 	}
 	else
 	{
-		g_dwStartTime = m_dwStopTimeRecord;
-
+		if (m_dNowRPM != 0)
+		{
+			g_dwStartTime = timeGetTime();
+			g_bStopState = FALSE;
+			/*m_dTimeBefore = g_dwStartTime;*/
+			m_dStartNowVelocity = m_dNowRPM;
+		}
+		else
+		{
+			//KillTimer(1);
+			g_dwStartTime = timeGetTime();
+			//m_dTimeBefore = g_dwStartTime;
+			SetTimer(1, nInterval, NULL);
+			m_dStartNowVelocity = 0.0;
+		}
+	
 	}
 
 	//SetTimer(1, nInterval, NULL);
@@ -1040,12 +1054,6 @@ void CMFClinkagetestDlg::OnBnClickedButtonStop()
 	m_editAngDec.EnableWindow(FALSE);
 
 
-	//// 計算減速度區總面積
-	//m_dDecTotalAng = 0.5 * (pow(RpmToAngVelocity(m_dRPM), 2) / RpmToAngVelocity(m_dAngDec));
-
-	//// 計算減速度區歷時時間長
-	//m_dDecTotalTime = (2 * m_dDecTotalAng) / RpmToAngVelocity(m_dRPM);
-
 
 	// 計算減速度區歷時時間長
 	m_dDecTotalTime = m_dStopNowRPM / m_dAngDec;
@@ -1074,9 +1082,11 @@ void CMFClinkagetestDlg::OnTimer(UINT_PTR nIDEvent)
 
 		if (m_dTimeAfter <= m_dAcceTotalTime)
 		{
-			m_dAddAng = 0.5 * RpmToAngVelocity(m_dAngAcc) * (pow(m_dTimeAfter, 2) - pow(m_dTimeBefore, 2));
 
+			m_dAddAng = 0.5 * RpmToAngVelocity(m_dAngAcc) * (pow(m_dTimeAfter, 2) - pow(m_dTimeBefore, 2));
 			m_dNowRPM = m_dAngAcc * m_dTimeAfter;
+
+			
 			m_strNowRPM.Format(_T(" % .7f"), m_dNowRPM);
 			m_dTimeBefore = m_dTimeAfter;
 		}
@@ -1118,8 +1128,7 @@ void CMFClinkagetestDlg::OnTimer(UINT_PTR nIDEvent)
 		if (m_dTimeAfter <= m_dDecTotalTime)
 		{
 
-			//m_dReduceAng = RpmToAngVelocity(m_dRPM) * (m_dTimeAfter - m_dTimeBefore)
-			//	- (0.5 * RpmToAngVelocity(m_dAngDec) * (pow(m_dTimeAfter, 2) - pow(m_dTimeBefore, 2)));
+
 
 			m_dReduceAng = RpmToAngVelocity(m_dStopNowRPM) * (m_dTimeAfter - m_dTimeBefore)
 				- (0.5 * RpmToAngVelocity(m_dAngDec) * (pow(m_dTimeAfter, 2) - pow(m_dTimeBefore, 2)));
@@ -1130,6 +1139,7 @@ void CMFClinkagetestDlg::OnTimer(UINT_PTR nIDEvent)
 			m_strNowRPM.Format(_T(" % .7f"), m_dNowRPM);
 			m_dTimeBefore = m_dTimeAfter;
 
+			/*m_dStartNowVelocity = m_dNowRPM;*/
 
 		}
 		else if ((m_dTimeBefore <= m_dDecTotalTime) && (m_dTimeAfter > m_dDecTotalTime))
@@ -1140,14 +1150,14 @@ void CMFClinkagetestDlg::OnTimer(UINT_PTR nIDEvent)
 			m_dNowRPM = 0.0;
 			m_strNowRPM.Format(_T(" % .7f"), m_dNowRPM);
 			m_dTimeBefore = m_dTimeAfter;
-			g_bFirstStart = TRUE;
+			g_bFirstStart = FALSE;
 		}
 		else
 		{
 			m_dNowRPM = 0.0;
 			m_strNowRPM.Format(_T(" % .7f"), m_dNowRPM);
 			m_dTimeBefore = m_dTimeAfter;
-			g_bFirstStart = TRUE;
+			g_bFirstStart = FALSE;
 
 		}
 
@@ -1184,6 +1194,7 @@ void CMFClinkagetestDlg::OnTimer(UINT_PTR nIDEvent)
 		m_editRPM.EnableWindow(TRUE);
 		m_editAngAcc.EnableWindow(TRUE);
 		m_editAngDec.EnableWindow(TRUE);
+		m_dTimeBefore = 0;
 		KillTimer(1);
 	}
 
@@ -1199,11 +1210,3 @@ void CMFClinkagetestDlg::OnTimer(UINT_PTR nIDEvent)
 }
 
 
-
-
-
-void CMFClinkagetestDlg::OnEnKillfocusEditRightRecLever()
-{
-	// TODO: 在此加入控制項告知處理常式程式碼
-	int i = 0;
-}
