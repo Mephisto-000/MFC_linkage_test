@@ -808,24 +808,24 @@ void CMFClinkagetestDlg::OnBnClickedButtonStart()
 		/*g_bFirstStart = FALSE;*/
 	}
 
-	m_editLeftRectLever.EnableWindow(0);
+	m_editLeftRectLever.EnableWindow(FALSE);
 	m_editLeftRectH.EnableWindow(FALSE);
-	m_editLeftRectLen.EnableWindow(0);
-	m_editLeftRectW.EnableWindow(0);
-	m_editRightRectLever.EnableWindow(0);
-	m_editRightRectH.EnableWindow(0);
-	m_editRightRectLen.EnableWindow(0);
-	m_editRightRectW.EnableWindow(0);
-	m_editBearingRadius.EnableWindow(0);
-	m_editBearingPosX.EnableWindow(0);
-	m_editBearingPosY.EnableWindow(0);
-	m_editRightLeverRadius.EnableWindow(0);
-	m_editRightAng.EnableWindow(0);
-	m_editLeftLeverRadius.EnableWindow(0);
-	m_editLeftAng.EnableWindow(0);
-	m_editRPM.EnableWindow(0);
-	m_editAngAcc.EnableWindow(0);
-	m_editAngDec.EnableWindow(0);
+	m_editLeftRectLen.EnableWindow(FALSE);
+	m_editLeftRectW.EnableWindow(FALSE);
+	m_editRightRectLever.EnableWindow(FALSE);
+	m_editRightRectH.EnableWindow(FALSE);
+	m_editRightRectLen.EnableWindow(FALSE);
+	m_editRightRectW.EnableWindow(FALSE);
+	m_editBearingRadius.EnableWindow(FALSE);
+	m_editBearingPosX.EnableWindow(FALSE);
+	m_editBearingPosY.EnableWindow(FALSE);
+	m_editRightLeverRadius.EnableWindow(FALSE);
+	m_editRightAng.EnableWindow(FALSE);
+	m_editLeftLeverRadius.EnableWindow(FALSE);
+	m_editLeftAng.EnableWindow(FALSE);
+	m_editRPM.EnableWindow(FALSE);
+	m_editAngAcc.EnableWindow(FALSE);
+	m_editAngDec.EnableWindow(FALSE);
 
 
 	// 中心圓軸與滑塊最大距離條件設定
@@ -893,24 +893,24 @@ void CMFClinkagetestDlg::OnBnClickedButtonStart()
 	{
 		KillTimer(1);
 
-		m_editLeftRectLever.EnableWindow(1);
-		m_editLeftRectH.EnableWindow(1);
-		m_editLeftRectLen.EnableWindow(1);
-		m_editLeftRectW.EnableWindow(1);
-		m_editRightRectLever.EnableWindow(1);
-		m_editRightRectH.EnableWindow(1);
-		m_editRightRectLen.EnableWindow(1);
-		m_editRightRectW.EnableWindow(1);
-		m_editBearingRadius.EnableWindow(1);
-		m_editBearingPosX.EnableWindow(1);
-		m_editBearingPosY.EnableWindow(1);
-		m_editRightLeverRadius.EnableWindow(1);
-		m_editRightAng.EnableWindow(1);
-		m_editLeftLeverRadius.EnableWindow(1);
-		m_editLeftAng.EnableWindow(1);
-		m_editRPM.EnableWindow(1);
-		m_editAngAcc.EnableWindow(1);
-		m_editAngDec.EnableWindow(1);
+		m_editLeftRectLever.EnableWindow(TRUE);
+		m_editLeftRectH.EnableWindow(TRUE);
+		m_editLeftRectLen.EnableWindow(TRUE);
+		m_editLeftRectW.EnableWindow(TRUE);
+		m_editRightRectLever.EnableWindow(TRUE);
+		m_editRightRectH.EnableWindow(TRUE);
+		m_editRightRectLen.EnableWindow(TRUE);
+		m_editRightRectW.EnableWindow(TRUE);
+		m_editBearingRadius.EnableWindow(TRUE);
+		m_editBearingPosX.EnableWindow(TRUE);
+		m_editBearingPosY.EnableWindow(TRUE);
+		m_editRightLeverRadius.EnableWindow(TRUE);
+		m_editRightAng.EnableWindow(TRUE);
+		m_editLeftLeverRadius.EnableWindow(TRUE);
+		m_editLeftAng.EnableWindow(TRUE);
+		m_editRPM.EnableWindow(TRUE);
+		m_editAngAcc.EnableWindow(TRUE);
+		m_editAngDec.EnableWindow(TRUE);
 
 		g_bFirstStart = TRUE;
 	}
@@ -919,24 +919,24 @@ void CMFClinkagetestDlg::OnBnClickedButtonStart()
 	{
 		KillTimer(1);
 
-		m_editLeftRectLever.EnableWindow(1);
-		m_editLeftRectH.EnableWindow(1);
-		m_editLeftRectLen.EnableWindow(1);
-		m_editLeftRectW.EnableWindow(1);
-		m_editRightRectLever.EnableWindow(1);
-		m_editRightRectH.EnableWindow(1);
-		m_editRightRectLen.EnableWindow(1);
-		m_editRightRectW.EnableWindow(1);
-		m_editBearingRadius.EnableWindow(1);
-		m_editBearingPosX.EnableWindow(1);
-		m_editBearingPosY.EnableWindow(1);
-		m_editRightLeverRadius.EnableWindow(1);
-		m_editRightAng.EnableWindow(1);
-		m_editLeftLeverRadius.EnableWindow(1);
-		m_editLeftAng.EnableWindow(1);
-		m_editRPM.EnableWindow(1);
-		m_editAngAcc.EnableWindow(1);
-		m_editAngDec.EnableWindow(1);
+		m_editLeftRectLever.EnableWindow(TRUE);
+		m_editLeftRectH.EnableWindow(TRUE);
+		m_editLeftRectLen.EnableWindow(TRUE);
+		m_editLeftRectW.EnableWindow(TRUE);
+		m_editRightRectLever.EnableWindow(TRUE);
+		m_editRightRectH.EnableWindow(TRUE);
+		m_editRightRectLen.EnableWindow(TRUE);
+		m_editRightRectW.EnableWindow(TRUE);
+		m_editBearingRadius.EnableWindow(TRUE);
+		m_editBearingPosX.EnableWindow(TRUE);
+		m_editBearingPosY.EnableWindow(TRUE);
+		m_editRightLeverRadius.EnableWindow(TRUE);
+		m_editRightAng.EnableWindow(TRUE);
+		m_editLeftLeverRadius.EnableWindow(TRUE);
+		m_editLeftAng.EnableWindow(TRUE);
+		m_editRPM.EnableWindow(TRUE);
+		m_editAngAcc.EnableWindow(TRUE);
+		m_editAngDec.EnableWindow(TRUE);
 
 		g_bFirstStart = TRUE;
 	}
@@ -946,24 +946,24 @@ void CMFClinkagetestDlg::OnBnClickedButtonStart()
 	{
 		KillTimer(1);
 
-		m_editLeftRectLever.EnableWindow(1);
-		m_editLeftRectH.EnableWindow(1);
-		m_editLeftRectLen.EnableWindow(1);
-		m_editLeftRectW.EnableWindow(1);
-		m_editRightRectLever.EnableWindow(1);
-		m_editRightRectH.EnableWindow(1);
-		m_editRightRectLen.EnableWindow(1);
-		m_editRightRectW.EnableWindow(1);
-		m_editBearingRadius.EnableWindow(1);
-		m_editBearingPosX.EnableWindow(1);
-		m_editBearingPosY.EnableWindow(1);
-		m_editRightLeverRadius.EnableWindow(1);
-		m_editRightAng.EnableWindow(1);
-		m_editLeftLeverRadius.EnableWindow(1);
-		m_editLeftAng.EnableWindow(1);
-		m_editRPM.EnableWindow(1);
-		m_editAngAcc.EnableWindow(1);
-		m_editAngDec.EnableWindow(1);
+		m_editLeftRectLever.EnableWindow(TRUE);
+		m_editLeftRectH.EnableWindow(TRUE);
+		m_editLeftRectLen.EnableWindow(TRUE);
+		m_editLeftRectW.EnableWindow(TRUE);
+		m_editRightRectLever.EnableWindow(TRUE);
+		m_editRightRectH.EnableWindow(TRUE);
+		m_editRightRectLen.EnableWindow(TRUE);
+		m_editRightRectW.EnableWindow(TRUE);
+		m_editBearingRadius.EnableWindow(TRUE);
+		m_editBearingPosX.EnableWindow(TRUE);
+		m_editBearingPosY.EnableWindow(TRUE);
+		m_editRightLeverRadius.EnableWindow(TRUE);
+		m_editRightAng.EnableWindow(TRUE);
+		m_editLeftLeverRadius.EnableWindow(TRUE);
+		m_editLeftAng.EnableWindow(TRUE);
+		m_editRPM.EnableWindow(TRUE);
+		m_editAngAcc.EnableWindow(TRUE);
+		m_editAngDec.EnableWindow(TRUE);
 
 		g_bFirstStart = TRUE;
 	}
@@ -972,24 +972,24 @@ void CMFClinkagetestDlg::OnBnClickedButtonStart()
 	{
 		KillTimer(1);
 
-		m_editLeftRectLever.EnableWindow(1);
-		m_editLeftRectH.EnableWindow(1);
-		m_editLeftRectLen.EnableWindow(1);
-		m_editLeftRectW.EnableWindow(1);
-		m_editRightRectLever.EnableWindow(1);
-		m_editRightRectH.EnableWindow(1);
-		m_editRightRectLen.EnableWindow(1);
-		m_editRightRectW.EnableWindow(1);
-		m_editBearingRadius.EnableWindow(1);
-		m_editBearingPosX.EnableWindow(1);
-		m_editBearingPosY.EnableWindow(1);
-		m_editRightLeverRadius.EnableWindow(1);
-		m_editRightAng.EnableWindow(1);
-		m_editLeftLeverRadius.EnableWindow(1);
-		m_editLeftAng.EnableWindow(1);
-		m_editRPM.EnableWindow(1);
-		m_editAngAcc.EnableWindow(1);
-		m_editAngDec.EnableWindow(1);
+		m_editLeftRectLever.EnableWindow(TRUE);
+		m_editLeftRectH.EnableWindow(TRUE);
+		m_editLeftRectLen.EnableWindow(TRUE);
+		m_editLeftRectW.EnableWindow(TRUE);
+		m_editRightRectLever.EnableWindow(TRUE);
+		m_editRightRectH.EnableWindow(TRUE);
+		m_editRightRectLen.EnableWindow(TRUE);
+		m_editRightRectW.EnableWindow(TRUE);
+		m_editBearingRadius.EnableWindow(TRUE);
+		m_editBearingPosX.EnableWindow(TRUE);
+		m_editBearingPosY.EnableWindow(TRUE);
+		m_editRightLeverRadius.EnableWindow(TRUE);
+		m_editRightAng.EnableWindow(TRUE);
+		m_editLeftLeverRadius.EnableWindow(TRUE);
+		m_editLeftAng.EnableWindow(TRUE);
+		m_editRPM.EnableWindow(TRUE);
+		m_editAngAcc.EnableWindow(TRUE);
+		m_editAngDec.EnableWindow(TRUE);
 
 		g_bFirstStart = TRUE;
 	}
@@ -1020,24 +1020,24 @@ void CMFClinkagetestDlg::OnBnClickedButtonStop()
 	m_dTimeBefore = 0;
 	m_dwStopTimeRecord = timeGetTime();
 
-	m_editLeftRectLever.EnableWindow(0);
-	m_editLeftRectH.EnableWindow(0);
-	m_editLeftRectLen.EnableWindow(0);
-	m_editLeftRectW.EnableWindow(0);
-	m_editRightRectLever.EnableWindow(0);
-	m_editRightRectH.EnableWindow(0);
-	m_editRightRectLen.EnableWindow(0);
-	m_editRightRectW.EnableWindow(0);
-	m_editBearingRadius.EnableWindow(0);
-	m_editBearingPosX.EnableWindow(0);
-	m_editBearingPosY.EnableWindow(0);
-	m_editRightLeverRadius.EnableWindow(0);
-	m_editRightAng.EnableWindow(0);
-	m_editLeftLeverRadius.EnableWindow(0);
-	m_editLeftAng.EnableWindow(0);
-	m_editRPM.EnableWindow(0);
-	m_editAngAcc.EnableWindow(0);
-	m_editAngDec.EnableWindow(0);
+	m_editLeftRectLever.EnableWindow(FALSE);
+	m_editLeftRectH.EnableWindow(FALSE);
+	m_editLeftRectLen.EnableWindow(FALSE);
+	m_editLeftRectW.EnableWindow(FALSE);
+	m_editRightRectLever.EnableWindow(FALSE);
+	m_editRightRectH.EnableWindow(FALSE);
+	m_editRightRectLen.EnableWindow(FALSE);
+	m_editRightRectW.EnableWindow(FALSE);
+	m_editBearingRadius.EnableWindow(FALSE);
+	m_editBearingPosX.EnableWindow(FALSE);
+	m_editBearingPosY.EnableWindow(FALSE);
+	m_editRightLeverRadius.EnableWindow(FALSE);
+	m_editRightAng.EnableWindow(FALSE);
+	m_editLeftLeverRadius.EnableWindow(FALSE);
+	m_editLeftAng.EnableWindow(FALSE);
+	m_editRPM.EnableWindow(FALSE);
+	m_editAngAcc.EnableWindow(FALSE);
+	m_editAngDec.EnableWindow(FALSE);
 
 
 	//// 計算減速度區總面積
@@ -1166,24 +1166,24 @@ void CMFClinkagetestDlg::OnTimer(UINT_PTR nIDEvent)
 	if (m_dNowRPM == 0)
 	{
 
-		m_editLeftRectLever.EnableWindow(1);
-		m_editLeftRectH.EnableWindow(1);
-		m_editLeftRectLen.EnableWindow(1);
-		m_editLeftRectW.EnableWindow(1);
-		m_editRightRectLever.EnableWindow(1);
-		m_editRightRectH.EnableWindow(1);
-		m_editRightRectLen.EnableWindow(1);
-		m_editRightRectW.EnableWindow(1);
-		m_editBearingRadius.EnableWindow(1);
-		m_editBearingPosX.EnableWindow(1);
-		m_editBearingPosY.EnableWindow(1);
-		m_editRightLeverRadius.EnableWindow(1);
-		m_editRightAng.EnableWindow(1);
-		m_editLeftLeverRadius.EnableWindow(1);
-		m_editLeftAng.EnableWindow(1);
-		m_editRPM.EnableWindow(1);
-		m_editAngAcc.EnableWindow(1);
-		m_editAngDec.EnableWindow(1);
+		m_editLeftRectLever.EnableWindow(TRUE);
+		m_editLeftRectH.EnableWindow(TRUE);
+		m_editLeftRectLen.EnableWindow(TRUE);
+		m_editLeftRectW.EnableWindow(TRUE);
+		m_editRightRectLever.EnableWindow(TRUE);
+		m_editRightRectH.EnableWindow(TRUE);
+		m_editRightRectLen.EnableWindow(TRUE);
+		m_editRightRectW.EnableWindow(TRUE);
+		m_editBearingRadius.EnableWindow(TRUE);
+		m_editBearingPosX.EnableWindow(TRUE);
+		m_editBearingPosY.EnableWindow(TRUE);
+		m_editRightLeverRadius.EnableWindow(TRUE);
+		m_editRightAng.EnableWindow(TRUE);
+		m_editLeftLeverRadius.EnableWindow(TRUE);
+		m_editLeftAng.EnableWindow(TRUE);
+		m_editRPM.EnableWindow(TRUE);
+		m_editAngAcc.EnableWindow(TRUE);
+		m_editAngDec.EnableWindow(TRUE);
 		KillTimer(1);
 	}
 
