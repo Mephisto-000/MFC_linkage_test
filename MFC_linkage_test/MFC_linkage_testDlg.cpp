@@ -827,11 +827,6 @@ void CMFClinkagetestDlg::OnBnClickedButtonStart()
 
 
 
-	// 計算加速度區總面積
-	m_dAcceTotalAng = 0.5 * (pow(RpmToAngVelocity(m_dRPM), 2) / RpmToAngVelocity(m_dAngAcc));
-	// 計算加速度區歷時時間長
-	m_dAcceTotalTime = (2 * m_dAcceTotalAng) / RpmToAngVelocity(m_dRPM);
-
 
 	if ((g_bStopState == TRUE) && (m_dNowRPM != 0))
 	{
@@ -845,7 +840,7 @@ void CMFClinkagetestDlg::OnBnClickedButtonStart()
 		// 計算加速度區總面積
 		m_dAcceTotalAng = 0.5 * (pow(RpmToAngVelocity(m_dRPM), 2) / RpmToAngVelocity(m_dAngAcc));
 		// 計算加速度區歷時時間長
-		m_dAcceTotalTime = (2 * m_dAcceTotalAng) / RpmToAngVelocity(m_dRPM);
+		m_dAcceTotalTime = (2 * m_dAcceTotalAng) / abs(RpmToAngVelocity(m_dRPM));
 	}
 
 	// 初始化前一秒絕對時間
@@ -961,9 +956,6 @@ void CMFClinkagetestDlg::OnBnClickedButtonStart()
 
 		g_bFirstStart = TRUE;
 	}
-
-	
-
 
 
 
