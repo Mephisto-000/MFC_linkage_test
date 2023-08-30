@@ -39,7 +39,7 @@ protected:
 	afx_msg HCURSOR OnQueryDragIcon();
 	DECLARE_MESSAGE_MAP()
 
-	COLORREF m_PaintRegionBackgroundColor;              // 上方繪圖區背景顏色設定
+	COLORREF m_PaintRegionBackgroundColor = RGB(0, 0, 0);;              // 上方繪圖區背景顏色設定
 
 	
 	// 用 timeGetTime 方法
