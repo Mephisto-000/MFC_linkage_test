@@ -52,6 +52,8 @@ public:
 	afx_msg void OnBnClickedButtonStart();
 	afx_msg void OnBnClickedButtonStop();
 
+	void OpenAllInputEdit();
+	void CloseAllInputEdit();
 
 	//////////////////////////////////// 輸入的資料變數 ////////////////////////////////////
 	//左側滑塊區

@@ -351,6 +351,51 @@ CPoint RightRectCenter (double dRightLeverLen, double dRightRectH, double dRight
 
 }
 
+
+void CMFClinkagetestDlg::OpenAllInputEdit()
+{
+	m_editLeftRectLever.EnableWindow(TRUE);
+	m_editLeftRectH.EnableWindow(TRUE);
+	m_editLeftRectLen.EnableWindow(TRUE);
+	m_editLeftRectW.EnableWindow(TRUE);
+	m_editRightRectLever.EnableWindow(TRUE);
+	m_editRightRectH.EnableWindow(TRUE);
+	m_editRightRectLen.EnableWindow(TRUE);
+	m_editRightRectW.EnableWindow(TRUE);
+	m_editBearingRadius.EnableWindow(TRUE);
+	m_editBearingPosX.EnableWindow(TRUE);
+	m_editBearingPosY.EnableWindow(TRUE);
+	m_editRightLeverRadius.EnableWindow(TRUE);
+	m_editRightAng.EnableWindow(TRUE);
+	m_editLeftLeverRadius.EnableWindow(TRUE);
+	m_editLeftAng.EnableWindow(TRUE);
+	m_editRPM.EnableWindow(TRUE);
+	m_editAngAcc.EnableWindow(TRUE);
+	m_editAngDec.EnableWindow(TRUE);
+}
+
+
+void CMFClinkagetestDlg::CloseAllInputEdit()
+{
+	m_editLeftRectLever.EnableWindow(FALSE);
+	m_editLeftRectH.EnableWindow(FALSE);
+	m_editLeftRectLen.EnableWindow(FALSE);
+	m_editLeftRectW.EnableWindow(FALSE);
+	m_editRightRectLever.EnableWindow(FALSE);
+	m_editRightRectH.EnableWindow(FALSE);
+	m_editRightRectLen.EnableWindow(FALSE);
+	m_editRightRectW.EnableWindow(FALSE);
+	m_editBearingRadius.EnableWindow(FALSE);
+	m_editBearingPosX.EnableWindow(FALSE);
+	m_editBearingPosY.EnableWindow(FALSE);
+	m_editRightLeverRadius.EnableWindow(FALSE);
+	m_editRightAng.EnableWindow(FALSE);
+	m_editLeftLeverRadius.EnableWindow(FALSE);
+	m_editLeftAng.EnableWindow(FALSE);
+	m_editRPM.EnableWindow(FALSE);
+	m_editAngAcc.EnableWindow(FALSE);
+	m_editAngDec.EnableWindow(FALSE);
+}
 ////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////
 
@@ -742,29 +787,12 @@ void CMFClinkagetestDlg::OnBnClickedButtonStart()
 		m_dAngAcc = _ttof(m_strAngAcc);
 		m_dAngDec = _ttof(m_strAngDec);
 
-		
+
 		/*g_bFirstStart = FALSE;*/
 	}
 
-	m_editLeftRectLever.EnableWindow(FALSE);
-	m_editLeftRectH.EnableWindow(FALSE);
-	m_editLeftRectLen.EnableWindow(FALSE);
-	m_editLeftRectW.EnableWindow(FALSE);
-	m_editRightRectLever.EnableWindow(FALSE);
-	m_editRightRectH.EnableWindow(FALSE);
-	m_editRightRectLen.EnableWindow(FALSE);
-	m_editRightRectW.EnableWindow(FALSE);
-	m_editBearingRadius.EnableWindow(FALSE);
-	m_editBearingPosX.EnableWindow(FALSE);
-	m_editBearingPosY.EnableWindow(FALSE);
-	m_editRightLeverRadius.EnableWindow(FALSE);
-	m_editRightAng.EnableWindow(FALSE);
-	m_editLeftLeverRadius.EnableWindow(FALSE);
-	m_editLeftAng.EnableWindow(FALSE);
-	m_editRPM.EnableWindow(FALSE);
-	m_editAngAcc.EnableWindow(FALSE);
-	m_editAngDec.EnableWindow(FALSE);
 
+	CloseAllInputEdit();
 
 	// 中心圓軸與滑塊最大距離條件設定
 	// 當桿長長度大於此條件時，直接暫停並重新輸入
@@ -785,7 +813,7 @@ void CMFClinkagetestDlg::OnBnClickedButtonStart()
 	double dRightClientMinLeverLen = m_dRightRectLeverLen - 2 * m_dRightLeverRadius - dRightRectSmallSide;
 
 
-	// 確認當中心圓軸是否高過畫圖區
+	// 確認中心圓軸是否高過畫圖區
 	CWnd* pPaintRegion = GetDlgItem(IDC_STATIC_PAINT);
 	CRect rectPaintRegion;
 	pPaintRegion->GetClientRect(&rectPaintRegion);
@@ -793,11 +821,16 @@ void CMFClinkagetestDlg::OnBnClickedButtonStart()
 	int iHeightPaintRegion = rectPaintRegion.Height();
 	double dBearingTopState = iHeightPaintRegion - (m_dBearingPosY + m_dBearingRadius);
 
+	// 確認中心圓軸是否左右超\超出繪圖區
+	double dBearingLeftStateW = m_dBearingPosX - (dLeftClientMaxLenX + 0.5 * m_dLeftRectW) + iWidthPaintRegion * 0.5;
+	double dBearingRightStateW = iWidthPaintRegion * 0.5 - (m_dBearingPosX + (dRightClientMaxLenX + 0.5 * m_dRightRectW));
 
-	//// 計算加速度區總面積
-	//m_dAcceTotalAng = 0.5 * (pow(RpmToAngVelocity(m_dRPM), 2) / RpmToAngVelocity(m_dAngAcc));
-	//// 計算加速度區歷時時間長
-	//m_dAcceTotalTime = (2 * m_dAcceTotalAng) / RpmToAngVelocity(m_dRPM);
+
+
+	// 計算加速度區總面積
+	m_dAcceTotalAng = 0.5 * (pow(RpmToAngVelocity(m_dRPM), 2) / RpmToAngVelocity(m_dAngAcc));
+	// 計算加速度區歷時時間長
+	m_dAcceTotalTime = (2 * m_dAcceTotalAng) / RpmToAngVelocity(m_dRPM);
 
 
 	if ((g_bStopState == TRUE) && (m_dNowRPM != 0))
@@ -853,115 +886,84 @@ void CMFClinkagetestDlg::OnBnClickedButtonStart()
 			//m_dTimeBefore = g_dwStartTime;
 			SetTimer(1, nInterval, NULL);
 		}
-	
+
 	}
 
 	g_bFirstStart = FALSE;
 
+	////////////////////////////////////////////////////////////////////////////////////////
+	// 桿長限制
 	if ((dLeftClientMaxLenX >= dLeftMaxLenX) || (dRightClientMaxLenX >= dRightMaxLenX))
 	{
 		KillTimer(1);
-
-		m_editLeftRectLever.EnableWindow(TRUE);
-		m_editLeftRectH.EnableWindow(TRUE);
-		m_editLeftRectLen.EnableWindow(TRUE);
-		m_editLeftRectW.EnableWindow(TRUE);
-		m_editRightRectLever.EnableWindow(TRUE);
-		m_editRightRectH.EnableWindow(TRUE);
-		m_editRightRectLen.EnableWindow(TRUE);
-		m_editRightRectW.EnableWindow(TRUE);
-		m_editBearingRadius.EnableWindow(TRUE);
-		m_editBearingPosX.EnableWindow(TRUE);
-		m_editBearingPosY.EnableWindow(TRUE);
-		m_editRightLeverRadius.EnableWindow(TRUE);
-		m_editRightAng.EnableWindow(TRUE);
-		m_editLeftLeverRadius.EnableWindow(TRUE);
-		m_editLeftAng.EnableWindow(TRUE);
-		m_editRPM.EnableWindow(TRUE);
-		m_editAngAcc.EnableWindow(TRUE);
-		m_editAngDec.EnableWindow(TRUE);
-
+		OpenAllInputEdit();
 		g_bFirstStart = TRUE;
 	}
 
 	if ((dLeftClientMinLeverLen <= 0) || (dRightClientMinLeverLen <= 0))
 	{
 		KillTimer(1);
-
-		m_editLeftRectLever.EnableWindow(TRUE);
-		m_editLeftRectH.EnableWindow(TRUE);
-		m_editLeftRectLen.EnableWindow(TRUE);
-		m_editLeftRectW.EnableWindow(TRUE);
-		m_editRightRectLever.EnableWindow(TRUE);
-		m_editRightRectH.EnableWindow(TRUE);
-		m_editRightRectLen.EnableWindow(TRUE);
-		m_editRightRectW.EnableWindow(TRUE);
-		m_editBearingRadius.EnableWindow(TRUE);
-		m_editBearingPosX.EnableWindow(TRUE);
-		m_editBearingPosY.EnableWindow(TRUE);
-		m_editRightLeverRadius.EnableWindow(TRUE);
-		m_editRightAng.EnableWindow(TRUE);
-		m_editLeftLeverRadius.EnableWindow(TRUE);
-		m_editLeftAng.EnableWindow(TRUE);
-		m_editRPM.EnableWindow(TRUE);
-		m_editAngAcc.EnableWindow(TRUE);
-		m_editAngDec.EnableWindow(TRUE);
-
+		OpenAllInputEdit();
 		g_bFirstStart = TRUE;
 	}
 
+	if ((m_dLeftRectLeverLen <= 0) || (m_dRightRectLeverLen <= 0))
+	{
+		KillTimer(1);
+		OpenAllInputEdit();
+		g_bFirstStart = TRUE;
+	}
+	////////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////////
+	// 方塊個別資訊限制 (高、長、寬)
+	if ((m_dLeftRectH < 0) || (m_dRightRectH < 0))
+	{
+		KillTimer(1);
+		OpenAllInputEdit();
+		g_bFirstStart = TRUE;
+	}
 
+	if ((m_dLeftRectLen <= 0) || (m_dRightRectLen <= 0))
+	{
+		KillTimer(1);
+		OpenAllInputEdit();
+		g_bFirstStart = TRUE;
+	}
+
+	if ((m_dLeftRectW <= 0) || (m_dRightRectW <= 0))
+	{
+		KillTimer(1);
+		OpenAllInputEdit();
+		g_bFirstStart = TRUE;
+	}
+	////////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////////
+	// 中心圓軸高度限制
 	if ((dBearingTopState <= 0) || (m_dBearingPosY < m_dBearingRadius))
 	{
 		KillTimer(1);
-
-		m_editLeftRectLever.EnableWindow(TRUE);
-		m_editLeftRectH.EnableWindow(TRUE);
-		m_editLeftRectLen.EnableWindow(TRUE);
-		m_editLeftRectW.EnableWindow(TRUE);
-		m_editRightRectLever.EnableWindow(TRUE);
-		m_editRightRectH.EnableWindow(TRUE);
-		m_editRightRectLen.EnableWindow(TRUE);
-		m_editRightRectW.EnableWindow(TRUE);
-		m_editBearingRadius.EnableWindow(TRUE);
-		m_editBearingPosX.EnableWindow(TRUE);
-		m_editBearingPosY.EnableWindow(TRUE);
-		m_editRightLeverRadius.EnableWindow(TRUE);
-		m_editRightAng.EnableWindow(TRUE);
-		m_editLeftLeverRadius.EnableWindow(TRUE);
-		m_editLeftAng.EnableWindow(TRUE);
-		m_editRPM.EnableWindow(TRUE);
-		m_editAngAcc.EnableWindow(TRUE);
-		m_editAngDec.EnableWindow(TRUE);
-
+		OpenAllInputEdit();
 		g_bFirstStart = TRUE;
 	}
-
+	//// 中心圓軸
+	if ((dBearingLeftStateW < 0) || (dBearingRightStateW < 0))
+	{
+		KillTimer(1);
+		OpenAllInputEdit();
+		g_bFirstStart = TRUE;
+	}
+	// 中心圓軸與左右側半徑限制
 	if ((m_dBearingRadius < m_dLeftLeverRadius) || (m_dBearingRadius < m_dRightLeverRadius))
 	{
 		KillTimer(1);
 
-		m_editLeftRectLever.EnableWindow(TRUE);
-		m_editLeftRectH.EnableWindow(TRUE);
-		m_editLeftRectLen.EnableWindow(TRUE);
-		m_editLeftRectW.EnableWindow(TRUE);
-		m_editRightRectLever.EnableWindow(TRUE);
-		m_editRightRectH.EnableWindow(TRUE);
-		m_editRightRectLen.EnableWindow(TRUE);
-		m_editRightRectW.EnableWindow(TRUE);
-		m_editBearingRadius.EnableWindow(TRUE);
-		m_editBearingPosX.EnableWindow(TRUE);
-		m_editBearingPosY.EnableWindow(TRUE);
-		m_editRightLeverRadius.EnableWindow(TRUE);
-		m_editRightAng.EnableWindow(TRUE);
-		m_editLeftLeverRadius.EnableWindow(TRUE);
-		m_editLeftAng.EnableWindow(TRUE);
-		m_editRPM.EnableWindow(TRUE);
-		m_editAngAcc.EnableWindow(TRUE);
-		m_editAngDec.EnableWindow(TRUE);
+		OpenAllInputEdit();
 
 		g_bFirstStart = TRUE;
 	}
+
+	
+
 
 
 
