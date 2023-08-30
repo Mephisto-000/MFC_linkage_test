@@ -445,6 +445,10 @@ void CMFClinkagetestDlg::OnPaint()
 		m_editLeftLeverRadius.GetWindowText(m_strLeftLeverRadius);
 		m_editRightLeverRadius.GetWindowText(m_strRightLeverRadius);
 
+		m_editRPM.GetWindowText(m_strRPM);
+		m_editAngAcc.GetWindowText(m_strAngAcc);
+		m_editAngDec.GetWindowText(m_strAngDec);
+
 
 		m_dLeftRectLeverLen = _ttof(m_strLeftRectLeverLen);
 		m_dLeftRectH = _ttof(m_strLeftRectH);
@@ -460,6 +464,9 @@ void CMFClinkagetestDlg::OnPaint()
 		m_dLeftLeverRadius = _ttof(m_strLeftLeverRadius);
 		m_dRightLeverRadius = _ttof(m_strRightLeverRadius);
 
+		m_dRPM = _ttof(m_strRPM);
+		m_dAngAcc = _ttof(m_strAngAcc);
+		m_dAngDec = _ttof(m_strAngDec);
 
 		if (g_bStartState == FALSE)
 		{
@@ -833,13 +840,14 @@ void CMFClinkagetestDlg::OnBnClickedButtonStart()
 		// 計算加速度總面積
 		m_dAcceTotalAng = 0.5 * (pow(RpmToAngVelocity(m_dRPM) - RpmToAngVelocity(m_dNowRPM), 2) / RpmToAngVelocity(m_dAngAcc));
 		// 計算加速度區歷時時間長
-		m_dAcceTotalTime = (RpmToAngVelocity(m_dRPM) - RpmToAngVelocity(m_dNowRPM)) / RpmToAngVelocity(m_dAngAcc);
+		m_dAcceTotalTime = (abs(RpmToAngVelocity(m_dRPM)) - abs(RpmToAngVelocity(m_dNowRPM))) / RpmToAngVelocity(m_dAngAcc);
 	}
 	else
 	{
 		// 計算加速度區總面積
 		m_dAcceTotalAng = 0.5 * (pow(RpmToAngVelocity(m_dRPM), 2) / RpmToAngVelocity(m_dAngAcc));
 		// 計算加速度區歷時時間長
+		/*m_dAcceTotalTime = (2 * m_dAcceTotalAng) / RpmToAngVelocity(m_dRPM);*/
 		m_dAcceTotalTime = (2 * m_dAcceTotalAng) / abs(RpmToAngVelocity(m_dRPM));
 	}
 
@@ -866,7 +874,7 @@ void CMFClinkagetestDlg::OnBnClickedButtonStart()
 		if (m_dNowRPM != 0)
 		{
 			// 記錄初速
-			m_dStartNowRPM = m_dNowRPM;
+			m_dStartNowRPM = abs(m_dNowRPM);
 
 			g_dwStartTime = timeGetTime();
 			g_bStopState = FALSE;
@@ -951,12 +959,18 @@ void CMFClinkagetestDlg::OnBnClickedButtonStart()
 	if ((m_dBearingRadius < m_dLeftLeverRadius) || (m_dBearingRadius < m_dRightLeverRadius))
 	{
 		KillTimer(1);
-
 		OpenAllInputEdit();
-
 		g_bFirstStart = TRUE;
 	}
-
+	////////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////////
+	// 加減速度限制
+	if ((m_dAngAcc < 0) || (m_dAngDec < 0))
+	{
+		KillTimer(1);
+		OpenAllInputEdit();
+		g_bFirstStart = TRUE;
+	}
 
 
 	g_bStartState = TRUE;
@@ -974,7 +988,7 @@ void CMFClinkagetestDlg::OnBnClickedButtonStop()
 	g_bStopState = TRUE;
 	if (m_dTimeAfter >= m_dAcceTotalTime)
 	{
-		m_dStopNowRPM = m_dNowRPM;
+		m_dStopNowRPM = abs(m_dNowRPM);
 	}
 	else
 	{
@@ -1041,13 +1055,24 @@ void CMFClinkagetestDlg::OnTimer(UINT_PTR nIDEvent)
 			m_dNowRPM = m_dAngAcc * m_dTimeAfter + m_dStartNowRPM;
 
 			
-			m_strNowRPM.Format(_T(" % .7f"), m_dNowRPM);
+			if (m_dRPM < 0)
+			{
+				m_strNowRPM.Format(_T(" % .7f"), -m_dNowRPM);
+			}
+			else
+			{
+				m_strNowRPM.Format(_T(" % .7f"), m_dNowRPM);
+			}
+
+			/*m_strNowRPM.Format(_T(" % .7f"), m_dNowRPM);*/
+
+
 			m_dTimeBefore = m_dTimeAfter;
 		}
 		else if ((m_dTimeBefore < m_dAcceTotalTime) && (m_dTimeAfter > m_dAcceTotalTime))
 		{
 			m_dAddAng = 0.5 * RpmToAngVelocity(m_dAngAcc) * (pow(m_dAcceTotalTime, 2) - pow(m_dTimeBefore, 2))
-				+ RpmToAngVelocity(m_dRPM) * (m_dTimeAfter - m_dAcceTotalTime);
+				+ abs(RpmToAngVelocity(m_dRPM)) * (m_dTimeAfter - m_dAcceTotalTime);
 
 			m_dNowRPM = m_dRPM;
 			m_strNowRPM.Format(_T(" % .7f"), m_dNowRPM);
@@ -1055,19 +1080,35 @@ void CMFClinkagetestDlg::OnTimer(UINT_PTR nIDEvent)
 		}
 		else
 		{
-			m_dAddAng = RpmToAngVelocity(m_dRPM) * (m_dTimeAfter - m_dTimeBefore);
+			m_dAddAng = abs(RpmToAngVelocity(m_dRPM)) * (m_dTimeAfter - m_dTimeBefore);
 
 			m_dNowRPM = m_dRPM;
 			m_strNowRPM.Format(_T(" % .7f"), m_dNowRPM);
 			m_dTimeBefore = m_dTimeAfter;
 		}
 
+		if (m_dRPM < 0)
+		{
+			m_dLeftAng += RadToAng(m_dAddAng);
+			m_dRightAng += RadToAng(m_dAddAng);
 
-		m_dLeftAng -= RadToAng(m_dAddAng);
-		m_dRightAng -= RadToAng(m_dAddAng);
+			m_dLeftAng = LimitTo360(m_dLeftAng);
+			m_dRightAng = LimitTo360(m_dRightAng);
+		}
+		else
+		{
+			m_dLeftAng -= RadToAng(m_dAddAng);
+			m_dRightAng -= RadToAng(m_dAddAng);
 
-		m_dLeftAng = LimitTo360(m_dLeftAng);
-		m_dRightAng = LimitTo360(m_dRightAng);
+			m_dLeftAng = LimitTo360(m_dLeftAng);
+			m_dRightAng = LimitTo360(m_dRightAng);
+		}
+
+		//m_dLeftAng -= RadToAng(m_dAddAng);
+		//m_dRightAng -= RadToAng(m_dAddAng);
+
+		//m_dLeftAng = LimitTo360(m_dLeftAng);
+		//m_dRightAng = LimitTo360(m_dRightAng);
 
 	}
 	else
@@ -1090,8 +1131,20 @@ void CMFClinkagetestDlg::OnTimer(UINT_PTR nIDEvent)
 			
 			//m_dNowRPM = m_dRPM -  m_dAngDec * m_dTimeAfter;
 			m_dNowRPM = m_dStopNowRPM - m_dAngDec * m_dTimeAfter;
-			m_strNowRPM.Format(_T(" % .7f"), m_dNowRPM);
+
+			if (m_dRPM < 0)
+			{
+				m_strNowRPM.Format(_T(" % .7f"), -m_dNowRPM);
+			}
+			else
+			{
+				m_strNowRPM.Format(_T(" % .7f"), m_dNowRPM);
+			}
+
+			/*m_strNowRPM.Format(_T(" % .7f"), m_dNowRPM);*/
+			
 			m_dTimeBefore = m_dTimeAfter;
+
 
 			/*m_dStartNowVelocity = m_dNowRPM;*/
 
@@ -1115,11 +1168,28 @@ void CMFClinkagetestDlg::OnTimer(UINT_PTR nIDEvent)
 
 		}
 
-		m_dLeftAng -= RadToAng(m_dReduceAng);
-		m_dRightAng -= RadToAng(m_dReduceAng);
+		if (m_dRPM < 0)
+		{
+			m_dLeftAng += RadToAng(m_dReduceAng);
+			m_dRightAng += RadToAng(m_dReduceAng);
 
-		m_dLeftAng = LimitTo360(m_dLeftAng);
-		m_dRightAng = LimitTo360(m_dRightAng);
+			m_dLeftAng = LimitTo360(m_dLeftAng);
+			m_dRightAng = LimitTo360(m_dRightAng);
+		}
+		else
+		{
+			m_dLeftAng -= RadToAng(m_dReduceAng);
+			m_dRightAng -= RadToAng(m_dReduceAng);
+
+			m_dLeftAng = LimitTo360(m_dLeftAng);
+			m_dRightAng = LimitTo360(m_dRightAng);
+		}
+
+		//m_dLeftAng -= RadToAng(m_dReduceAng);
+		//m_dRightAng -= RadToAng(m_dReduceAng);
+
+		//m_dLeftAng = LimitTo360(m_dLeftAng);
+		//m_dRightAng = LimitTo360(m_dRightAng);
 
 	}
 
