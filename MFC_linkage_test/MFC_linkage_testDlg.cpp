@@ -55,8 +55,6 @@ END_MESSAGE_MAP()
 
 // CMFClinkagetestDlg 對話方塊
 
-
-
 CMFClinkagetestDlg::CMFClinkagetestDlg(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_MFC_LINKAGE_TEST_DIALOG, pParent)
 	, m_strLeftRectLeverLen(_T("400"))
@@ -74,7 +72,7 @@ CMFClinkagetestDlg::CMFClinkagetestDlg(CWnd* pParent /*=nullptr*/)
 	, m_strRightAng(_T("-90"))
 	, m_strLeftLeverRadius(_T("70"))
 	, m_strLeftAng(_T("90"))
-	, m_strRPM(_T("100"))              // rpm  =  2*pi*rad / 60s.
+	, m_strRPM(_T("100"))
 	, m_strAngAcc(_T("10"))
 	, m_strAngDec(_T("10"))
 {
@@ -128,7 +126,6 @@ BEGIN_MESSAGE_MAP(CMFClinkagetestDlg, CDialogEx)
 	ON_WM_SYSCOMMAND()
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
-	ON_STN_CLICKED(IDC_STATIC_PAINT, &CMFClinkagetestDlg::OnStnClickedStaticPaint)
 	ON_WM_CTLCOLOR()
 	ON_BN_CLICKED(IDC_BUTTON_START, &CMFClinkagetestDlg::OnBnClickedButtonStart)
 	ON_BN_CLICKED(IDC_BUTTON_STOP, &CMFClinkagetestDlg::OnBnClickedButtonStop)
@@ -188,9 +185,10 @@ void CMFClinkagetestDlg::OnSysCommand(UINT nID, LPARAM lParam)
 }
 
 
-
+////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////
 // 給矩形中心點，傳回矩形 x1,y1,x2,y2
-CRect RectCenterToX1Y1X2Y2(CPoint ptRectCenterPoint, double dRectLen, double dRectW)
+CRect RectCenterToX1Y1X2Y2 (CPoint ptRectCenterPoint, double dRectLen, double dRectW)
 {
 	double dX1 = ptRectCenterPoint.x - dRectW * 0.5;
 	double dY1 = ptRectCenterPoint.y - dRectLen * 0.5;
@@ -201,7 +199,7 @@ CRect RectCenterToX1Y1X2Y2(CPoint ptRectCenterPoint, double dRectLen, double dRe
 	return rect;
 }
 
-
+// 從輸入的寬、高條件，定義左下角方塊
 CRect LowerLeftRect (CRect rectCenter, double dLeftW, double iPaintH)
 {
 	double dLowerRectH = rectCenter.bottom;
@@ -210,8 +208,8 @@ CRect LowerLeftRect (CRect rectCenter, double dLeftW, double iPaintH)
 	return rectLower;
 }
 
-
-CRect LowerRightRect(CRect rectCenter, double dRightW, double iPaintH)
+// 從輸入的寬、高條件，定義右下角方塊
+CRect LowerRightRect (CRect rectCenter, double dRightW, double iPaintH)
 {
 	double dLowerRectH = rectCenter.bottom;
 	CRect rectLower(CPoint(dRightW, dLowerRectH), CPoint(dRightW * 2, iPaintH));
@@ -219,8 +217,6 @@ CRect LowerRightRect(CRect rectCenter, double dRightW, double iPaintH)
 	return rectLower;
 }
 
-////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////
 // 傳回畫布中心圓軸的內切矩形
 CRect BearingPos (double dRadius, double dBearingX, double dBearingY, int iPaintW, int iPaintH)
 {
@@ -269,18 +265,8 @@ double RpmToAngVelocity (double dRpm)
 	return dAngVelocity;
 }
 
-
-// 角速度 rad/s 轉換成每秒轉速 rpm
-double AngVelovityToRpm(double dAngVelocity)
-{
-	double dRpm = dAngVelocity * 60 / (2 * M_PI);
-
-	return dRpm;
-}
-
-
 // 角度限制在 360 度內
-double LimitTo360(double dAng)
+double LimitTo360 (double dAng)
 {
 	dAng = fmod(dAng, 360.0);
 	if (dAng < 0)
@@ -290,23 +276,8 @@ double LimitTo360(double dAng)
 	return dAng;
 }
 
-
-// 餘弦定理求角度
-// dSide1 : 斜邊, 
-// dSide2 : 鄰邊, 
-// dSide3 : 對邊
-// dTheta : 對應角 
-double CosAng(double dSide1, double dSide2, double dSide3)
-{
-	double sCosTheta = (pow(dSide1, 2) + pow(dSide2, 2) - pow(dSide3, 2)) / (2 * dSide1 * dSide2);
-	double dTheta = acos(sCosTheta);
-
-	return dTheta;
-}
-
-
 // 傳回左側軸連接點座標
-CPoint LeftBearingCenter(double dLeftLeverRadius, double dLeftAng, CPoint ptBearingCenter)
+CPoint LeftBearingCenter (double dLeftLeverRadius, double dLeftAng, CPoint ptBearingCenter)
 {
 	double dLeftRad = AngToRad(dLeftAng);
 	double dPosX = (ptBearingCenter.x - dLeftLeverRadius * cos(dLeftRad));
@@ -318,7 +289,7 @@ CPoint LeftBearingCenter(double dLeftLeverRadius, double dLeftAng, CPoint ptBear
 
 
 // 傳回右側軸連接點座標
-CPoint RightBearingCenter(double dRightLeverRadius, double dRightAng, CPoint ptBearingCenter)
+CPoint RightBearingCenter (double dRightLeverRadius, double dRightAng, CPoint ptBearingCenter)
 {
 	double dRightRad = AngToRad(dRightAng);
 	double dPosX = (ptBearingCenter.x - dRightLeverRadius * cos(dRightRad));
@@ -351,7 +322,7 @@ CPoint RightRectCenter (double dRightLeverLen, double dRightRectH, double dRight
 
 }
 
-
+// 開啟所有輸入框
 void CMFClinkagetestDlg::OpenAllInputEdit()
 {
 	m_editLeftRectLever.EnableWindow(TRUE);
@@ -374,7 +345,7 @@ void CMFClinkagetestDlg::OpenAllInputEdit()
 	m_editAngDec.EnableWindow(TRUE);
 }
 
-
+// 關閉所有輸入框
 void CMFClinkagetestDlg::CloseAllInputEdit()
 {
 	m_editLeftRectLever.EnableWindow(FALSE);
@@ -444,7 +415,6 @@ void CMFClinkagetestDlg::OnPaint()
 		m_editBearingPosY.GetWindowText(m_strBearingPosY);
 		m_editLeftLeverRadius.GetWindowText(m_strLeftLeverRadius);
 		m_editRightLeverRadius.GetWindowText(m_strRightLeverRadius);
-
 		m_editRPM.GetWindowText(m_strRPM);
 		m_editAngAcc.GetWindowText(m_strAngAcc);
 		m_editAngDec.GetWindowText(m_strAngDec);
@@ -463,14 +433,12 @@ void CMFClinkagetestDlg::OnPaint()
 		m_dBearingPosY = _ttof(m_strBearingPosY);
 		m_dLeftLeverRadius = _ttof(m_strLeftLeverRadius);
 		m_dRightLeverRadius = _ttof(m_strRightLeverRadius);
-
 		m_dRPM = _ttof(m_strRPM);
 		m_dAngAcc = _ttof(m_strAngAcc);
 		m_dAngDec = _ttof(m_strAngDec);
 
 		if (g_bStartState == FALSE)
 		{
-
 			m_editLeftAng.GetWindowText(m_strLeftAng);
 			m_editRightAng.GetWindowText(m_strRightAng);
 
@@ -482,7 +450,6 @@ void CMFClinkagetestDlg::OnPaint()
 
 		CDialogEx::OnPaint();
 
-
 		// 取得畫布的長寬高
 		CWnd* pPaintRegion = GetDlgItem(IDC_STATIC_PAINT);
 		CRect rectPaintRegion;
@@ -490,10 +457,8 @@ void CMFClinkagetestDlg::OnPaint()
 		int iWidthPaintRegion = rectPaintRegion.Width();
 		int iHeightPaintRegion = rectPaintRegion.Height();
 
-
 		// 計算兩邊下方矩形的固定寬度
 		m_dLowerRectW = iWidthPaintRegion * 0.5;
-
 
 		// 取得上方矩形畫布區域的 dc 並將內部繪成灰色(m_PaintRegionBackgroundColor)
 		CPaintDC dc(pPaintRegion);
@@ -504,44 +469,43 @@ void CMFClinkagetestDlg::OnPaint()
 		dc.FillRect(&rectPaintRegion, &brushPaintRegion);
 		dc.SelectObject(pOldBrushPaintRegion);
 
-
 		// 定義邊界顏色並繪製
 		CPen penLowerRectBoarder(PS_SOLID, m_iLowerRectBoarderW * 4, RGB(0, 0, 0));
 		CPen penUpperRectBoarder(PS_SOLID, m_iUpperRectBoarderW*2, RGB(0, 0, 0));
 		CPen penBearingBoarder(PS_SOLID, m_iBearingBoarderW * 2, RGB(0, 0, 0));
+		
 		// 定義兩桿線段
 		CPen penLever(PS_SOLID, 4, RGB(0, 0, 0));
 
 		// 下方矩形顏色
 		CBrush brushLowerRect;
 		brushLowerRect.CreateSolidBrush(RGB(139, 69, 19));
+
 		// 上方矩形顏色
 		CBrush brushUpperRect;
 		brushUpperRect.CreateSolidBrush(RGB(255, 255, 255));
+
 		// 中心主轉軸顏色
 		CBrush brushMainBearing;
 		brushMainBearing.CreateSolidBrush(RGB(255, 0, 0));
 
-
 		// 將黑色邊界 UpperRectBoarderPen 選入 dc
 		CPen* pOldPenUpperRectBoarder = dc.SelectObject(&penUpperRectBoarder);
+		
 		// 將白色內部  UpperRectBrush 選入 dc
 		CBrush* pOldBrushUpperRect = dc.SelectObject(&brushUpperRect);
 
 		// 中心圓軸內切矩形
 		CRect rectBearingRect = BearingPos(m_dBearingRadius, m_dBearingPosX, m_dBearingPosY, iWidthPaintRegion, iHeightPaintRegion);
 
-
-		//// 中心圓軸圓心
+		// 中心圓軸圓心
 		CPoint ptBearingCenterPos = BearingCenter(rectBearingRect);
 
 		// 計算左右滑塊中心座標
 		CPoint ptLeftBearingCenter = LeftBearingCenter(m_dLeftLeverRadius, m_dLeftAng, ptBearingCenterPos);
 		CPoint ptLeftUpperCenter = LeftRectCenter(m_dLeftRectLeverLen, m_dLeftRectH, m_dLeftRectLen, ptLeftBearingCenter, ptBearingCenterPos, iHeightPaintRegion);
-
 		CPoint ptRightBearingCenter = RightBearingCenter(m_dRightLeverRadius, m_dRightAng, ptBearingCenterPos);
 		CPoint ptRightUpperCenter = RightRectCenter(m_dRightRectLeverLen, m_dRightRectH, m_dRightRectLen, ptRightBearingCenter, ptBearingCenterPos, iHeightPaintRegion);
-
 
 		// 定義左右上方滑塊
 		CRect rectLeftUpper = RectCenterToX1Y1X2Y2(ptLeftUpperCenter, m_dLeftRectLen, m_dLeftRectW);
@@ -553,13 +517,11 @@ void CMFClinkagetestDlg::OnPaint()
 		dc.SelectObject(pOldPenUpperRectBoarder);
 		dc.SelectObject(pOldBrushUpperRect);
 
-
 		// 將黑色邊界  LowerRectBoarderPen 選入 dc
 		CPen* pOldPenLowerRectBoarder = dc.SelectObject(&penLowerRectBoarder);
+
 		// 將棕色內部  LowerRectBrush 選入 dc
 		CBrush* pOldBrushLowerRect = dc.SelectObject(&brushLowerRect);
-
-
 
 		// 定義左右下方方塊
 		CRect rectLeftLower = LowerLeftRect(rectLeftUpper, m_dLowerRectW, iHeightPaintRegion);
@@ -578,7 +540,6 @@ void CMFClinkagetestDlg::OnPaint()
 		dc.SelectObject(pOldPenBearingBoarder);
 		dc.SelectObject(pOldBrushMainBearing);
 
-
 		// 連桿繪圖
 		CPen* pOldPenLever = dc.SelectObject(&penLever);
 		dc.SetPixel(ptLeftBearingCenter, RGB(0, 0, 0));
@@ -589,8 +550,7 @@ void CMFClinkagetestDlg::OnPaint()
 		dc.LineTo(ptRightUpperCenter);
 		dc.SelectObject(pOldPenLever);
 
-
-
+		// 雙緩衝內存畫布設置
 		CPaintDC dcO(pPaintRegion);
 		CDC memDC;
 		CBitmap memBitmap;
@@ -599,7 +559,6 @@ void CMFClinkagetestDlg::OnPaint()
 		memDC.CreateCompatibleDC(&dcO);
 		memBitmap.CreateCompatibleBitmap(&dcO, rect.Width(), rect.Height());
 		memDC.SelectObject(&memBitmap);
-
 
 		// 在雙緩衝 DC 上進行繪圖
 		DrawToBuffer(&memDC);
@@ -611,7 +570,6 @@ void CMFClinkagetestDlg::OnPaint()
 		memBitmap.DeleteObject();
 		memDC.DeleteDC();
 	}
-
 }
 
 
@@ -626,10 +584,8 @@ void CMFClinkagetestDlg::DrawToBuffer(CDC* pDC)
 	int iWidthPaintRegion = rectPaintRegion.Width();
 	int iHeightPaintRegion = rectPaintRegion.Height();
 
-
 	// 計算兩邊下方矩形的固定寬度
 	m_dLowerRectW = iWidthPaintRegion * 0.5;
-
 
 	// 取得上方矩形畫布區域的 dc 並將內部繪成灰色(m_PaintRegionBackgroundColor)
 	CPaintDC dc(pPaintRegion);
@@ -640,46 +596,43 @@ void CMFClinkagetestDlg::DrawToBuffer(CDC* pDC)
 	dc.FillRect(&rectPaintRegion, &brushPaintRegion);
 	dc.SelectObject(pOldBrushPaintRegion);
 
-
 	// 定義邊界顏色並繪製
 	CPen penLowerRectBoarder(PS_SOLID, m_iLowerRectBoarderW * 4, RGB(0, 0, 0));
 	CPen penUpperRectBoarder(PS_SOLID, m_iUpperRectBoarderW * 2, RGB(0, 0, 0));
 	CPen penBearingBoarder(PS_SOLID, m_iBearingBoarderW * 2, RGB(0, 0, 0));
+
 	// 定義兩桿線段
 	CPen penLever(PS_SOLID, 4, RGB(0, 0, 0));
 
 	// 下方矩形顏色
 	CBrush brushLowerRect;
 	brushLowerRect.CreateSolidBrush(RGB(139, 69, 19));
+
 	// 上方矩形顏色
 	CBrush brushUpperRect;
 	brushUpperRect.CreateSolidBrush(RGB(255, 255, 255));
+
 	// 中心主轉軸顏色
 	CBrush brushMainBearing;
 	brushMainBearing.CreateSolidBrush(RGB(255, 0, 0));
 
-
 	// 將黑色邊界 UpperRectBoarderPen 選入 dc
 	CPen* pOldPenUpperRectBoarder = dc.SelectObject(&penUpperRectBoarder);
+
 	// 將白色內部  UpperRectBrush 選入 dc
 	CBrush* pOldBrushUpperRect = dc.SelectObject(&brushUpperRect);
-
 
 	// 中心圓軸內切矩形
 	CRect rectBearingRect = BearingPos(m_dBearingRadius, m_dBearingPosX, m_dBearingPosY, iWidthPaintRegion, iHeightPaintRegion);
 
-
-
-	//// 中心圓軸圓心
+	// 中心圓軸圓心
 	CPoint ptBearingCenterPos = BearingCenter(rectBearingRect);
 
 	// 計算左右滑塊中心座標
 	CPoint ptLeftBearingCenter = LeftBearingCenter(m_dLeftLeverRadius, m_dLeftAng, ptBearingCenterPos);
 	CPoint ptLeftUpperCenter = LeftRectCenter(m_dLeftRectLeverLen, m_dLeftRectH, m_dLeftRectLen, ptLeftBearingCenter, ptBearingCenterPos, iHeightPaintRegion);
-
 	CPoint ptRightBearingCenter = RightBearingCenter(m_dRightLeverRadius, m_dRightAng, ptBearingCenterPos);
 	CPoint ptRightUpperCenter = RightRectCenter(m_dRightRectLeverLen, m_dRightRectH, m_dRightRectLen, ptRightBearingCenter, ptBearingCenterPos, iHeightPaintRegion);
-
 
 	// 定義左右上方滑塊
 	CRect rectLeftUpper = RectCenterToX1Y1X2Y2(ptLeftUpperCenter, m_dLeftRectLen, m_dLeftRectW);
@@ -693,6 +646,7 @@ void CMFClinkagetestDlg::DrawToBuffer(CDC* pDC)
 
 	// 將黑色邊界  LowerRectBoarderPen 選入 dc
 	CPen* pOldPenLowerRectBoarder = dc.SelectObject(&penLowerRectBoarder);
+
 	// 將棕色內部  LowerRectBrush 選入 dc
 	CBrush* pOldBrushLowerRect = dc.SelectObject(&brushLowerRect);
 
@@ -726,7 +680,6 @@ void CMFClinkagetestDlg::DrawToBuffer(CDC* pDC)
 
 
 
-
 // 當使用者拖曳最小化視窗時，
 // 系統呼叫這個功能取得游標顯示。
 HCURSOR CMFClinkagetestDlg::OnQueryDragIcon()
@@ -736,13 +689,7 @@ HCURSOR CMFClinkagetestDlg::OnQueryDragIcon()
 
 
 
-void CMFClinkagetestDlg::OnStnClickedStaticPaint()
-{
-	// TODO: 在此加入控制項告知處理常式程式碼
-}
-
-
-//重新設置方塊的按鈕 START
+//按鈕 START
 void CMFClinkagetestDlg::OnBnClickedButtonStart()
 {
 	// TODO: 在此加入控制項告知處理常式程式碼
@@ -766,11 +713,9 @@ void CMFClinkagetestDlg::OnBnClickedButtonStart()
 		m_editRightAng.GetWindowText(m_strRightAng);
 		m_editLeftLeverRadius.GetWindowText(m_strLeftLeverRadius);
 		m_editLeftAng.GetWindowText(m_strLeftAng);
-
 		m_editRPM.GetWindowText(m_strRPM);
 		m_editAngAcc.GetWindowText(m_strAngAcc);
 		m_editAngDec.GetWindowText(m_strAngDec);
-
 
 		// 將 string 轉為 double
 		m_dLeftRectLeverLen = _ttof(m_strLeftRectLeverLen);
@@ -784,21 +729,16 @@ void CMFClinkagetestDlg::OnBnClickedButtonStart()
 		m_dBearingRadius = _ttof(m_strBearingRadius);
 		m_dBearingPosX = _ttof(m_strBearingPosX);
 		m_dBearingPosY = _ttof(m_strBearingPosY);
-
 		m_dRightLeverRadius = _ttof(m_strRightLeverRadius);
 		m_dRightAng = _ttof(m_strRightAng);
 		m_dLeftLeverRadius = _ttof(m_strLeftLeverRadius);
 		m_dLeftAng = _ttof(m_strLeftAng);
-
 		m_dRPM = _ttof(m_strRPM);
 		m_dAngAcc = _ttof(m_strAngAcc);
 		m_dAngDec = _ttof(m_strAngDec);
-
-
-		/*g_bFirstStart = FALSE;*/
 	}
 
-
+	// Start 啟動後，關閉輸入框
 	CloseAllInputEdit();
 
 	// 中心圓軸與滑塊最大距離條件設定
@@ -806,7 +746,6 @@ void CMFClinkagetestDlg::OnBnClickedButtonStart()
 	double dLeftMaxLenY = m_dBearingPosY - (m_dLeftRectLen * 0.5 + m_dLeftRectH);
 	double dLeftMaxLenX = m_dLowerRectW - 0.5 * m_dLeftRectW;
 	double dLeftClientMaxLenX = sqrt(pow((m_dLeftRectLeverLen + m_dBearingRadius), 2) - pow(dLeftMaxLenY, 2));
-
 	double dRightMaxLenY = m_dBearingPosY - (m_dRightRectLen * 0.5 + m_dRightRectH);
 	double dRightMaxLenX = m_dLowerRectW - 0.5 * m_dRightRectW;
 	double dRightClientMaxLenX = sqrt(pow((m_dRightRectLeverLen + m_dBearingRadius), 2) - pow(dRightMaxLenY, 2));
@@ -815,10 +754,8 @@ void CMFClinkagetestDlg::OnBnClickedButtonStart()
 	// 當桿長長度小於此條件時，直接暫停輸入
 	double dLeftRectSmallSide = sqrt(pow((m_dLeftRectLen * 0.5 + m_dLeftRectH), 2) + pow((m_dLeftRectLen + m_dLeftRectH), 2));
 	double dLeftClientMinLeverLen = m_dLeftRectLeverLen - 2 * m_dLeftLeverRadius - dLeftRectSmallSide;
-
 	double dRightRectSmallSide = sqrt(pow((m_dRightRectLen * 0.5 + m_dRightRectH), 2) + pow((m_dRightRectLen + m_dRightRectH), 2));
 	double dRightClientMinLeverLen = m_dRightRectLeverLen - 2 * m_dRightLeverRadius - dRightRectSmallSide;
-
 
 	// 確認中心圓軸是否高過畫圖區
 	CWnd* pPaintRegion = GetDlgItem(IDC_STATIC_PAINT);
@@ -832,13 +769,12 @@ void CMFClinkagetestDlg::OnBnClickedButtonStart()
 	double dBearingLeftStateW = m_dBearingPosX - (dLeftClientMaxLenX + 0.5 * m_dLeftRectW) + iWidthPaintRegion * 0.5;
 	double dBearingRightStateW = iWidthPaintRegion * 0.5 - (m_dBearingPosX + (dRightClientMaxLenX + 0.5 * m_dRightRectW));
 
-
-
-
+	// 判斷是否為按下 Stop 後，並且在 RPM 還未為 0時 ，重啟 Start
 	if ((g_bStopState == TRUE) && (m_dNowRPM != 0))
 	{
 		// 計算加速度總面積
 		m_dAcceTotalAng = 0.5 * (pow(RpmToAngVelocity(m_dRPM) - RpmToAngVelocity(m_dNowRPM), 2) / RpmToAngVelocity(m_dAngAcc));
+		
 		// 計算加速度區歷時時間長
 		m_dAcceTotalTime = (abs(RpmToAngVelocity(m_dRPM)) - abs(RpmToAngVelocity(m_dNowRPM))) / RpmToAngVelocity(m_dAngAcc);
 	}
@@ -846,20 +782,18 @@ void CMFClinkagetestDlg::OnBnClickedButtonStart()
 	{
 		// 計算加速度區總面積
 		m_dAcceTotalAng = 0.5 * (pow(RpmToAngVelocity(m_dRPM), 2) / RpmToAngVelocity(m_dAngAcc));
+		
 		// 計算加速度區歷時時間長
-		/*m_dAcceTotalTime = (2 * m_dAcceTotalAng) / RpmToAngVelocity(m_dRPM);*/
 		m_dAcceTotalTime = (2 * m_dAcceTotalAng) / abs(RpmToAngVelocity(m_dRPM));
 	}
 
-	// 初始化前一秒絕對時間
+	// 初始化前一秒時間
 	m_dTimeBefore = 0;
 
-	// 設定一個時間間隔，這裡設定為 42 毫秒 (0.042 s.)
-	UINT nInterval = 42;
-	// 使用 SetTimer 函數時，就會產生一個計時器
-	// 第一個參數 1         : 計時器的名稱
-	// 第二個參數 nInterval : 時間間隔 (毫秒)
-	// 第三個參數 NULL      : 使用系統默認的回調函數 (OnTime) 
+	// 假設一個時間間隔，這裡設定為 50 毫秒 (0.05 s.)
+	UINT nInterval = 50;
+	
+	// 判斷是否為第一次按下 Start
 	if (g_bFirstStart == TRUE)
 	{
 		// 記錄初速
@@ -867,6 +801,11 @@ void CMFClinkagetestDlg::OnBnClickedButtonStart()
 
 		// 記錄按下 START 開始的時間
 		g_dwStartTime = timeGetTime();
+		
+		// 使用 SetTimer 函數時，就會產生一個計時器
+		// 第一個參數 1         : 計時器的名稱
+		// 第二個參數 nInterval : 時間間隔 (毫秒)
+		// 第三個參數 NULL      : 使用系統默認的回調函數 (OnTime) 
 		SetTimer(1, nInterval, NULL);
 	}
 	else
@@ -876,20 +815,19 @@ void CMFClinkagetestDlg::OnBnClickedButtonStart()
 			// 記錄初速
 			m_dStartNowRPM = abs(m_dNowRPM);
 
+			// 記錄按下 Start 的絕對時間
 			g_dwStartTime = timeGetTime();
 			g_bStopState = FALSE;
-			/*m_dTimeBefore = g_dwStartTime;*/
 		}
 		else
 		{
 			// 記錄初速
 			m_dStartNowRPM = 0.0;
-			//KillTimer(1);
+
+			// 記錄按下 Start 的絕對時間
 			g_dwStartTime = timeGetTime();
-			//m_dTimeBefore = g_dwStartTime;
 			SetTimer(1, nInterval, NULL);
 		}
-
 	}
 
 	g_bFirstStart = FALSE;
@@ -948,7 +886,7 @@ void CMFClinkagetestDlg::OnBnClickedButtonStart()
 		OpenAllInputEdit();
 		g_bFirstStart = TRUE;
 	}
-	//// 中心圓軸
+	// 中心圓軸
 	if ((dBearingLeftStateW < 0) || (dBearingRightStateW < 0))
 	{
 		KillTimer(1);
@@ -971,21 +909,21 @@ void CMFClinkagetestDlg::OnBnClickedButtonStart()
 		OpenAllInputEdit();
 		g_bFirstStart = TRUE;
 	}
-
+	////////////////////////////////////////////////////////////////////////////////////////
 
 	g_bStartState = TRUE;
 	g_bStopState = FALSE;
 }
 
 
-
+//按鈕 STOP
 void CMFClinkagetestDlg::OnBnClickedButtonStop()
 {
 	// TODO: 在此加入控制項告知處理常式程式碼
 
-
-
 	g_bStopState = TRUE;
+
+	// 判斷是否在還未加速到等速運動時，按下 Stop
 	if (m_dTimeAfter >= m_dAcceTotalTime)
 	{
 		m_dStopNowRPM = abs(m_dNowRPM);
@@ -994,29 +932,15 @@ void CMFClinkagetestDlg::OnBnClickedButtonStop()
 	{
 		m_dStopNowRPM = m_dAngAcc * m_dTimeAfter;
 	}
+
+	// 初始化前一秒時間
 	m_dTimeBefore = 0;
+
+	// 記錄按下 Stop 的時間
 	m_dwStopTimeRecord = timeGetTime();
 
-	m_editLeftRectLever.EnableWindow(FALSE);
-	m_editLeftRectH.EnableWindow(FALSE);
-	m_editLeftRectLen.EnableWindow(FALSE);
-	m_editLeftRectW.EnableWindow(FALSE);
-	m_editRightRectLever.EnableWindow(FALSE);
-	m_editRightRectH.EnableWindow(FALSE);
-	m_editRightRectLen.EnableWindow(FALSE);
-	m_editRightRectW.EnableWindow(FALSE);
-	m_editBearingRadius.EnableWindow(FALSE);
-	m_editBearingPosX.EnableWindow(FALSE);
-	m_editBearingPosY.EnableWindow(FALSE);
-	m_editRightLeverRadius.EnableWindow(FALSE);
-	m_editRightAng.EnableWindow(FALSE);
-	m_editLeftLeverRadius.EnableWindow(FALSE);
-	m_editLeftAng.EnableWindow(FALSE);
-	m_editRPM.EnableWindow(FALSE);
-	m_editAngAcc.EnableWindow(FALSE);
-	m_editAngDec.EnableWindow(FALSE);
-
-
+	// 關閉輸入框
+	CloseAllInputEdit();
 
 	// 計算減速度區歷時時間長
 	m_dDecTotalTime = m_dStopNowRPM / m_dAngDec;
@@ -1024,16 +948,17 @@ void CMFClinkagetestDlg::OnBnClickedButtonStop()
 	// 計算減速度區總面積
 	m_dDecTotalAng = 0.5 * m_dStopNowRPM * m_dDecTotalTime;
 
-
 }
 
 
+// 每等間隔時間做的計算、變數更新
 void CMFClinkagetestDlg::OnTimer(UINT_PTR nIDEvent)
 {
 	// TODO: 在此加入您的訊息處理常式程式碼和 (或) 呼叫預設值
 
 	DWORD dwCurrentTime = timeGetTime();
 
+	// 判斷是否為按下 Stop 後
 	if (g_bStopState == FALSE)
 	{
 		// 在 OnTimer 函數中計算經過的時間
@@ -1043,18 +968,17 @@ void CMFClinkagetestDlg::OnTimer(UINT_PTR nIDEvent)
 		double seconds = static_cast<double>(dwElapsedTime) / 1000.0;
 		m_dTimeAfter = seconds;
 
+		// 判斷是否還在加速度運動
 		if (m_dTimeAfter <= m_dAcceTotalTime)
 		{
-
-			//m_dAddAng = 0.5 * RpmToAngVelocity(m_dAngAcc) * (pow(m_dTimeAfter, 2) - pow(m_dTimeBefore, 2));
-			//m_dNowRPM = m_dAngAcc * m_dTimeAfter;
-
+			// 計算增加的旋轉角度
 			m_dAddAng = 0.5 * RpmToAngVelocity(m_dAngAcc) * (pow(m_dTimeAfter, 2) - pow(m_dTimeBefore, 2))
 				+ RpmToAngVelocity(m_dStartNowRPM) * (m_dTimeAfter - m_dTimeBefore);
 
+			// 計算速度
 			m_dNowRPM = m_dAngAcc * m_dTimeAfter + m_dStartNowRPM;
 
-			
+			// 判斷順逆時針旋轉 (m_dRPM < 0 : 順時針，m_dRPM > 0 : 逆時針)
 			if (m_dRPM < 0)
 			{
 				m_strNowRPM.Format(_T(" % .7f"), -m_dNowRPM);
@@ -1064,34 +988,40 @@ void CMFClinkagetestDlg::OnTimer(UINT_PTR nIDEvent)
 				m_strNowRPM.Format(_T(" % .7f"), m_dNowRPM);
 			}
 
-			/*m_strNowRPM.Format(_T(" % .7f"), m_dNowRPM);*/
-
-
+			// 將原本下一秒時間更新為前一秒
 			m_dTimeBefore = m_dTimeAfter;
 		}
 		else if ((m_dTimeBefore < m_dAcceTotalTime) && (m_dTimeAfter > m_dAcceTotalTime))
-		{
+		{	// 當下一秒加速超過最大等速度時角度的計算
+			// 計算增加的旋轉角度
 			m_dAddAng = 0.5 * RpmToAngVelocity(m_dAngAcc) * (pow(m_dAcceTotalTime, 2) - pow(m_dTimeBefore, 2))
 				+ abs(RpmToAngVelocity(m_dRPM)) * (m_dTimeAfter - m_dAcceTotalTime);
 
+			// 當下速度為最大等速度值
 			m_dNowRPM = m_dRPM;
 			m_strNowRPM.Format(_T(" % .7f"), m_dNowRPM);
+
+			// 將原本下一秒時間更新為前一秒
 			m_dTimeBefore = m_dTimeAfter;
 		}
 		else
-		{
+		{	// 在等速度運動時的角度計算
+			// 計算增加的旋轉角度
 			m_dAddAng = abs(RpmToAngVelocity(m_dRPM)) * (m_dTimeAfter - m_dTimeBefore);
 
+			// 當下速度為最大等速度值
 			m_dNowRPM = m_dRPM;
 			m_strNowRPM.Format(_T(" % .7f"), m_dNowRPM);
+
+			// 將原本下一秒時間更新為前一秒
 			m_dTimeBefore = m_dTimeAfter;
 		}
 
+		// 根據最大等速度值 (m_dRPM) 判斷增加的角度為順或逆時針增加
 		if (m_dRPM < 0)
 		{
 			m_dLeftAng += RadToAng(m_dAddAng);
 			m_dRightAng += RadToAng(m_dAddAng);
-
 			m_dLeftAng = LimitTo360(m_dLeftAng);
 			m_dRightAng = LimitTo360(m_dRightAng);
 		}
@@ -1099,17 +1029,9 @@ void CMFClinkagetestDlg::OnTimer(UINT_PTR nIDEvent)
 		{
 			m_dLeftAng -= RadToAng(m_dAddAng);
 			m_dRightAng -= RadToAng(m_dAddAng);
-
 			m_dLeftAng = LimitTo360(m_dLeftAng);
 			m_dRightAng = LimitTo360(m_dRightAng);
 		}
-
-		//m_dLeftAng -= RadToAng(m_dAddAng);
-		//m_dRightAng -= RadToAng(m_dAddAng);
-
-		//m_dLeftAng = LimitTo360(m_dLeftAng);
-		//m_dRightAng = LimitTo360(m_dRightAng);
-
 	}
 	else
 	{
@@ -1120,18 +1042,17 @@ void CMFClinkagetestDlg::OnTimer(UINT_PTR nIDEvent)
 		double seconds = static_cast<double>(dwStopElapsedTime) / 1000.0;
 		m_dTimeAfter = seconds;
 
+		// 判斷是否還在減速度運動
 		if (m_dTimeAfter <= m_dDecTotalTime)
 		{
-
-
-
+			// 計算減少的旋轉角度
 			m_dReduceAng = RpmToAngVelocity(m_dStopNowRPM) * (m_dTimeAfter - m_dTimeBefore)
 				- (0.5 * RpmToAngVelocity(m_dAngDec) * (pow(m_dTimeAfter, 2) - pow(m_dTimeBefore, 2)));
 			
-			
-			//m_dNowRPM = m_dRPM -  m_dAngDec * m_dTimeAfter;
+			// 計算速度
 			m_dNowRPM = m_dStopNowRPM - m_dAngDec * m_dTimeAfter;
 
+			// 判斷順逆時針旋轉 (m_dRPM < 0 : 順時針，m_dRPM > 0 : 逆時針)
 			if (m_dRPM < 0)
 			{
 				m_strNowRPM.Format(_T(" % .7f"), -m_dNowRPM);
@@ -1140,17 +1061,12 @@ void CMFClinkagetestDlg::OnTimer(UINT_PTR nIDEvent)
 			{
 				m_strNowRPM.Format(_T(" % .7f"), m_dNowRPM);
 			}
-
-			/*m_strNowRPM.Format(_T(" % .7f"), m_dNowRPM);*/
 			
+			// 將原本下一秒時間更新為前一秒
 			m_dTimeBefore = m_dTimeAfter;
-
-
-			/*m_dStartNowVelocity = m_dNowRPM;*/
-
 		}
 		else if ((m_dTimeBefore <= m_dDecTotalTime) && (m_dTimeAfter > m_dDecTotalTime))
-		{
+		{	// 
 
 			m_dReduceAng = pow((m_dDecTotalTime - m_dTimeBefore), 2) * RpmToAngVelocity(m_dAngDec) * 0.5;
 			

@@ -48,7 +48,6 @@ protected:
 
 
 public:
-	afx_msg void OnStnClickedStaticPaint();
 	afx_msg void OnBnClickedButtonStart();
 	afx_msg void OnBnClickedButtonStop();
 
