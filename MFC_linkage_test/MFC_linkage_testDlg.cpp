@@ -187,6 +187,12 @@ void CMFClinkagetestDlg::OnSysCommand(UINT nID, LPARAM lParam)
 
 ////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////
+// double 四捨五入轉型 int
+int RoundDouble(double dValue)
+{
+	return static_cast<int>(dValue + 0.5);
+}
+
 // 給矩形中心點，傳回矩形 x1,y1,x2,y2
 CRect RectCenterToX1Y1X2Y2 (CPoint ptRectCenterPoint, double dRectLen, double dRectW)
 {
@@ -194,7 +200,7 @@ CRect RectCenterToX1Y1X2Y2 (CPoint ptRectCenterPoint, double dRectLen, double dR
 	double dY1 = ptRectCenterPoint.y - dRectLen * 0.5;
 	double dX2 = ptRectCenterPoint.x + dRectW * 0.5;
 	double dY2 = ptRectCenterPoint.y + dRectLen * 0.5;
-	CRect rect(CPoint(dX1, dY1), CPoint(dX2, dY2));
+	CRect rect(CPoint(RoundDouble(dX1), RoundDouble(dY1)), CPoint(RoundDouble(dX2), RoundDouble(dY2)));
 
 	return rect;
 }
@@ -203,7 +209,7 @@ CRect RectCenterToX1Y1X2Y2 (CPoint ptRectCenterPoint, double dRectLen, double dR
 CRect LowerLeftRect (CRect rectCenter, double dLeftW, double iPaintH)
 {
 	double dLowerRectH = rectCenter.bottom;
-	CRect rectLower(CPoint(0, dLowerRectH), CPoint(dLeftW, iPaintH));
+	CRect rectLower(CPoint(0, RoundDouble(dLowerRectH)), CPoint(RoundDouble(dLeftW), RoundDouble(iPaintH)));
 
 	return rectLower;
 }
@@ -212,7 +218,7 @@ CRect LowerLeftRect (CRect rectCenter, double dLeftW, double iPaintH)
 CRect LowerRightRect (CRect rectCenter, double dRightW, double iPaintH)
 {
 	double dLowerRectH = rectCenter.bottom;
-	CRect rectLower(CPoint(dRightW, dLowerRectH), CPoint(dRightW * 2, iPaintH));
+	CRect rectLower(CPoint(RoundDouble(dRightW), RoundDouble(dLowerRectH)), CPoint(RoundDouble(dRightW) * 2, RoundDouble(iPaintH)));
 
 	return rectLower;
 }
@@ -220,8 +226,8 @@ CRect LowerRightRect (CRect rectCenter, double dRightW, double iPaintH)
 // 傳回畫布中心圓軸的內切矩形
 CRect BearingPos (double dRadius, double dBearingX, double dBearingY, int iPaintW, int iPaintH)
 {
-	CPoint ptX1Y1((iPaintW * 0.5 + dBearingX) - dRadius, (iPaintH - dBearingY) - dRadius);
-	CPoint ptX2Y2((iPaintW * 0.5 + dBearingX) + dRadius, (iPaintH - dBearingY) + dRadius);
+	CPoint ptX1Y1(RoundDouble((iPaintW * 0.5 + dBearingX) - dRadius), RoundDouble((iPaintH - dBearingY) - dRadius));
+	CPoint ptX2Y2(RoundDouble((iPaintW * 0.5 + dBearingX) + dRadius), RoundDouble((iPaintH - dBearingY) + dRadius));
 	CRect rectBearingPos(ptX1Y1, ptX2Y2);
 
 	return rectBearingPos;
@@ -231,8 +237,8 @@ CRect BearingPos (double dRadius, double dBearingX, double dBearingY, int iPaint
 // 傳回圓軸圓心座標
 CPoint BearingCenter (CRect rectBearing)
 {
-	int iCenterX = (int)((rectBearing.left + rectBearing.right) * 0.5);
-	int iCenterY = (rectBearing.top + rectBearing.bottom) * 0.5;
+	int iCenterX = RoundDouble((rectBearing.left + rectBearing.right) * 0.5);
+	int iCenterY = RoundDouble((rectBearing.top + rectBearing.bottom) * 0.5);
 	CPoint ptCenter(iCenterX, iCenterY);
 
 	return ptCenter;
@@ -282,7 +288,7 @@ CPoint LeftBearingCenter (double dLeftLeverRadius, double dLeftAng, CPoint ptBea
 	double dLeftRad = AngToRad(dLeftAng);
 	double dPosX = (ptBearingCenter.x - dLeftLeverRadius * cos(dLeftRad));
 	double dPosY = (ptBearingCenter.y - dLeftLeverRadius * sin(dLeftRad));
-	CPoint ptLeftBearing(dPosX, dPosY);
+	CPoint ptLeftBearing(RoundDouble(dPosX), RoundDouble(dPosY));
 
 	return ptLeftBearing;
 }
@@ -294,7 +300,7 @@ CPoint RightBearingCenter (double dRightLeverRadius, double dRightAng, CPoint pt
 	double dRightRad = AngToRad(dRightAng);
 	double dPosX = (ptBearingCenter.x - dRightLeverRadius * cos(dRightRad));
 	double dPosY = (ptBearingCenter.y - dRightLeverRadius * sin(dRightRad));
-	CPoint ptRightBearing(dPosX, dPosY);
+	CPoint ptRightBearing(RoundDouble(dPosX), RoundDouble(dPosY));
 
 	return ptRightBearing;
 }
@@ -305,7 +311,7 @@ CPoint LeftRectCenter (double dLeftLeverLen, double dLeftRectH, double dLeftRect
 {
 	double dLeftRectCenterH = iPaintH - (dLeftRectH + dLeftRectLen);
 	double dLeftRectCenterPosX = (ptLeftBearingCenter.x - sqrt(pow(dLeftLeverLen, 2) - pow((dLeftRectCenterH - ptLeftBearingCenter.y), 2)));
-	CPoint ptLeftRectCenterPos(dLeftRectCenterPosX, dLeftRectCenterH);
+	CPoint ptLeftRectCenterPos(RoundDouble(dLeftRectCenterPosX), RoundDouble(dLeftRectCenterH));
 
 	return ptLeftRectCenterPos;
 }
@@ -316,10 +322,9 @@ CPoint RightRectCenter (double dRightLeverLen, double dRightRectH, double dRight
 {
 	double dRightRectCenterH = iPaintH - (dRightRectH + dRightRectLen);
 	double dRightRectCenterPosX = (ptRightBearingCenter.x + sqrt(pow(dRightLeverLen, 2) - pow((dRightRectCenterH - ptRightBearingCenter.y), 2))); 
-	CPoint ptRightRectCenterPos(dRightRectCenterPosX, dRightRectCenterH);
+	CPoint ptRightRectCenterPos(RoundDouble(dRightRectCenterPosX), RoundDouble(dRightRectCenterH));
 
 	return ptRightRectCenterPos;
-
 }
 
 // 開啟所有輸入框
@@ -1066,24 +1071,34 @@ void CMFClinkagetestDlg::OnTimer(UINT_PTR nIDEvent)
 			m_dTimeBefore = m_dTimeAfter;
 		}
 		else if ((m_dTimeBefore <= m_dDecTotalTime) && (m_dTimeAfter > m_dDecTotalTime))
-		{	// 
-
+		{	// 當下一秒減速低過速度0時角度的計算
+			// 計算減少的旋轉角度
 			m_dReduceAng = pow((m_dDecTotalTime - m_dTimeBefore), 2) * RpmToAngVelocity(m_dAngDec) * 0.5;
 			
+			// 當下速度為 0.0
 			m_dNowRPM = 0.0;
 			m_strNowRPM.Format(_T(" % .7f"), m_dNowRPM);
+
+			// 將原本下一秒時間更新為前一秒
 			m_dTimeBefore = m_dTimeAfter;
+
+			// 將第一次按下 Start 條件設為 FALSE
 			g_bFirstStart = FALSE;
 		}
 		else
-		{
+		{	// 速度為 0.0 
 			m_dNowRPM = 0.0;
 			m_strNowRPM.Format(_T(" % .7f"), m_dNowRPM);
+
+			// 將原本下一秒時間更新為前一秒
 			m_dTimeBefore = m_dTimeAfter;
+
+			// 將第一次按下 Start 條件設為 FALSE
 			g_bFirstStart = FALSE;
 
 		}
 
+		// 根據最大等速度值 (m_dRPM) 判斷減少的角度為順或逆時針減少
 		if (m_dRPM < 0)
 		{
 			m_dLeftAng += RadToAng(m_dReduceAng);
@@ -1100,46 +1115,19 @@ void CMFClinkagetestDlg::OnTimer(UINT_PTR nIDEvent)
 			m_dLeftAng = LimitTo360(m_dLeftAng);
 			m_dRightAng = LimitTo360(m_dRightAng);
 		}
-
-		//m_dLeftAng -= RadToAng(m_dReduceAng);
-		//m_dRightAng -= RadToAng(m_dReduceAng);
-
-		//m_dLeftAng = LimitTo360(m_dLeftAng);
-		//m_dRightAng = LimitTo360(m_dRightAng);
-
 	}
-
-
-
+	
 	m_staticNowRPM.SetWindowText(m_strNowRPM);
 
+	// 當速度為零時初始化前一秒記錄的時間並且重新計時
 	if (m_dNowRPM == 0)
 	{
-
-		m_editLeftRectLever.EnableWindow(TRUE);
-		m_editLeftRectH.EnableWindow(TRUE);
-		m_editLeftRectLen.EnableWindow(TRUE);
-		m_editLeftRectW.EnableWindow(TRUE);
-		m_editRightRectLever.EnableWindow(TRUE);
-		m_editRightRectH.EnableWindow(TRUE);
-		m_editRightRectLen.EnableWindow(TRUE);
-		m_editRightRectW.EnableWindow(TRUE);
-		m_editBearingRadius.EnableWindow(TRUE);
-		m_editBearingPosX.EnableWindow(TRUE);
-		m_editBearingPosY.EnableWindow(TRUE);
-		m_editRightLeverRadius.EnableWindow(TRUE);
-		m_editRightAng.EnableWindow(TRUE);
-		m_editLeftLeverRadius.EnableWindow(TRUE);
-		m_editLeftAng.EnableWindow(TRUE);
-		m_editRPM.EnableWindow(TRUE);
-		m_editAngAcc.EnableWindow(TRUE);
-		m_editAngDec.EnableWindow(TRUE);
+		OpenAllInputEdit();
 		m_dTimeBefore = 0;
 		KillTimer(1);
 	}
 
-
-
+	// 更新繪圖區
 	CRect rectWindow;
 	GetDlgItem(IDC_STATIC_PAINT)->GetWindowRect(&rectWindow);
 	GetDlgItem(IDC_STATIC_PAINT)->GetParent()->ScreenToClient(rectWindow);
