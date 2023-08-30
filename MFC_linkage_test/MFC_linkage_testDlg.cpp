@@ -742,6 +742,7 @@ void CMFClinkagetestDlg::OnBnClickedButtonStart()
 		m_dAngAcc = _ttof(m_strAngAcc);
 		m_dAngDec = _ttof(m_strAngDec);
 
+		
 		/*g_bFirstStart = FALSE;*/
 	}
 
@@ -793,15 +794,29 @@ void CMFClinkagetestDlg::OnBnClickedButtonStart()
 	double dBearingTopState = iHeightPaintRegion - (m_dBearingPosY + m_dBearingRadius);
 
 
-	// 計算加速度區總面積
-	m_dAcceTotalAng = 0.5 * (pow(RpmToAngVelocity(m_dRPM), 2) / RpmToAngVelocity(m_dAngAcc));
+	//// 計算加速度區總面積
+	//m_dAcceTotalAng = 0.5 * (pow(RpmToAngVelocity(m_dRPM), 2) / RpmToAngVelocity(m_dAngAcc));
+	//// 計算加速度區歷時時間長
+	//m_dAcceTotalTime = (2 * m_dAcceTotalAng) / RpmToAngVelocity(m_dRPM);
 
 
-	// 計算加速度區歷時時間長
-	m_dAcceTotalTime = (2 * m_dAcceTotalAng) / RpmToAngVelocity(m_dRPM);
+	if ((g_bStopState == TRUE) && (m_dNowRPM != 0))
+	{
+		// 計算加速度總面積
+		m_dAcceTotalAng = 0.5 * (pow(RpmToAngVelocity(m_dRPM) - RpmToAngVelocity(m_dNowRPM), 2) / RpmToAngVelocity(m_dAngAcc));
+		// 計算加速度區歷時時間長
+		m_dAcceTotalTime = (RpmToAngVelocity(m_dRPM) - RpmToAngVelocity(m_dNowRPM)) / RpmToAngVelocity(m_dAngAcc);
+	}
+	else
+	{
+		// 計算加速度區總面積
+		m_dAcceTotalAng = 0.5 * (pow(RpmToAngVelocity(m_dRPM), 2) / RpmToAngVelocity(m_dAngAcc));
+		// 計算加速度區歷時時間長
+		m_dAcceTotalTime = (2 * m_dAcceTotalAng) / RpmToAngVelocity(m_dRPM);
+	}
 
-
-
+	// 初始化前一秒絕對時間
+	m_dTimeBefore = 0;
 
 	// 設定一個時間間隔，這裡設定為 42 毫秒 (0.042 s.)
 	UINT nInterval = 42;
@@ -811,27 +826,32 @@ void CMFClinkagetestDlg::OnBnClickedButtonStart()
 	// 第三個參數 NULL      : 使用系統默認的回調函數 (OnTime) 
 	if (g_bFirstStart == TRUE)
 	{
+		// 記錄初速
+		m_dStartNowRPM = 0.0;
+
 		// 記錄按下 START 開始的時間
 		g_dwStartTime = timeGetTime();
 		SetTimer(1, nInterval, NULL);
-		m_dStartNowVelocity = 0.0;
 	}
 	else
 	{
 		if (m_dNowRPM != 0)
 		{
+			// 記錄初速
+			m_dStartNowRPM = m_dNowRPM;
+
 			g_dwStartTime = timeGetTime();
 			g_bStopState = FALSE;
 			/*m_dTimeBefore = g_dwStartTime;*/
-			m_dStartNowVelocity = m_dNowRPM;
 		}
 		else
 		{
+			// 記錄初速
+			m_dStartNowRPM = 0.0;
 			//KillTimer(1);
 			g_dwStartTime = timeGetTime();
 			//m_dTimeBefore = g_dwStartTime;
 			SetTimer(1, nInterval, NULL);
-			m_dStartNowVelocity = 0.0;
 		}
 	
 	}
@@ -960,7 +980,7 @@ void CMFClinkagetestDlg::OnBnClickedButtonStop()
 	g_bStopState = TRUE;
 	if (m_dTimeAfter >= m_dAcceTotalTime)
 	{
-		m_dStopNowRPM = m_dRPM;
+		m_dStopNowRPM = m_dNowRPM;
 	}
 	else
 	{
@@ -1018,8 +1038,13 @@ void CMFClinkagetestDlg::OnTimer(UINT_PTR nIDEvent)
 		if (m_dTimeAfter <= m_dAcceTotalTime)
 		{
 
-			m_dAddAng = 0.5 * RpmToAngVelocity(m_dAngAcc) * (pow(m_dTimeAfter, 2) - pow(m_dTimeBefore, 2));
-			m_dNowRPM = m_dAngAcc * m_dTimeAfter;
+			//m_dAddAng = 0.5 * RpmToAngVelocity(m_dAngAcc) * (pow(m_dTimeAfter, 2) - pow(m_dTimeBefore, 2));
+			//m_dNowRPM = m_dAngAcc * m_dTimeAfter;
+
+			m_dAddAng = 0.5 * RpmToAngVelocity(m_dAngAcc) * (pow(m_dTimeAfter, 2) - pow(m_dTimeBefore, 2))
+				+ RpmToAngVelocity(m_dStartNowRPM) * (m_dTimeAfter - m_dTimeBefore);
+
+			m_dNowRPM = m_dAngAcc * m_dTimeAfter + m_dStartNowRPM;
 
 			
 			m_strNowRPM.Format(_T(" % .7f"), m_dNowRPM);
