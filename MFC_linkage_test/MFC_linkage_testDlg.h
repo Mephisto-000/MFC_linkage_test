@@ -52,10 +52,6 @@ public:
 	afx_msg void OnBnClickedButtonStart();
 	afx_msg void OnBnClickedButtonStop();
 
-	//CRect UppLeftRectPos(double dLeftRectLen, double dLeftRectH, double dLeftRectW, int iPaintW, int iPaintH);
-	//CRect UppRightRectPos(double dRightRectLen, double dRightRectH, double dRightRectW, int iPaintW, int iPaintH);
-	//CRect LowLeftRectPos(double dLeftRectLen, double dLeftRectH, double dLowerRectW, int iPaintW, int iPaintH);
-	//CRect LowRightRectPos(double dRightRectLen, double dRightRectH, double dLowerRectW, int iPaintW, int iPaintH);
 
 	//////////////////////////////////// 輸入的資料變數 ////////////////////////////////////
 	//左側滑塊區

@@ -188,68 +188,6 @@ void CMFClinkagetestDlg::OnSysCommand(UINT nID, LPARAM lParam)
 }
 
 
-////////////////////////////////////////////////////////////////////////////////////////
-//判斷左右兩邊方塊是否超出畫部區域
-//當超出畫部區域時，傳回最大方塊高度的限制設定
-//CRect UppLeftRectPos (double dLeftRectLen, double dLeftRectH, double dLeftRectW, int iPaintW, int iPaintH)
-//{
-//	if ((dLeftRectLen + dLeftRectH) > iPaintH)
-//	{
-//		CRect rectLeftUpp(0, 0, dLeftRectW, dLeftRectLen);
-//		return  rectLeftUpp;
-//	}
-//	else
-//	{
-//		CRect rectLeftUpp(0, iPaintH - (dLeftRectLen + dLeftRectH), dLeftRectW, iPaintH - dLeftRectH);
-//		return rectLeftUpp;
-//	}
-//}
-//
-//
-//CRect UppRightRectPos (double dRightRectLen, double dRightRectH, double dRightRectW, int iPaintW, int iPaintH)
-//{
-//	if ((dRightRectLen + dRightRectH) > iPaintH)
-//	{
-//		CRect rectRightUpp(iPaintW - dRightRectW, 0, iPaintW, dRightRectLen);
-//		return rectRightUpp;
-//	}
-//	else
-//	{
-//		CRect rectRightUpp(iPaintW - dRightRectW, iPaintH - (dRightRectLen + dRightRectH), iPaintW, iPaintH - dRightRectH);
-//		return rectRightUpp;
-//	}
-//}
-//
-//
-//CRect LowLeftRectPos (double dLeftRectLen, double dLeftRectH, double dLowerRectW, int iPaintW, int iPaintH)
-//{
-//	if ((dLeftRectLen + dLeftRectH) > iPaintH)
-//	{
-//		CRect rectLeftLow(0, dLeftRectLen, dLowerRectW, iPaintH);
-//		return rectLeftLow;
-//	}
-//	else
-//	{
-//		CRect rectLeftLow(0, iPaintH - dLeftRectH, dLowerRectW, iPaintH);
-//		return rectLeftLow;
-//	}
-//}
-//
-//
-//CRect LowRightRectPos (double dRightRectLen, double dRightRectH, double dLowerRectW, int iPaintW, int iPaintH)
-//{
-//	if ((dRightRectLen + dRightRectH) > iPaintH)
-//	{
-//		CRect rectRightLow(dLowerRectW, dRightRectLen, iPaintW, iPaintH);
-//		return rectRightLow;
-//	}
-//	else
-//	{
-//		CRect rectRightLow(dLowerRectW, iPaintH - dRightRectH, iPaintW, iPaintH);
-//		return rectRightLow;
-//	}
-//}
-
 
 // 給矩形中心點，傳回矩形 x1,y1,x2,y2
 CRect RectCenterToX1Y1X2Y2(CPoint ptRectCenterPoint, double dRectLen, double dRectW)
@@ -863,8 +801,6 @@ void CMFClinkagetestDlg::OnBnClickedButtonStart()
 	m_dAcceTotalTime = (2 * m_dAcceTotalAng) / RpmToAngVelocity(m_dRPM);
 
 
-	//// 記錄按下 START 開始的時間
-	//g_dwStartTime = timeGetTime();
 
 
 	// 設定一個時間間隔，這裡設定為 42 毫秒 (0.042 s.)
@@ -900,7 +836,6 @@ void CMFClinkagetestDlg::OnBnClickedButtonStart()
 	
 	}
 
-	//SetTimer(1, nInterval, NULL);
 	g_bFirstStart = FALSE;
 
 	if ((dLeftClientMaxLenX >= dLeftMaxLenX) || (dRightClientMaxLenX >= dRightMaxLenX))
