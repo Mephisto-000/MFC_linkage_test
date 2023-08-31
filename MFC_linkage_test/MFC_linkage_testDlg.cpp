@@ -796,7 +796,7 @@ void CMFClinkagetestDlg::OnBnClickedButtonStart()
 	m_dTimeBefore = 0;
 
 	// 假設一個時間間隔，這裡設定為 50 毫秒 (0.05 s.) 等於 20 fps
-	// 當圖片更新率呈現 16 fps 以上時，人眼就會視其為動畫，我這裡假設為 20 fps
+	// 當圖片更新率呈現 12 fps 以上時，人眼就會視其為動畫，我這裡假設為 20 fps
 	UINT nInterval = 50;
 	
 	// 判斷是否為第一次按下 Start
