@@ -13,9 +13,9 @@
 #endif
 
 
-bool g_bStartState = FALSE;            // 判斷是否按下 START
-bool g_bFirstStart = TRUE;             // 判斷是否為第一次按下 START
-bool g_bStopState = FALSE;             // 判斷是否按下 Stop
+BOOL g_bStartState = FALSE;            // 判斷是否按下 START
+BOOL g_bFirstStart = TRUE;             // 判斷是否為第一次按下 START
+BOOL g_bStopState = FALSE;             // 判斷是否按下 Stop
 DWORD g_dwStartTime;                   // 用於儲存 timeGetTime 開始的時間
 
 
@@ -75,6 +75,45 @@ CMFClinkagetestDlg::CMFClinkagetestDlg(CWnd* pParent /*=nullptr*/)
 	, m_strRPM(_T("100"))
 	, m_strAngAcc(_T("10"))
 	, m_strAngDec(_T("10"))
+	, m_dLeftRectLeverLen(400.0)                     
+	, m_dLeftRectH(100.0)
+	, m_dLeftRectLen(60.0)      						
+	, m_dLeftRectW(200.0)
+	, m_dRightRectLeverLen(500.0)                        
+	, m_dRightRectH(150.0)    							
+	, m_dRightRectLen(60.0) 
+	, m_dRightRectW(200.0)
+	, m_dBearingRadius(100.0)
+	, m_dBearingPosX(0.0)      						
+	, m_dBearingPosY(300.0)      						
+	, m_dRightLeverRadius(70.0)     					
+	, m_dRightAng(-90.0)     							
+	, m_dLeftLeverRadius(70.0)      					
+	, m_dLeftAng(90.0)      							
+	, m_dRPM(100.0)      								
+	, m_dAngAcc(10.0)     							
+	, m_dAngDec(10.0)   
+	, m_dLowerRectW(0.0)                        
+	, m_iLowerRectBoarderW(1)                    
+	, m_iUpperRectBoarderW(1)					
+	, m_iBearingBoarderW(1)						
+	, m_ptLeftUpperCenterPos((0, 0))		       
+	, m_ptRightUpperCenterPos((0, 0))			
+	, m_ptBearingCenterPos((0, 0))				
+	, m_dAcceTotalAng(0.0)                      
+	, m_dAcceTotalTime(0.0)                     
+	, m_dTimeAfter(0.0)							
+	, m_dTimeBefore(0.0)                         
+	, m_dAddAng(0.0)								
+	, m_dMaxAddAng(0.0)                                                
+	, m_dStopNowRPM(0.0)						
+	, m_dStartNowRPM(0.0)                        
+	, m_dDecTotalAng(0.0)                        
+	, m_dDecTotalTime(0.0)						
+	, m_dReduceAng(0.0)                          
+	, m_dwStopTimeRecord(0)                      
+	, m_dNowRPM(0.0)                            
+	, m_strNowRPM(_T(""))                    
 {
 	
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
@@ -407,49 +446,49 @@ void CMFClinkagetestDlg::OnPaint()
 	else
 	{
 		////////////////////////////////////////////////////////////////////////////////////////
-		m_editLeftRectLever.GetWindowText(m_strLeftRectLeverLen);
-		m_editLeftRectH.GetWindowText(m_strLeftRectH);
-		m_editLeftRectLen.GetWindowText(m_strLeftRectLen);
-		m_editLeftRectW.GetWindowText(m_strLeftRectW);
-		m_editRightRectLever.GetWindowText(m_strRightRectLeverLen);
-		m_editRightRectH.GetWindowText(m_strRightRectH);
-		m_editRightRectLen.GetWindowText(m_strRightRectLen);
-		m_editRightRectW.GetWindowText(m_strRightRectW);
-		m_editBearingRadius.GetWindowText(m_strBearingRadius);
-		m_editBearingPosX.GetWindowText(m_strBearingPosX);
-		m_editBearingPosY.GetWindowText(m_strBearingPosY);
-		m_editLeftLeverRadius.GetWindowText(m_strLeftLeverRadius);
-		m_editRightLeverRadius.GetWindowText(m_strRightLeverRadius);
-		m_editRPM.GetWindowText(m_strRPM);
-		m_editAngAcc.GetWindowText(m_strAngAcc);
-		m_editAngDec.GetWindowText(m_strAngDec);
+		//m_editLeftRectLever.GetWindowText(m_strLeftRectLeverLen);
+		//m_editLeftRectH.GetWindowText(m_strLeftRectH);
+		//m_editLeftRectLen.GetWindowText(m_strLeftRectLen);
+		//m_editLeftRectW.GetWindowText(m_strLeftRectW);
+		//m_editRightRectLever.GetWindowText(m_strRightRectLeverLen);
+		//m_editRightRectH.GetWindowText(m_strRightRectH);
+		//m_editRightRectLen.GetWindowText(m_strRightRectLen);
+		//m_editRightRectW.GetWindowText(m_strRightRectW);
+		//m_editBearingRadius.GetWindowText(m_strBearingRadius);
+		//m_editBearingPosX.GetWindowText(m_strBearingPosX);
+		//m_editBearingPosY.GetWindowText(m_strBearingPosY);
+		//m_editLeftLeverRadius.GetWindowText(m_strLeftLeverRadius);
+		//m_editRightLeverRadius.GetWindowText(m_strRightLeverRadius);
+		//m_editRPM.GetWindowText(m_strRPM);
+		//m_editAngAcc.GetWindowText(m_strAngAcc);
+		//m_editAngDec.GetWindowText(m_strAngDec);
 
 
-		m_dLeftRectLeverLen = _ttof(m_strLeftRectLeverLen);
-		m_dLeftRectH = _ttof(m_strLeftRectH);
-		m_dLeftRectLen = _ttof(m_strLeftRectLen);
-		m_dLeftRectW = _ttof(m_strLeftRectW);
-		m_dRightRectLeverLen = _ttof(m_strRightRectLeverLen);
-		m_dRightRectH = _ttof(m_strRightRectH);
-		m_dRightRectLen = _ttof(m_strRightRectLen);
-		m_dRightRectW = _ttof(m_strRightRectW);
-		m_dBearingRadius = _ttof(m_strBearingRadius);
-		m_dBearingPosX = _ttof(m_strBearingPosX);
-		m_dBearingPosY = _ttof(m_strBearingPosY);
-		m_dLeftLeverRadius = _ttof(m_strLeftLeverRadius);
-		m_dRightLeverRadius = _ttof(m_strRightLeverRadius);
-		m_dRPM = _ttof(m_strRPM);
-		m_dAngAcc = _ttof(m_strAngAcc);
-		m_dAngDec = _ttof(m_strAngDec);
+		//m_dLeftRectLeverLen = _ttof(m_strLeftRectLeverLen);
+		//m_dLeftRectH = _ttof(m_strLeftRectH);
+		//m_dLeftRectLen = _ttof(m_strLeftRectLen);
+		//m_dLeftRectW = _ttof(m_strLeftRectW);
+		//m_dRightRectLeverLen = _ttof(m_strRightRectLeverLen);
+		//m_dRightRectH = _ttof(m_strRightRectH);
+		//m_dRightRectLen = _ttof(m_strRightRectLen);
+		//m_dRightRectW = _ttof(m_strRightRectW);
+		//m_dBearingRadius = _ttof(m_strBearingRadius);
+		//m_dBearingPosX = _ttof(m_strBearingPosX);
+		//m_dBearingPosY = _ttof(m_strBearingPosY);
+		//m_dLeftLeverRadius = _ttof(m_strLeftLeverRadius);
+		//m_dRightLeverRadius = _ttof(m_strRightLeverRadius);
+		//m_dRPM = _ttof(m_strRPM);
+		//m_dAngAcc = _ttof(m_strAngAcc);
+		//m_dAngDec = _ttof(m_strAngDec);
 
-		if (g_bStartState == FALSE)
-		{
-			m_editLeftAng.GetWindowText(m_strLeftAng);
-			m_editRightAng.GetWindowText(m_strRightAng);
+		//if (g_bStartState == FALSE)
+		//{
+		//	m_editLeftAng.GetWindowText(m_strLeftAng);
+		//	m_editRightAng.GetWindowText(m_strRightAng);
 
-			m_dLeftAng = _ttof(m_strLeftAng);
-			m_dRightAng = _ttof(m_strRightAng);
-		}
+		//	m_dLeftAng = _ttof(m_strLeftAng);
+		//	m_dRightAng = _ttof(m_strRightAng);
+		//}
 
 		////////////////////////////////////////////////////////////////////////////////////////
 
@@ -462,114 +501,19 @@ void CMFClinkagetestDlg::OnPaint()
 		int iWidthPaintRegion = rectPaintRegion.Width();
 		int iHeightPaintRegion = rectPaintRegion.Height();
 
-		// 計算兩邊下方矩形的固定寬度
-		m_dLowerRectW = iWidthPaintRegion * 0.5;
-
-		// 取得上方矩形畫布區域的 dc 並將內部繪成灰色(m_PaintRegionBackgroundColor)
-		CPaintDC dc(pPaintRegion);
-		CBrush brushPaintRegion;
-		CBrush* pOldBrushPaintRegion = dc.SelectObject(&brushPaintRegion);
-		brushPaintRegion.CreateSolidBrush(m_PaintRegionBackgroundColor);
-		dc.Rectangle(rectPaintRegion);
-		dc.FillRect(&rectPaintRegion, &brushPaintRegion);
-		dc.SelectObject(pOldBrushPaintRegion);
-
-		// 定義邊界顏色並繪製
-		CPen penLowerRectBoarder(PS_SOLID, m_iLowerRectBoarderW * 4, RGB(0, 0, 0));
-		CPen penUpperRectBoarder(PS_SOLID, m_iUpperRectBoarderW*2, RGB(0, 0, 0));
-		CPen penBearingBoarder(PS_SOLID, m_iBearingBoarderW * 2, RGB(0, 0, 0));
-		
-		// 定義兩桿線段
-		CPen penLever(PS_SOLID, 4, RGB(0, 0, 0));
-
-		// 下方矩形顏色
-		CBrush brushLowerRect;
-		brushLowerRect.CreateSolidBrush(RGB(139, 69, 19));
-
-		// 上方矩形顏色
-		CBrush brushUpperRect;
-		brushUpperRect.CreateSolidBrush(RGB(255, 255, 255));
-
-		// 中心主轉軸顏色
-		CBrush brushMainBearing;
-		brushMainBearing.CreateSolidBrush(RGB(255, 0, 0));
-
-		// 將黑色邊界 UpperRectBoarderPen 選入 dc
-		CPen* pOldPenUpperRectBoarder = dc.SelectObject(&penUpperRectBoarder);
-		
-		// 將白色內部  UpperRectBrush 選入 dc
-		CBrush* pOldBrushUpperRect = dc.SelectObject(&brushUpperRect);
-
-		// 中心圓軸內切矩形
-		CRect rectBearingRect = BearingPos(m_dBearingRadius, m_dBearingPosX, m_dBearingPosY, iWidthPaintRegion, iHeightPaintRegion);
-
-		// 中心圓軸圓心
-		CPoint ptBearingCenterPos = BearingCenter(rectBearingRect);
-
-		// 計算左右滑塊中心座標
-		CPoint ptLeftBearingCenter = LeftBearingCenter(m_dLeftLeverRadius, m_dLeftAng, ptBearingCenterPos);
-		CPoint ptLeftUpperCenter = LeftRectCenter(m_dLeftRectLeverLen, m_dLeftRectH, m_dLeftRectLen, ptLeftBearingCenter, ptBearingCenterPos, iHeightPaintRegion);
-		CPoint ptRightBearingCenter = RightBearingCenter(m_dRightLeverRadius, m_dRightAng, ptBearingCenterPos);
-		CPoint ptRightUpperCenter = RightRectCenter(m_dRightRectLeverLen, m_dRightRectH, m_dRightRectLen, ptRightBearingCenter, ptBearingCenterPos, iHeightPaintRegion);
-
-		// 定義左右上方滑塊
-		CRect rectLeftUpper = RectCenterToX1Y1X2Y2(ptLeftUpperCenter, m_dLeftRectLen, m_dLeftRectW);
-		dc.Rectangle(rectLeftUpper);
-		dc.FillRect(&rectLeftUpper, &brushUpperRect);
-		CRect rectRightUpper = RectCenterToX1Y1X2Y2(ptRightUpperCenter, m_dRightRectLen, m_dRightRectW);
-		dc.Rectangle(rectRightUpper);
-		dc.FillRect(&rectRightUpper, &brushUpperRect);
-		dc.SelectObject(pOldPenUpperRectBoarder);
-		dc.SelectObject(pOldBrushUpperRect);
-
-		// 將黑色邊界  LowerRectBoarderPen 選入 dc
-		CPen* pOldPenLowerRectBoarder = dc.SelectObject(&penLowerRectBoarder);
-
-		// 將棕色內部  LowerRectBrush 選入 dc
-		CBrush* pOldBrushLowerRect = dc.SelectObject(&brushLowerRect);
-
-		// 定義左右下方方塊
-		CRect rectLeftLower = LowerLeftRect(rectLeftUpper, m_dLowerRectW, iHeightPaintRegion);
-		dc.Rectangle(rectLeftLower);
-		dc.FillRect(&rectLeftLower, &brushLowerRect);
-		CRect rectRightLower = LowerRightRect(rectRightUpper, m_dLowerRectW, iHeightPaintRegion);
-		dc.Rectangle(rectRightLower);
-		dc.FillRect(&rectRightLower, &brushLowerRect);
-		dc.SelectObject(pOldPenLowerRectBoarder);
-		dc.SelectObject(pOldBrushLowerRect);
-
-		// 中心圓軸繪圖
-		CPen* pOldPenBearingBoarder = dc.SelectObject(&penBearingBoarder);
-		CBrush* pOldBrushMainBearing = dc.SelectObject(&brushMainBearing);
-		dc.Ellipse(rectBearingRect);
-		dc.SelectObject(pOldPenBearingBoarder);
-		dc.SelectObject(pOldBrushMainBearing);
-
-		// 連桿繪圖
-		CPen* pOldPenLever = dc.SelectObject(&penLever);
-		dc.SetPixel(ptLeftBearingCenter, RGB(0, 0, 0));
-		dc.MoveTo(ptLeftBearingCenter);
-		dc.LineTo(ptLeftUpperCenter);
-		dc.SetPixel(ptRightBearingCenter, RGB(0, 0, 0));
-		dc.MoveTo(ptRightBearingCenter);
-		dc.LineTo(ptRightUpperCenter);
-		dc.SelectObject(pOldPenLever);
-
 		// 雙緩衝內存畫布設置
 		CPaintDC dcO(pPaintRegion);
 		CDC memDC;
 		CBitmap memBitmap;
-		CRect rect;
-		GetClientRect(&rect);
 		memDC.CreateCompatibleDC(&dcO);
-		memBitmap.CreateCompatibleBitmap(&dcO, rect.Width(), rect.Height());
+		memBitmap.CreateCompatibleBitmap(&dcO, rectPaintRegion.Width(), rectPaintRegion.Height());
 		memDC.SelectObject(&memBitmap);
 
 		// 在雙緩衝 DC 上進行繪圖
 		DrawToBuffer(&memDC);
 
 		// 將雙緩衝 DC 的內容複製到畫布上
-		dcO.BitBlt(0, 0, rect.Width(), rect.Height(), &memDC, 0, 0, SRCCOPY);
+		dcO.BitBlt(0, 0, rectPaintRegion.Width(), rectPaintRegion.Height(), &memDC, 0, 0, SRCCOPY);
 
 		// 清理
 		memBitmap.DeleteObject();
@@ -593,13 +537,12 @@ void CMFClinkagetestDlg::DrawToBuffer(CDC* pDC)
 	m_dLowerRectW = iWidthPaintRegion * 0.5;
 
 	// 取得上方矩形畫布區域的 dc 並將內部繪成灰色(m_PaintRegionBackgroundColor)
-	CPaintDC dc(pPaintRegion);
 	CBrush brushPaintRegion;
-	CBrush* pOldBrushPaintRegion = dc.SelectObject(&brushPaintRegion);
+	CBrush* pOldBrushPaintRegion = pDC->SelectObject(&brushPaintRegion);
 	brushPaintRegion.CreateSolidBrush(m_PaintRegionBackgroundColor);
-	dc.Rectangle(rectPaintRegion);
-	dc.FillRect(&rectPaintRegion, &brushPaintRegion);
-	dc.SelectObject(pOldBrushPaintRegion);
+	pDC->Rectangle(rectPaintRegion);
+	pDC->FillRect(&rectPaintRegion, &brushPaintRegion);
+	pDC->SelectObject(pOldBrushPaintRegion);
 
 	// 定義邊界顏色並繪製
 	CPen penLowerRectBoarder(PS_SOLID, m_iLowerRectBoarderW * 4, RGB(0, 0, 0));
@@ -622,10 +565,10 @@ void CMFClinkagetestDlg::DrawToBuffer(CDC* pDC)
 	brushMainBearing.CreateSolidBrush(RGB(255, 0, 0));
 
 	// 將黑色邊界 UpperRectBoarderPen 選入 dc
-	CPen* pOldPenUpperRectBoarder = dc.SelectObject(&penUpperRectBoarder);
+	CPen* pOldPenUpperRectBoarder = pDC->SelectObject(&penUpperRectBoarder);
 
 	// 將白色內部  UpperRectBrush 選入 dc
-	CBrush* pOldBrushUpperRect = dc.SelectObject(&brushUpperRect);
+	CBrush* pOldBrushUpperRect = pDC->SelectObject(&brushUpperRect);
 
 	// 中心圓軸內切矩形
 	CRect rectBearingRect = BearingPos(m_dBearingRadius, m_dBearingPosX, m_dBearingPosY, iWidthPaintRegion, iHeightPaintRegion);
@@ -641,46 +584,47 @@ void CMFClinkagetestDlg::DrawToBuffer(CDC* pDC)
 
 	// 定義左右上方滑塊
 	CRect rectLeftUpper = RectCenterToX1Y1X2Y2(ptLeftUpperCenter, m_dLeftRectLen, m_dLeftRectW);
-	dc.Rectangle(rectLeftUpper);
-	dc.FillRect(&rectLeftUpper, &brushUpperRect);
+	pDC->Rectangle(rectLeftUpper);
+	pDC->FillRect(&rectLeftUpper, &brushUpperRect);
 	CRect rectRightUpper = RectCenterToX1Y1X2Y2(ptRightUpperCenter, m_dRightRectLen, m_dRightRectW);
-	dc.Rectangle(rectRightUpper);
-	dc.FillRect(&rectRightUpper, &brushUpperRect);
-	dc.SelectObject(pOldPenUpperRectBoarder);
-	dc.SelectObject(pOldBrushUpperRect);
+	pDC->Rectangle(rectRightUpper);
+	pDC->FillRect(&rectRightUpper, &brushUpperRect);
+	pDC->SelectObject(pOldPenUpperRectBoarder);
+	pDC->SelectObject(pOldBrushUpperRect);
 
 	// 將黑色邊界  LowerRectBoarderPen 選入 dc
-	CPen* pOldPenLowerRectBoarder = dc.SelectObject(&penLowerRectBoarder);
+	CPen* pOldPenLowerRectBoarder = pDC->SelectObject(&penLowerRectBoarder);
 
 	// 將棕色內部  LowerRectBrush 選入 dc
-	CBrush* pOldBrushLowerRect = dc.SelectObject(&brushLowerRect);
+	CBrush* pOldBrushLowerRect = pDC->SelectObject(&brushLowerRect);
 
 	// 定義左右下方方塊
 	CRect rectLeftLower = LowerLeftRect(rectLeftUpper, m_dLowerRectW, iHeightPaintRegion);
-	dc.Rectangle(rectLeftLower);
-	dc.FillRect(&rectLeftLower, &brushLowerRect);
+	pDC->Rectangle(rectLeftLower);
+	pDC->FillRect(&rectLeftLower, &brushLowerRect);
 	CRect rectRightLower = LowerRightRect(rectRightUpper, m_dLowerRectW, iHeightPaintRegion);
-	dc.Rectangle(rectRightLower);
-	dc.FillRect(&rectRightLower, &brushLowerRect);
-	dc.SelectObject(pOldPenLowerRectBoarder);
-	dc.SelectObject(pOldBrushLowerRect);
+	pDC->Rectangle(rectRightLower);
+	pDC->FillRect(&rectRightLower, &brushLowerRect);
+	pDC->SelectObject(pOldPenLowerRectBoarder);
+	pDC->SelectObject(pOldBrushLowerRect);
 
 	// 中心圓軸繪圖
-	CPen* pOldPenBearingBoarder = dc.SelectObject(&penBearingBoarder);
-	CBrush* pOldBrushMainBearing = dc.SelectObject(&brushMainBearing);
-	dc.Ellipse(rectBearingRect);
-	dc.SelectObject(pOldPenBearingBoarder);
-	dc.SelectObject(pOldBrushMainBearing);
+	CPen* pOldPenBearingBoarder = pDC->SelectObject(&penBearingBoarder);
+	CBrush* pOldBrushMainBearing =pDC->SelectObject(&brushMainBearing);
+	pDC->Ellipse(rectBearingRect);
+	pDC->SelectObject(pOldPenBearingBoarder);
+	pDC->SelectObject(pOldBrushMainBearing);
 
 	// 連桿繪圖
-	CPen* pOldPenLever = dc.SelectObject(&penLever);
-	dc.SetPixel(ptLeftBearingCenter, RGB(0, 0, 0));
-	dc.MoveTo(ptLeftBearingCenter);
-	dc.LineTo(ptLeftUpperCenter);
-	dc.SetPixel(ptRightBearingCenter, RGB(0, 0, 0));
-	dc.MoveTo(ptRightBearingCenter);
-	dc.LineTo(ptRightUpperCenter);
-	dc.SelectObject(pOldPenLever);
+	CPen* pOldPenLever = pDC->SelectObject(&penLever);
+	pDC->SetPixel(ptLeftBearingCenter, RGB(0, 0, 0));
+	pDC->MoveTo(ptLeftBearingCenter);
+	pDC->LineTo(ptLeftUpperCenter);
+	pDC->SetPixel(ptRightBearingCenter, RGB(0, 0, 0));
+	pDC->MoveTo(ptRightBearingCenter);
+	pDC->LineTo(ptRightUpperCenter);
+	pDC->SelectObject(pOldPenLever);
+
 }
 
 
@@ -700,48 +644,46 @@ void CMFClinkagetestDlg::OnBnClickedButtonStart()
 	// TODO: 在此加入控制項告知處理常式程式碼
 
 	// 更新輸入的長,寬,高
-	if (g_bFirstStart == TRUE)
-	{
-		UpdateData(TRUE);
-		m_editLeftRectLever.GetWindowText(m_strLeftRectLeverLen);
-		m_editLeftRectH.GetWindowText(m_strLeftRectH);
-		m_editLeftRectLen.GetWindowText(m_strLeftRectLen);
-		m_editLeftRectW.GetWindowText(m_strLeftRectW);
-		m_editRightRectLever.GetWindowText(m_strRightRectLeverLen);
-		m_editRightRectH.GetWindowText(m_strRightRectH);
-		m_editRightRectLen.GetWindowText(m_strRightRectLen);
-		m_editRightRectW.GetWindowText(m_strRightRectW);
-		m_editBearingRadius.GetWindowText(m_strBearingRadius);
-		m_editBearingPosX.GetWindowText(m_strBearingPosX);
-		m_editBearingPosY.GetWindowText(m_strBearingPosY);
-		m_editRightLeverRadius.GetWindowText(m_strRightLeverRadius);
-		m_editRightAng.GetWindowText(m_strRightAng);
-		m_editLeftLeverRadius.GetWindowText(m_strLeftLeverRadius);
-		m_editLeftAng.GetWindowText(m_strLeftAng);
-		m_editRPM.GetWindowText(m_strRPM);
-		m_editAngAcc.GetWindowText(m_strAngAcc);
-		m_editAngDec.GetWindowText(m_strAngDec);
+	UpdateData(TRUE);
+	m_editLeftRectLever.GetWindowText(m_strLeftRectLeverLen);
+	m_editLeftRectH.GetWindowText(m_strLeftRectH);
+	m_editLeftRectLen.GetWindowText(m_strLeftRectLen);
+	m_editLeftRectW.GetWindowText(m_strLeftRectW);
+	m_editRightRectLever.GetWindowText(m_strRightRectLeverLen);
+	m_editRightRectH.GetWindowText(m_strRightRectH);
+	m_editRightRectLen.GetWindowText(m_strRightRectLen);
+	m_editRightRectW.GetWindowText(m_strRightRectW);
+	m_editBearingRadius.GetWindowText(m_strBearingRadius);
+	m_editBearingPosX.GetWindowText(m_strBearingPosX);
+	m_editBearingPosY.GetWindowText(m_strBearingPosY);
+	m_editRightLeverRadius.GetWindowText(m_strRightLeverRadius);
+	m_editRightAng.GetWindowText(m_strRightAng);
+	m_editLeftLeverRadius.GetWindowText(m_strLeftLeverRadius);
+	m_editLeftAng.GetWindowText(m_strLeftAng);
+	m_editRPM.GetWindowText(m_strRPM);
+	m_editAngAcc.GetWindowText(m_strAngAcc);
+	m_editAngDec.GetWindowText(m_strAngDec);
 
-		// 將 string 轉為 double
-		m_dLeftRectLeverLen = _ttof(m_strLeftRectLeverLen);
-		m_dLeftRectH = _ttof(m_strLeftRectH);
-		m_dLeftRectLen = _ttof(m_strLeftRectLen);
-		m_dLeftRectW = _ttof(m_strLeftRectW);
-		m_dRightRectLeverLen = _ttof(m_strRightRectLeverLen);
-		m_dRightRectH = _ttof(m_strRightRectH);
-		m_dRightRectLen = _ttof(m_strRightRectLen);
-		m_dRightRectW = _ttof(m_strRightRectW);
-		m_dBearingRadius = _ttof(m_strBearingRadius);
-		m_dBearingPosX = _ttof(m_strBearingPosX);
-		m_dBearingPosY = _ttof(m_strBearingPosY);
-		m_dRightLeverRadius = _ttof(m_strRightLeverRadius);
-		m_dRightAng = _ttof(m_strRightAng);
-		m_dLeftLeverRadius = _ttof(m_strLeftLeverRadius);
-		m_dLeftAng = _ttof(m_strLeftAng);
-		m_dRPM = _ttof(m_strRPM);
-		m_dAngAcc = _ttof(m_strAngAcc);
-		m_dAngDec = _ttof(m_strAngDec);
-	}
+	// 將 string 轉為 double
+	m_dLeftRectLeverLen = _ttof(m_strLeftRectLeverLen);
+	m_dLeftRectH = _ttof(m_strLeftRectH);
+	m_dLeftRectLen = _ttof(m_strLeftRectLen);
+	m_dLeftRectW = _ttof(m_strLeftRectW);
+	m_dRightRectLeverLen = _ttof(m_strRightRectLeverLen);
+	m_dRightRectH = _ttof(m_strRightRectH);
+	m_dRightRectLen = _ttof(m_strRightRectLen);
+	m_dRightRectW = _ttof(m_strRightRectW);
+	m_dBearingRadius = _ttof(m_strBearingRadius);
+	m_dBearingPosX = _ttof(m_strBearingPosX);
+	m_dBearingPosY = _ttof(m_strBearingPosY);
+	m_dRightLeverRadius = _ttof(m_strRightLeverRadius);
+	m_dRightAng = _ttof(m_strRightAng);
+	m_dLeftLeverRadius = _ttof(m_strLeftLeverRadius);
+	m_dLeftAng = _ttof(m_strLeftAng);
+	m_dRPM = _ttof(m_strRPM);
+	m_dAngAcc = _ttof(m_strAngAcc);
+	m_dAngDec = _ttof(m_strAngDec);
+	
 
 	// Start 啟動後，關閉輸入框
 	CloseAllInputEdit();
@@ -934,7 +876,6 @@ void CMFClinkagetestDlg::OnBnClickedButtonStop()
 {
 	// TODO: 在此加入控制項告知處理常式程式碼
 
-	g_bStopState = TRUE;
 
 	// 判斷是否在還未加速到等速運動時，按下 Stop
 	if (m_dTimeAfter >= m_dAcceTotalTime)
@@ -953,13 +894,23 @@ void CMFClinkagetestDlg::OnBnClickedButtonStop()
 	m_dwStopTimeRecord = timeGetTime();
 
 	// 關閉輸入框
-	CloseAllInputEdit();
+	if ((g_bStopState == FALSE))
+	{
+		CloseAllInputEdit();
+	}
+	else
+	{
+		OpenAllInputEdit();
+	}
 
 	// 計算減速度區歷時時間長
 	m_dDecTotalTime = m_dStopNowRPM / m_dAngDec;
 
 	// 計算減速度區總面積
 	m_dDecTotalAng = 0.5 * m_dStopNowRPM * m_dDecTotalTime;
+
+	g_bStopState = TRUE;
+	g_bStartState = FALSE;
 
 }
 
