@@ -227,19 +227,19 @@ void CMFClinkagetestDlg::OnSysCommand(UINT nID, LPARAM lParam)
 ////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////
 // double 四捨五入轉型 int
-int RoundDouble(double dValue)
+int RoundDoubleToInt(double dValue)
 {
 	return static_cast<int>(dValue + 0.5);
 }
 
 // 給矩形中心點，傳回矩形 x1,y1,x2,y2
-CRect RectCenterToX1Y1X2Y2 (CPoint ptRectCenterPoint, double dRectLen, double dRectW)
+CRect CenterPtToRectPts (CPoint ptRectCenterPoint, double dRectLen, double dRectW)
 {
 	double dX1 = ptRectCenterPoint.x - dRectW * 0.5;
 	double dY1 = ptRectCenterPoint.y - dRectLen * 0.5;
 	double dX2 = ptRectCenterPoint.x + dRectW * 0.5;
 	double dY2 = ptRectCenterPoint.y + dRectLen * 0.5;
-	CRect rect(CPoint(RoundDouble(dX1), RoundDouble(dY1)), CPoint(RoundDouble(dX2), RoundDouble(dY2)));
+	CRect rect(CPoint(RoundDoubleToInt(dX1), RoundDoubleToInt(dY1)), CPoint(RoundDoubleToInt(dX2), RoundDoubleToInt(dY2)));
 
 	return rect;
 }
@@ -248,7 +248,7 @@ CRect RectCenterToX1Y1X2Y2 (CPoint ptRectCenterPoint, double dRectLen, double dR
 CRect LowerLeftRect (CRect rectCenter, double dLeftW, double iPaintH)
 {
 	double dLowerRectH = rectCenter.bottom;
-	CRect rectLower(CPoint(0, RoundDouble(dLowerRectH)), CPoint(RoundDouble(dLeftW), RoundDouble(iPaintH)));
+	CRect rectLower(CPoint(0, RoundDoubleToInt(dLowerRectH)), CPoint(RoundDoubleToInt(dLeftW), RoundDoubleToInt(iPaintH)));
 
 	return rectLower;
 }
@@ -257,7 +257,7 @@ CRect LowerLeftRect (CRect rectCenter, double dLeftW, double iPaintH)
 CRect LowerRightRect (CRect rectCenter, double dRightW, double iPaintH)
 {
 	double dLowerRectH = rectCenter.bottom;
-	CRect rectLower(CPoint(RoundDouble(dRightW), RoundDouble(dLowerRectH)), CPoint(RoundDouble(dRightW) * 2, RoundDouble(iPaintH)));
+	CRect rectLower(CPoint(RoundDoubleToInt(dRightW), RoundDoubleToInt(dLowerRectH)), CPoint(RoundDoubleToInt(dRightW) * 2, RoundDoubleToInt(iPaintH)));
 
 	return rectLower;
 }
@@ -265,8 +265,8 @@ CRect LowerRightRect (CRect rectCenter, double dRightW, double iPaintH)
 // 傳回畫布中心圓軸的內切矩形
 CRect BearingPos (double dRadius, double dBearingX, double dBearingY, int iPaintW, int iPaintH)
 {
-	CPoint ptX1Y1(RoundDouble((iPaintW * 0.5 + dBearingX) - dRadius), RoundDouble((iPaintH - dBearingY) - dRadius));
-	CPoint ptX2Y2(RoundDouble((iPaintW * 0.5 + dBearingX) + dRadius), RoundDouble((iPaintH - dBearingY) + dRadius));
+	CPoint ptX1Y1(RoundDoubleToInt((iPaintW * 0.5 + dBearingX) - dRadius), RoundDoubleToInt((iPaintH - dBearingY) - dRadius));
+	CPoint ptX2Y2(RoundDoubleToInt((iPaintW * 0.5 + dBearingX) + dRadius), RoundDoubleToInt((iPaintH - dBearingY) + dRadius));
 	CRect rectBearingPos(ptX1Y1, ptX2Y2);
 
 	return rectBearingPos;
@@ -276,8 +276,8 @@ CRect BearingPos (double dRadius, double dBearingX, double dBearingY, int iPaint
 // 傳回圓軸圓心座標
 CPoint BearingCenter (CRect rectBearing)
 {
-	int iCenterX = RoundDouble((rectBearing.left + rectBearing.right) * 0.5);
-	int iCenterY = RoundDouble((rectBearing.top + rectBearing.bottom) * 0.5);
+	int iCenterX = RoundDoubleToInt((rectBearing.left + rectBearing.right) * 0.5);
+	int iCenterY = RoundDoubleToInt((rectBearing.top + rectBearing.bottom) * 0.5);
 	CPoint ptCenter(iCenterX, iCenterY);
 
 	return ptCenter;
@@ -327,7 +327,7 @@ CPoint LeftBearingCenter (double dLeftLeverRadius, double dLeftAng, CPoint ptBea
 	double dLeftRad = AngToRad(dLeftAng);
 	double dPosX = (ptBearingCenter.x - dLeftLeverRadius * cos(dLeftRad));
 	double dPosY = (ptBearingCenter.y - dLeftLeverRadius * sin(dLeftRad));
-	CPoint ptLeftBearing(RoundDouble(dPosX), RoundDouble(dPosY));
+	CPoint ptLeftBearing(RoundDoubleToInt(dPosX), RoundDoubleToInt(dPosY));
 
 	return ptLeftBearing;
 }
@@ -339,7 +339,7 @@ CPoint RightBearingCenter (double dRightLeverRadius, double dRightAng, CPoint pt
 	double dRightRad = AngToRad(dRightAng);
 	double dPosX = (ptBearingCenter.x - dRightLeverRadius * cos(dRightRad));
 	double dPosY = (ptBearingCenter.y - dRightLeverRadius * sin(dRightRad));
-	CPoint ptRightBearing(RoundDouble(dPosX), RoundDouble(dPosY));
+	CPoint ptRightBearing(RoundDoubleToInt(dPosX), RoundDoubleToInt(dPosY));
 
 	return ptRightBearing;
 }
@@ -350,7 +350,7 @@ CPoint LeftRectCenter (double dLeftLeverLen, double dLeftRectH, double dLeftRect
 {
 	double dLeftRectCenterH = iPaintH - (dLeftRectH + dLeftRectLen);
 	double dLeftRectCenterPosX = (ptLeftBearingCenter.x - sqrt(pow(dLeftLeverLen, 2) - pow((dLeftRectCenterH - ptLeftBearingCenter.y), 2)));
-	CPoint ptLeftRectCenterPos(RoundDouble(dLeftRectCenterPosX), RoundDouble(dLeftRectCenterH));
+	CPoint ptLeftRectCenterPos(RoundDoubleToInt(dLeftRectCenterPosX), RoundDoubleToInt(dLeftRectCenterH));
 
 	return ptLeftRectCenterPos;
 }
@@ -361,7 +361,7 @@ CPoint RightRectCenter (double dRightLeverLen, double dRightRectH, double dRight
 {
 	double dRightRectCenterH = iPaintH - (dRightRectH + dRightRectLen);
 	double dRightRectCenterPosX = (ptRightBearingCenter.x + sqrt(pow(dRightLeverLen, 2) - pow((dRightRectCenterH - ptRightBearingCenter.y), 2))); 
-	CPoint ptRightRectCenterPos(RoundDouble(dRightRectCenterPosX), RoundDouble(dRightRectCenterH));
+	CPoint ptRightRectCenterPos(RoundDoubleToInt(dRightRectCenterPosX), RoundDoubleToInt(dRightRectCenterH));
 
 	return ptRightRectCenterPos;
 }
@@ -445,53 +445,6 @@ void CMFClinkagetestDlg::OnPaint()
 	}
 	else
 	{
-		////////////////////////////////////////////////////////////////////////////////////////
-		//m_editLeftRectLever.GetWindowText(m_strLeftRectLeverLen);
-		//m_editLeftRectH.GetWindowText(m_strLeftRectH);
-		//m_editLeftRectLen.GetWindowText(m_strLeftRectLen);
-		//m_editLeftRectW.GetWindowText(m_strLeftRectW);
-		//m_editRightRectLever.GetWindowText(m_strRightRectLeverLen);
-		//m_editRightRectH.GetWindowText(m_strRightRectH);
-		//m_editRightRectLen.GetWindowText(m_strRightRectLen);
-		//m_editRightRectW.GetWindowText(m_strRightRectW);
-		//m_editBearingRadius.GetWindowText(m_strBearingRadius);
-		//m_editBearingPosX.GetWindowText(m_strBearingPosX);
-		//m_editBearingPosY.GetWindowText(m_strBearingPosY);
-		//m_editLeftLeverRadius.GetWindowText(m_strLeftLeverRadius);
-		//m_editRightLeverRadius.GetWindowText(m_strRightLeverRadius);
-		//m_editRPM.GetWindowText(m_strRPM);
-		//m_editAngAcc.GetWindowText(m_strAngAcc);
-		//m_editAngDec.GetWindowText(m_strAngDec);
-
-
-		//m_dLeftRectLeverLen = _ttof(m_strLeftRectLeverLen);
-		//m_dLeftRectH = _ttof(m_strLeftRectH);
-		//m_dLeftRectLen = _ttof(m_strLeftRectLen);
-		//m_dLeftRectW = _ttof(m_strLeftRectW);
-		//m_dRightRectLeverLen = _ttof(m_strRightRectLeverLen);
-		//m_dRightRectH = _ttof(m_strRightRectH);
-		//m_dRightRectLen = _ttof(m_strRightRectLen);
-		//m_dRightRectW = _ttof(m_strRightRectW);
-		//m_dBearingRadius = _ttof(m_strBearingRadius);
-		//m_dBearingPosX = _ttof(m_strBearingPosX);
-		//m_dBearingPosY = _ttof(m_strBearingPosY);
-		//m_dLeftLeverRadius = _ttof(m_strLeftLeverRadius);
-		//m_dRightLeverRadius = _ttof(m_strRightLeverRadius);
-		//m_dRPM = _ttof(m_strRPM);
-		//m_dAngAcc = _ttof(m_strAngAcc);
-		//m_dAngDec = _ttof(m_strAngDec);
-
-		//if (g_bStartState == FALSE)
-		//{
-		//	m_editLeftAng.GetWindowText(m_strLeftAng);
-		//	m_editRightAng.GetWindowText(m_strRightAng);
-
-		//	m_dLeftAng = _ttof(m_strLeftAng);
-		//	m_dRightAng = _ttof(m_strRightAng);
-		//}
-
-		////////////////////////////////////////////////////////////////////////////////////////
-
 		CDialogEx::OnPaint();
 
 		// 取得畫布的長寬高
@@ -583,10 +536,10 @@ void CMFClinkagetestDlg::DrawToBuffer(CDC* pDC)
 	CPoint ptRightUpperCenter = RightRectCenter(m_dRightRectLeverLen, m_dRightRectH, m_dRightRectLen, ptRightBearingCenter, ptBearingCenterPos, iHeightPaintRegion);
 
 	// 定義左右上方滑塊
-	CRect rectLeftUpper = RectCenterToX1Y1X2Y2(ptLeftUpperCenter, m_dLeftRectLen, m_dLeftRectW);
+	CRect rectLeftUpper = CenterPtToRectPts(ptLeftUpperCenter, m_dLeftRectLen, m_dLeftRectW);
 	pDC->Rectangle(rectLeftUpper);
 	pDC->FillRect(&rectLeftUpper, &brushUpperRect);
-	CRect rectRightUpper = RectCenterToX1Y1X2Y2(ptRightUpperCenter, m_dRightRectLen, m_dRightRectW);
+	CRect rectRightUpper = CenterPtToRectPts(ptRightUpperCenter, m_dRightRectLen, m_dRightRectW);
 	pDC->Rectangle(rectRightUpper);
 	pDC->FillRect(&rectRightUpper, &brushUpperRect);
 	pDC->SelectObject(pOldPenUpperRectBoarder);
@@ -703,9 +656,9 @@ void CMFClinkagetestDlg::OnBnClickedButtonStart()
 	// 中心圓軸與滑塊最小距離條件設定
 	// 當桿長長度小於此條件時，直接暫停輸入
 	double dLeftRectSmallSide = sqrt(pow((m_dLeftRectLen * 0.5 + m_dLeftRectH), 2) + pow((m_dLeftRectLen + m_dLeftRectH), 2));
-	double dLeftClientMinLeverLen = m_dLeftRectLeverLen - 2 * m_dLeftLeverRadius - dLeftRectSmallSide;
+	double dLeftClientMinLeverLen = m_dLeftRectLeverLen - m_dLeftLeverRadius - dLeftRectSmallSide;
 	double dRightRectSmallSide = sqrt(pow((m_dRightRectLen * 0.5 + m_dRightRectH), 2) + pow((m_dRightRectLen + m_dRightRectH), 2));
-	double dRightClientMinLeverLen = m_dRightRectLeverLen - 2 * m_dRightLeverRadius - dRightRectSmallSide;
+	double dRightClientMinLeverLen = m_dRightRectLeverLen - m_dRightLeverRadius - dRightRectSmallSide;
 
 	// 確認中心圓軸是否高過畫圖區
 	CWnd* pPaintRegion = GetDlgItem(IDC_STATIC_PAINT);
