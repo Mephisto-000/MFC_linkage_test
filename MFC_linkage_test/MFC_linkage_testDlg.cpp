@@ -874,15 +874,7 @@ void CMFClinkagetestDlg::OnBnClickedButtonStop()
 	// TODO: 在此加入控制項告知處理常式程式碼
 
 
-	// 判斷是否在還未加速到等速運動時，按下 Stop
-	/*if (m_dTimeAfter >= m_dAcceTotalTime)
-	{
-		m_dStopNowRPM = abs(m_dNowRPM);
-	}
-	else
-	{
-		m_dStopNowRPM = m_dAngAcc * m_dTimeAfter;
-	}*/
+	// 記錄停下的時間
 	m_dStopNowRPM = abs(m_dNowRPM);
 
 	// 初始化前一秒時間

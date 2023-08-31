@@ -9,7 +9,8 @@
 #pragma once
 
 // 加入 mmysystem.h 中的 timeGetTime 時需加入以下連接庫
-#pragma comment(lib, "winmm.lib ")                     // 參看 : https://blog.csdn.net/dragoo1/article/details/123557730
+// "winmm.lib" 是 Windows Multimedia API
+#pragma comment(lib, "winmm.lib ")
 
 
 // CMFClinkagetestDlg 對話方塊
