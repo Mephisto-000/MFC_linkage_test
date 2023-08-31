@@ -41,12 +41,6 @@ protected:
 
 	COLORREF m_PaintRegionBackgroundColor = RGB(0, 0, 0);;              // 上方繪圖區背景顏色設定
 
-	
-	// 用 timeGetTime 方法
-	// 代替 OnTimer, SetTimer, KillTimer
-
-
-
 public:
 	afx_msg void OnBnClickedButtonStart();
 	afx_msg void OnBnClickedButtonStop();

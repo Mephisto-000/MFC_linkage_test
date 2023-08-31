@@ -892,7 +892,7 @@ void CMFClinkagetestDlg::OnBnClickedButtonStart()
 		g_bFirstStart = TRUE;
 	}
 	// 中心圓軸
-	if ((dBearingLeftStateW < 0) || (dBearingRightStateW < 0))
+	if ((dBearingLeftStateW <= 0) || (dBearingRightStateW <= 0))
 	{
 		KillTimer(1);
 		OpenAllInputEdit();
@@ -900,6 +900,13 @@ void CMFClinkagetestDlg::OnBnClickedButtonStart()
 	}
 	// 中心圓軸與左右側半徑限制
 	if ((m_dBearingRadius < m_dLeftLeverRadius) || (m_dBearingRadius < m_dRightLeverRadius))
+	{
+		KillTimer(1);
+		OpenAllInputEdit();
+		g_bFirstStart = TRUE;
+	}
+	// 中心圓軸半徑
+	if (m_dBearingRadius <= 0)
 	{
 		KillTimer(1);
 		OpenAllInputEdit();
