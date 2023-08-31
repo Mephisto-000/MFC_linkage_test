@@ -644,46 +644,49 @@ void CMFClinkagetestDlg::OnBnClickedButtonStart()
 	// TODO: 在此加入控制項告知處理常式程式碼
 
 	// 更新輸入的長,寬,高
-	UpdateData(TRUE);
-	m_editLeftRectLever.GetWindowText(m_strLeftRectLeverLen);
-	m_editLeftRectH.GetWindowText(m_strLeftRectH);
-	m_editLeftRectLen.GetWindowText(m_strLeftRectLen);
-	m_editLeftRectW.GetWindowText(m_strLeftRectW);
-	m_editRightRectLever.GetWindowText(m_strRightRectLeverLen);
-	m_editRightRectH.GetWindowText(m_strRightRectH);
-	m_editRightRectLen.GetWindowText(m_strRightRectLen);
-	m_editRightRectW.GetWindowText(m_strRightRectW);
-	m_editBearingRadius.GetWindowText(m_strBearingRadius);
-	m_editBearingPosX.GetWindowText(m_strBearingPosX);
-	m_editBearingPosY.GetWindowText(m_strBearingPosY);
-	m_editRightLeverRadius.GetWindowText(m_strRightLeverRadius);
-	m_editRightAng.GetWindowText(m_strRightAng);
-	m_editLeftLeverRadius.GetWindowText(m_strLeftLeverRadius);
-	m_editLeftAng.GetWindowText(m_strLeftAng);
-	m_editRPM.GetWindowText(m_strRPM);
-	m_editAngAcc.GetWindowText(m_strAngAcc);
-	m_editAngDec.GetWindowText(m_strAngDec);
+	if (g_bFirstStart == TRUE)
+	{
+		UpdateData(TRUE);
+		m_editLeftRectLever.GetWindowText(m_strLeftRectLeverLen);
+		m_editLeftRectH.GetWindowText(m_strLeftRectH);
+		m_editLeftRectLen.GetWindowText(m_strLeftRectLen);
+		m_editLeftRectW.GetWindowText(m_strLeftRectW);
+		m_editRightRectLever.GetWindowText(m_strRightRectLeverLen);
+		m_editRightRectH.GetWindowText(m_strRightRectH);
+		m_editRightRectLen.GetWindowText(m_strRightRectLen);
+		m_editRightRectW.GetWindowText(m_strRightRectW);
+		m_editBearingRadius.GetWindowText(m_strBearingRadius);
+		m_editBearingPosX.GetWindowText(m_strBearingPosX);
+		m_editBearingPosY.GetWindowText(m_strBearingPosY);
+		m_editRightLeverRadius.GetWindowText(m_strRightLeverRadius);
+		m_editRightAng.GetWindowText(m_strRightAng);
+		m_editLeftLeverRadius.GetWindowText(m_strLeftLeverRadius);
+		m_editLeftAng.GetWindowText(m_strLeftAng);
+		m_editRPM.GetWindowText(m_strRPM);
+		m_editAngAcc.GetWindowText(m_strAngAcc);
+		m_editAngDec.GetWindowText(m_strAngDec);
 
-	// 將 string 轉為 double
-	m_dLeftRectLeverLen = _ttof(m_strLeftRectLeverLen);
-	m_dLeftRectH = _ttof(m_strLeftRectH);
-	m_dLeftRectLen = _ttof(m_strLeftRectLen);
-	m_dLeftRectW = _ttof(m_strLeftRectW);
-	m_dRightRectLeverLen = _ttof(m_strRightRectLeverLen);
-	m_dRightRectH = _ttof(m_strRightRectH);
-	m_dRightRectLen = _ttof(m_strRightRectLen);
-	m_dRightRectW = _ttof(m_strRightRectW);
-	m_dBearingRadius = _ttof(m_strBearingRadius);
-	m_dBearingPosX = _ttof(m_strBearingPosX);
-	m_dBearingPosY = _ttof(m_strBearingPosY);
-	m_dRightLeverRadius = _ttof(m_strRightLeverRadius);
-	m_dRightAng = _ttof(m_strRightAng);
-	m_dLeftLeverRadius = _ttof(m_strLeftLeverRadius);
-	m_dLeftAng = _ttof(m_strLeftAng);
-	m_dRPM = _ttof(m_strRPM);
-	m_dAngAcc = _ttof(m_strAngAcc);
-	m_dAngDec = _ttof(m_strAngDec);
-	
+		// 將 string 轉為 double
+		m_dLeftRectLeverLen = _ttof(m_strLeftRectLeverLen);
+		m_dLeftRectH = _ttof(m_strLeftRectH);
+		m_dLeftRectLen = _ttof(m_strLeftRectLen);
+		m_dLeftRectW = _ttof(m_strLeftRectW);
+		m_dRightRectLeverLen = _ttof(m_strRightRectLeverLen);
+		m_dRightRectH = _ttof(m_strRightRectH);
+		m_dRightRectLen = _ttof(m_strRightRectLen);
+		m_dRightRectW = _ttof(m_strRightRectW);
+		m_dBearingRadius = _ttof(m_strBearingRadius);
+		m_dBearingPosX = _ttof(m_strBearingPosX);
+		m_dBearingPosY = _ttof(m_strBearingPosY);
+		m_dRightLeverRadius = _ttof(m_strRightLeverRadius);
+		m_dRightAng = _ttof(m_strRightAng);
+		m_dLeftLeverRadius = _ttof(m_strLeftLeverRadius);
+		m_dLeftAng = _ttof(m_strLeftAng);
+		m_dRPM = _ttof(m_strRPM);
+		m_dAngAcc = _ttof(m_strAngAcc);
+		m_dAngDec = _ttof(m_strAngDec);
+	}
+
 
 	// Start 啟動後，關閉輸入框
 	CloseAllInputEdit();
@@ -721,7 +724,7 @@ void CMFClinkagetestDlg::OnBnClickedButtonStart()
 	{
 		// 計算加速度總面積
 		m_dAcceTotalAng = 0.5 * (pow(RpmToAngVelocity(m_dRPM) - RpmToAngVelocity(m_dNowRPM), 2) / RpmToAngVelocity(m_dAngAcc));
-		
+
 		// 計算加速度區歷時時間長
 		m_dAcceTotalTime = (abs(RpmToAngVelocity(m_dRPM)) - abs(RpmToAngVelocity(m_dNowRPM))) / RpmToAngVelocity(m_dAngAcc);
 	}
@@ -729,7 +732,7 @@ void CMFClinkagetestDlg::OnBnClickedButtonStart()
 	{
 		// 計算加速度區總面積
 		m_dAcceTotalAng = 0.5 * (pow(RpmToAngVelocity(m_dRPM), 2) / RpmToAngVelocity(m_dAngAcc));
-		
+
 		// 計算加速度區歷時時間長
 		m_dAcceTotalTime = (2 * m_dAcceTotalAng) / abs(RpmToAngVelocity(m_dRPM));
 	}
@@ -740,7 +743,7 @@ void CMFClinkagetestDlg::OnBnClickedButtonStart()
 	// 假設一個時間間隔，這裡設定為 50 毫秒 (0.05 s.) 等於 20 fps
 	// 當圖片更新率呈現 12 fps 以上時，人眼就會視其為動畫，我這裡假設為 20 fps
 	UINT nInterval = 50;
-	
+
 	// 判斷是否為第一次按下 Start
 	if (g_bFirstStart == TRUE)
 	{
@@ -749,7 +752,7 @@ void CMFClinkagetestDlg::OnBnClickedButtonStart()
 
 		// 記錄按下 START 開始的時間
 		g_dwStartTime = timeGetTime();
-		
+
 		// 使用 SetTimer 函數時，就會產生一個計時器
 		// 第一個參數 1         : 計時器的名稱
 		// 第二個參數 nInterval : 時間間隔 (毫秒)
@@ -775,6 +778,47 @@ void CMFClinkagetestDlg::OnBnClickedButtonStart()
 			// 記錄按下 Start 的絕對時間
 			g_dwStartTime = timeGetTime();
 			SetTimer(1, nInterval, NULL);
+
+			UpdateData(TRUE);
+			m_editLeftRectLever.GetWindowText(m_strLeftRectLeverLen);
+			m_editLeftRectH.GetWindowText(m_strLeftRectH);
+			m_editLeftRectLen.GetWindowText(m_strLeftRectLen);
+			m_editLeftRectW.GetWindowText(m_strLeftRectW);
+			m_editRightRectLever.GetWindowText(m_strRightRectLeverLen);
+			m_editRightRectH.GetWindowText(m_strRightRectH);
+			m_editRightRectLen.GetWindowText(m_strRightRectLen);
+			m_editRightRectW.GetWindowText(m_strRightRectW);
+			m_editBearingRadius.GetWindowText(m_strBearingRadius);
+			m_editBearingPosX.GetWindowText(m_strBearingPosX);
+			m_editBearingPosY.GetWindowText(m_strBearingPosY);
+			m_editRightLeverRadius.GetWindowText(m_strRightLeverRadius);
+			m_editRightAng.GetWindowText(m_strRightAng);
+			m_editLeftLeverRadius.GetWindowText(m_strLeftLeverRadius);
+			m_editLeftAng.GetWindowText(m_strLeftAng);
+			m_editRPM.GetWindowText(m_strRPM);
+			m_editAngAcc.GetWindowText(m_strAngAcc);
+			m_editAngDec.GetWindowText(m_strAngDec);
+
+			// 將 string 轉為 double
+			m_dLeftRectLeverLen = _ttof(m_strLeftRectLeverLen);
+			m_dLeftRectH = _ttof(m_strLeftRectH);
+			m_dLeftRectLen = _ttof(m_strLeftRectLen);
+			m_dLeftRectW = _ttof(m_strLeftRectW);
+			m_dRightRectLeverLen = _ttof(m_strRightRectLeverLen);
+			m_dRightRectH = _ttof(m_strRightRectH);
+			m_dRightRectLen = _ttof(m_strRightRectLen);
+			m_dRightRectW = _ttof(m_strRightRectW);
+			m_dBearingRadius = _ttof(m_strBearingRadius);
+			m_dBearingPosX = _ttof(m_strBearingPosX);
+			m_dBearingPosY = _ttof(m_strBearingPosY);
+			m_dRightLeverRadius = _ttof(m_strRightLeverRadius);
+			m_dRightAng = _ttof(m_strRightAng);
+			m_dLeftLeverRadius = _ttof(m_strLeftLeverRadius);
+			m_dLeftAng = _ttof(m_strLeftAng);
+			m_dRPM = _ttof(m_strRPM);
+			m_dAngAcc = _ttof(m_strAngAcc);
+			m_dAngDec = _ttof(m_strAngDec);
+
 		}
 	}
 
@@ -828,7 +872,7 @@ void CMFClinkagetestDlg::OnBnClickedButtonStart()
 	////////////////////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////
 	// 中心圓軸高度限制
-	if ((dBearingTopState <= 0) || (m_dBearingPosY < m_dBearingRadius))
+	if ((dBearingTopState <= 0) || (m_dBearingPosY < m_dBearingRadius) || (m_dBearingPosY > iHeightPaintRegion))
 	{
 		KillTimer(1);
 		OpenAllInputEdit();
@@ -894,11 +938,7 @@ void CMFClinkagetestDlg::OnBnClickedButtonStop()
 	m_dwStopTimeRecord = timeGetTime();
 
 	// 關閉輸入框
-	if ((g_bStopState == FALSE))
-	{
-		CloseAllInputEdit();
-	}
-	else
+	if ((g_bStopState == TRUE))
 	{
 		OpenAllInputEdit();
 	}
@@ -919,181 +959,183 @@ void CMFClinkagetestDlg::OnBnClickedButtonStop()
 void CMFClinkagetestDlg::OnTimer(UINT_PTR nIDEvent)
 {
 	// TODO: 在此加入您的訊息處理常式程式碼和 (或) 呼叫預設值
-
-	DWORD dwCurrentTime = timeGetTime();
-
-	// 判斷是否為按下 Stop 後
-	if (g_bStopState == FALSE)
+	if (nIDEvent == 1)
 	{
-		// 在 OnTimer 函數中計算經過的時間
-		DWORD dwElapsedTime = dwCurrentTime - g_dwStartTime;
+		DWORD dwCurrentTime = timeGetTime();
 
-		// 將毫秒轉為秒
-		double seconds = static_cast<double>(dwElapsedTime) / 1000.0;
-		m_dTimeAfter = seconds;
-
-		// 判斷是否還在加速度運動
-		if (m_dTimeAfter <= m_dAcceTotalTime)
+		// 判斷是否為按下 Stop 後
+		if (g_bStopState == FALSE)
 		{
-			// 計算增加的旋轉角度
-			m_dAddAng = 0.5 * RpmToAngVelocity(m_dAngAcc) * (pow(m_dTimeAfter, 2) - pow(m_dTimeBefore, 2))
-				+ RpmToAngVelocity(m_dStartNowRPM) * (m_dTimeAfter - m_dTimeBefore);
+			// 在 OnTimer 函數中計算經過的時間
+			DWORD dwElapsedTime = dwCurrentTime - g_dwStartTime;
 
-			// 計算速度
-			m_dNowRPM = m_dAngAcc * m_dTimeAfter + m_dStartNowRPM;
+			// 將毫秒轉為秒
+			double seconds = static_cast<double>(dwElapsedTime) / 1000.0;
+			m_dTimeAfter = seconds;
 
-			// 判斷順逆時針旋轉 (m_dRPM < 0 : 順時針，m_dRPM > 0 : 逆時針)
+			// 判斷是否還在加速度運動
+			if (m_dTimeAfter <= m_dAcceTotalTime)
+			{
+				// 計算增加的旋轉角度
+				m_dAddAng = 0.5 * RpmToAngVelocity(m_dAngAcc) * (pow(m_dTimeAfter, 2) - pow(m_dTimeBefore, 2))
+					+ RpmToAngVelocity(m_dStartNowRPM) * (m_dTimeAfter - m_dTimeBefore);
+
+				// 計算速度
+				m_dNowRPM = m_dAngAcc * m_dTimeAfter + m_dStartNowRPM;
+
+				// 判斷順逆時針旋轉 (m_dRPM < 0 : 順時針，m_dRPM > 0 : 逆時針)
+				if (m_dRPM < 0)
+				{
+					m_strNowRPM.Format(_T(" % .7f"), -m_dNowRPM);
+				}
+				else
+				{
+					m_strNowRPM.Format(_T(" % .7f"), m_dNowRPM);
+				}
+
+				// 將原本下一秒時間更新為前一秒
+				m_dTimeBefore = m_dTimeAfter;
+			}
+			else if ((m_dTimeBefore < m_dAcceTotalTime) && (m_dTimeAfter > m_dAcceTotalTime))
+			{	// 當下一秒加速超過最大等速度時角度的計算
+				// 計算增加的旋轉角度
+				m_dAddAng = 0.5 * RpmToAngVelocity(m_dAngAcc) * (pow(m_dAcceTotalTime, 2) - pow(m_dTimeBefore, 2))
+					+ abs(RpmToAngVelocity(m_dRPM)) * (m_dTimeAfter - m_dAcceTotalTime);
+
+				// 當下速度為最大等速度值
+				m_dNowRPM = m_dRPM;
+				m_strNowRPM.Format(_T(" % .7f"), m_dNowRPM);
+
+				// 將原本下一秒時間更新為前一秒
+				m_dTimeBefore = m_dTimeAfter;
+			}
+			else
+			{	// 在等速度運動時的角度計算
+				// 計算增加的旋轉角度
+				m_dAddAng = abs(RpmToAngVelocity(m_dRPM)) * (m_dTimeAfter - m_dTimeBefore);
+
+				// 當下速度為最大等速度值
+				m_dNowRPM = m_dRPM;
+				m_strNowRPM.Format(_T(" % .7f"), m_dNowRPM);
+
+				// 將原本下一秒時間更新為前一秒
+				m_dTimeBefore = m_dTimeAfter;
+			}
+
+			// 根據最大等速度值 (m_dRPM) 判斷增加的角度為順或逆時針增加
 			if (m_dRPM < 0)
 			{
-				m_strNowRPM.Format(_T(" % .7f"), -m_dNowRPM);
+				m_dLeftAng += RadToAng(m_dAddAng);
+				m_dRightAng += RadToAng(m_dAddAng);
+				m_dLeftAng = LimitTo360(m_dLeftAng);
+				m_dRightAng = LimitTo360(m_dRightAng);
 			}
 			else
 			{
+				m_dLeftAng -= RadToAng(m_dAddAng);
+				m_dRightAng -= RadToAng(m_dAddAng);
+				m_dLeftAng = LimitTo360(m_dLeftAng);
+				m_dRightAng = LimitTo360(m_dRightAng);
+			}
+		}
+		else
+		{
+
+			DWORD dwStopElapsedTime = dwCurrentTime - m_dwStopTimeRecord;
+
+			// 將毫秒轉為秒
+			double seconds = static_cast<double>(dwStopElapsedTime) / 1000.0;
+			m_dTimeAfter = seconds;
+
+			// 判斷是否還在減速度運動
+			if (m_dTimeAfter <= m_dDecTotalTime)
+			{
+				// 計算減少的旋轉角度
+				m_dReduceAng = RpmToAngVelocity(m_dStopNowRPM) * (m_dTimeAfter - m_dTimeBefore)
+					- (0.5 * RpmToAngVelocity(m_dAngDec) * (pow(m_dTimeAfter, 2) - pow(m_dTimeBefore, 2)));
+
+				// 計算速度
+				m_dNowRPM = m_dStopNowRPM - m_dAngDec * m_dTimeAfter;
+
+				// 判斷順逆時針旋轉 (m_dRPM < 0 : 順時針，m_dRPM > 0 : 逆時針)
+				if (m_dRPM < 0)
+				{
+					m_strNowRPM.Format(_T(" % .7f"), -m_dNowRPM);
+				}
+				else
+				{
+					m_strNowRPM.Format(_T(" % .7f"), m_dNowRPM);
+				}
+
+				// 將原本下一秒時間更新為前一秒
+				m_dTimeBefore = m_dTimeAfter;
+			}
+			else if ((m_dTimeBefore <= m_dDecTotalTime) && (m_dTimeAfter > m_dDecTotalTime))
+			{	// 當下一秒減速低過速度0時角度的計算
+				// 計算減少的旋轉角度
+				m_dReduceAng = pow((m_dDecTotalTime - m_dTimeBefore), 2) * RpmToAngVelocity(m_dAngDec) * 0.5;
+
+				// 當下速度為 0.0
+				m_dNowRPM = 0.0;
 				m_strNowRPM.Format(_T(" % .7f"), m_dNowRPM);
+
+				// 將原本下一秒時間更新為前一秒
+				m_dTimeBefore = m_dTimeAfter;
+
+				// 將第一次按下 Start 條件設為 FALSE
+				g_bFirstStart = FALSE;
+			}
+			else
+			{	// 速度為 0.0 
+				m_dNowRPM = 0.0;
+				m_strNowRPM.Format(_T(" % .7f"), m_dNowRPM);
+
+				// 將原本下一秒時間更新為前一秒
+				m_dTimeBefore = m_dTimeAfter;
+
+				// 將第一次按下 Start 條件設為 FALSE
+				g_bFirstStart = FALSE;
+
 			}
 
-			// 將原本下一秒時間更新為前一秒
-			m_dTimeBefore = m_dTimeAfter;
-		}
-		else if ((m_dTimeBefore < m_dAcceTotalTime) && (m_dTimeAfter > m_dAcceTotalTime))
-		{	// 當下一秒加速超過最大等速度時角度的計算
-			// 計算增加的旋轉角度
-			m_dAddAng = 0.5 * RpmToAngVelocity(m_dAngAcc) * (pow(m_dAcceTotalTime, 2) - pow(m_dTimeBefore, 2))
-				+ abs(RpmToAngVelocity(m_dRPM)) * (m_dTimeAfter - m_dAcceTotalTime);
-
-			// 當下速度為最大等速度值
-			m_dNowRPM = m_dRPM;
-			m_strNowRPM.Format(_T(" % .7f"), m_dNowRPM);
-
-			// 將原本下一秒時間更新為前一秒
-			m_dTimeBefore = m_dTimeAfter;
-		}
-		else
-		{	// 在等速度運動時的角度計算
-			// 計算增加的旋轉角度
-			m_dAddAng = abs(RpmToAngVelocity(m_dRPM)) * (m_dTimeAfter - m_dTimeBefore);
-
-			// 當下速度為最大等速度值
-			m_dNowRPM = m_dRPM;
-			m_strNowRPM.Format(_T(" % .7f"), m_dNowRPM);
-
-			// 將原本下一秒時間更新為前一秒
-			m_dTimeBefore = m_dTimeAfter;
-		}
-
-		// 根據最大等速度值 (m_dRPM) 判斷增加的角度為順或逆時針增加
-		if (m_dRPM < 0)
-		{
-			m_dLeftAng += RadToAng(m_dAddAng);
-			m_dRightAng += RadToAng(m_dAddAng);
-			m_dLeftAng = LimitTo360(m_dLeftAng);
-			m_dRightAng = LimitTo360(m_dRightAng);
-		}
-		else
-		{
-			m_dLeftAng -= RadToAng(m_dAddAng);
-			m_dRightAng -= RadToAng(m_dAddAng);
-			m_dLeftAng = LimitTo360(m_dLeftAng);
-			m_dRightAng = LimitTo360(m_dRightAng);
-		}
-	}
-	else
-	{
-
-		DWORD dwStopElapsedTime = dwCurrentTime - m_dwStopTimeRecord;
-
-		// 將毫秒轉為秒
-		double seconds = static_cast<double>(dwStopElapsedTime) / 1000.0;
-		m_dTimeAfter = seconds;
-
-		// 判斷是否還在減速度運動
-		if (m_dTimeAfter <= m_dDecTotalTime)
-		{
-			// 計算減少的旋轉角度
-			m_dReduceAng = RpmToAngVelocity(m_dStopNowRPM) * (m_dTimeAfter - m_dTimeBefore)
-				- (0.5 * RpmToAngVelocity(m_dAngDec) * (pow(m_dTimeAfter, 2) - pow(m_dTimeBefore, 2)));
-			
-			// 計算速度
-			m_dNowRPM = m_dStopNowRPM - m_dAngDec * m_dTimeAfter;
-
-			// 判斷順逆時針旋轉 (m_dRPM < 0 : 順時針，m_dRPM > 0 : 逆時針)
+			// 根據最大等速度值 (m_dRPM) 判斷減少的角度為順或逆時針減少
 			if (m_dRPM < 0)
 			{
-				m_strNowRPM.Format(_T(" % .7f"), -m_dNowRPM);
+				m_dLeftAng += RadToAng(m_dReduceAng);
+				m_dRightAng += RadToAng(m_dReduceAng);
+
+				m_dLeftAng = LimitTo360(m_dLeftAng);
+				m_dRightAng = LimitTo360(m_dRightAng);
 			}
 			else
 			{
-				m_strNowRPM.Format(_T(" % .7f"), m_dNowRPM);
+				m_dLeftAng -= RadToAng(m_dReduceAng);
+				m_dRightAng -= RadToAng(m_dReduceAng);
+
+				m_dLeftAng = LimitTo360(m_dLeftAng);
+				m_dRightAng = LimitTo360(m_dRightAng);
 			}
-			
-			// 將原本下一秒時間更新為前一秒
-			m_dTimeBefore = m_dTimeAfter;
-		}
-		else if ((m_dTimeBefore <= m_dDecTotalTime) && (m_dTimeAfter > m_dDecTotalTime))
-		{	// 當下一秒減速低過速度0時角度的計算
-			// 計算減少的旋轉角度
-			m_dReduceAng = pow((m_dDecTotalTime - m_dTimeBefore), 2) * RpmToAngVelocity(m_dAngDec) * 0.5;
-			
-			// 當下速度為 0.0
-			m_dNowRPM = 0.0;
-			m_strNowRPM.Format(_T(" % .7f"), m_dNowRPM);
-
-			// 將原本下一秒時間更新為前一秒
-			m_dTimeBefore = m_dTimeAfter;
-
-			// 將第一次按下 Start 條件設為 FALSE
-			g_bFirstStart = FALSE;
-		}
-		else
-		{	// 速度為 0.0 
-			m_dNowRPM = 0.0;
-			m_strNowRPM.Format(_T(" % .7f"), m_dNowRPM);
-
-			// 將原本下一秒時間更新為前一秒
-			m_dTimeBefore = m_dTimeAfter;
-
-			// 將第一次按下 Start 條件設為 FALSE
-			g_bFirstStart = FALSE;
-
 		}
 
-		// 根據最大等速度值 (m_dRPM) 判斷減少的角度為順或逆時針減少
-		if (m_dRPM < 0)
+		m_staticNowRPM.SetWindowText(m_strNowRPM);
+
+		// 當速度為零時初始化前一秒記錄的時間並且重新計時
+		if (m_dNowRPM == 0)
 		{
-			m_dLeftAng += RadToAng(m_dReduceAng);
-			m_dRightAng += RadToAng(m_dReduceAng);
-
-			m_dLeftAng = LimitTo360(m_dLeftAng);
-			m_dRightAng = LimitTo360(m_dRightAng);
+			OpenAllInputEdit();
+			m_dTimeBefore = 0;
+			KillTimer(1);
 		}
-		else
-		{
-			m_dLeftAng -= RadToAng(m_dReduceAng);
-			m_dRightAng -= RadToAng(m_dReduceAng);
 
-			m_dLeftAng = LimitTo360(m_dLeftAng);
-			m_dRightAng = LimitTo360(m_dRightAng);
-		}
-	}
-	
-	m_staticNowRPM.SetWindowText(m_strNowRPM);
-
-	// 當速度為零時初始化前一秒記錄的時間並且重新計時
-	if (m_dNowRPM == 0)
-	{
-		OpenAllInputEdit();
-		m_dTimeBefore = 0;
-		KillTimer(1);
+		// 更新繪圖區
+		CRect rectWindow;
+		GetDlgItem(IDC_STATIC_PAINT)->GetWindowRect(&rectWindow);
+		GetDlgItem(IDC_STATIC_PAINT)->GetParent()->ScreenToClient(rectWindow);
+		InvalidateRect(&rectWindow, TRUE);
+		UpdateWindow();
 	}
 
-	// 更新繪圖區
-	CRect rectWindow;
-	GetDlgItem(IDC_STATIC_PAINT)->GetWindowRect(&rectWindow);
-	GetDlgItem(IDC_STATIC_PAINT)->GetParent()->ScreenToClient(rectWindow);
-	InvalidateRect(&rectWindow, TRUE);
-	UpdateWindow();
-
-	CDialogEx::OnTimer(nIDEvent);
+	CDialogEx::OnTimer(1);
 }
 
 
