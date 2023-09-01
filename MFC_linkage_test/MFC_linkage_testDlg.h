@@ -47,6 +47,7 @@ public:
 	afx_msg void OnBnClickedButtonStop();
 
 	void OpenOrCloseAllInputEdit(BOOL bTurnOn);
+	double UpdateVariableIfChanged(CString strOld, CString strNew, double dMemberVariable);
 
 	//////////////////////////////////// 輸入的資料變數 ////////////////////////////////////
 	//左側滑塊區

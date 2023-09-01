@@ -68,9 +68,9 @@ CMFClinkagetestDlg::CMFClinkagetestDlg(CWnd* pParent /*=nullptr*/)
 	, m_strBearingRadius(_T("100"))
 	, m_strBearingPosX(_T("0"))
 	, m_strBearingPosY(_T("300"))
-	, m_strRightLeverRadius(_T("70"))
+	, m_strRightLeverRadius(_T("80"))
 	, m_strRightAng(_T("-90"))
-	, m_strLeftLeverRadius(_T("70"))
+	, m_strLeftLeverRadius(_T("80"))
 	, m_strLeftAng(_T("90"))
 	, m_strRPM(_T("100"))
 	, m_strAngAcc(_T("10"))
@@ -86,9 +86,9 @@ CMFClinkagetestDlg::CMFClinkagetestDlg(CWnd* pParent /*=nullptr*/)
 	, m_dBearingRadius(100.0)
 	, m_dBearingPosX(0.0)      						
 	, m_dBearingPosY(300.0)      						
-	, m_dRightLeverRadius(70.0)     					
+	, m_dRightLeverRadius(80.0)     					
 	, m_dRightAng(-90.0)     							
-	, m_dLeftLeverRadius(70.0)      					
+	, m_dLeftLeverRadius(80.0)      					
 	, m_dLeftAng(90.0)      							
 	, m_dRPM(100.0)      								
 	, m_dAngAcc(10.0)     							
@@ -389,7 +389,19 @@ void CMFClinkagetestDlg::OpenOrCloseAllInputEdit(BOOL bTurnOn)
 	m_editAngDec.EnableWindow(bTurnOn);
 }
 
-
+// 確認是否更改輸入的資料，有更改就更新資料
+double CMFClinkagetestDlg::UpdateVariableIfChanged(CString strOld, CString strNew, double dMemberVariable)
+{
+	if (strOld != strNew)
+	{
+		dMemberVariable = _ttof(strNew);
+		return dMemberVariable;
+	}
+	else
+	{
+		return dMemberVariable;
+	}
+}
 
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -589,48 +601,46 @@ void CMFClinkagetestDlg::OnBnClickedButtonStart()
 	// TODO: 在此加入控制項告知處理常式程式碼
 
 	// 更新輸入的長,寬,高
-	if (g_bFirstStart == TRUE)
-	{
-		UpdateData(TRUE);
-		m_editLeftRectLever.GetWindowText(m_strLeftRectLeverLen);
-		m_editLeftRectH.GetWindowText(m_strLeftRectH);
-		m_editLeftRectLen.GetWindowText(m_strLeftRectLen);
-		m_editLeftRectW.GetWindowText(m_strLeftRectW);
-		m_editRightRectLever.GetWindowText(m_strRightRectLeverLen);
-		m_editRightRectH.GetWindowText(m_strRightRectH);
-		m_editRightRectLen.GetWindowText(m_strRightRectLen);
-		m_editRightRectW.GetWindowText(m_strRightRectW);
-		m_editBearingRadius.GetWindowText(m_strBearingRadius);
-		m_editBearingPosX.GetWindowText(m_strBearingPosX);
-		m_editBearingPosY.GetWindowText(m_strBearingPosY);
-		m_editRightLeverRadius.GetWindowText(m_strRightLeverRadius);
-		m_editRightAng.GetWindowText(m_strRightAng);
-		m_editLeftLeverRadius.GetWindowText(m_strLeftLeverRadius);
-		m_editLeftAng.GetWindowText(m_strLeftAng);
-		m_editRPM.GetWindowText(m_strRPM);
-		m_editAngAcc.GetWindowText(m_strAngAcc);
-		m_editAngDec.GetWindowText(m_strAngDec);
+	CString strOldLeftRectLeverLen(_T("400"));
+	CString strOldLeftRectH(_T("100"));
+	CString strOldLeftRectLen(_T("60"));
+	CString strOldLeftRectW(_T("200"));
+	CString strOldRightRectLeverLen(_T("500"));
+	CString strOldRightRectH(_T("150"));
+	CString strOldRightRectLen(_T("60"));
+	CString strOldRightRectW(_T("200"));
+	CString strOldBearingRadius(_T("100"));
+	CString strOldBearingPosX(_T("0"));
+	CString strOldBearingPosY(_T("300"));
+	CString strOldRightLeverRadius(_T("70"));
+	CString strOldRightAng(_T("-90"));
+	CString strOldLeftLeverRadius(_T("70"));
+	CString strOldLeftAng(_T("90"));
+	CString strOldRPM(_T("100"));
+	CString strOldAngAcc(_T("10"));
+	CString strOldAngDec(_T("10"));
 
-		// 將 string 轉為 double
-		m_dLeftRectLeverLen = _ttof(m_strLeftRectLeverLen);
-		m_dLeftRectH = _ttof(m_strLeftRectH);
-		m_dLeftRectLen = _ttof(m_strLeftRectLen);
-		m_dLeftRectW = _ttof(m_strLeftRectW);
-		m_dRightRectLeverLen = _ttof(m_strRightRectLeverLen);
-		m_dRightRectH = _ttof(m_strRightRectH);
-		m_dRightRectLen = _ttof(m_strRightRectLen);
-		m_dRightRectW = _ttof(m_strRightRectW);
-		m_dBearingRadius = _ttof(m_strBearingRadius);
-		m_dBearingPosX = _ttof(m_strBearingPosX);
-		m_dBearingPosY = _ttof(m_strBearingPosY);
-		m_dRightLeverRadius = _ttof(m_strRightLeverRadius);
-		m_dRightAng = _ttof(m_strRightAng);
-		m_dLeftLeverRadius = _ttof(m_strLeftLeverRadius);
-		m_dLeftAng = _ttof(m_strLeftAng);
-		m_dRPM = _ttof(m_strRPM);
-		m_dAngAcc = _ttof(m_strAngAcc);
-		m_dAngDec = _ttof(m_strAngDec);
-	}
+	UpdateData(TRUE);
+
+	m_dLeftRectLeverLen = UpdateVariableIfChanged(strOldLeftRectLeverLen, m_strLeftRectLeverLen, m_dLeftRectLeverLen);
+	m_dLeftRectH = UpdateVariableIfChanged(strOldLeftRectH, m_strLeftRectH, m_dLeftRectH);
+	m_dLeftRectLen = UpdateVariableIfChanged(strOldLeftRectLen, m_strLeftRectLen, m_dLeftRectLen);
+	m_dLeftRectW = UpdateVariableIfChanged(strOldLeftRectW, m_strLeftRectW, m_dLeftRectW);
+	m_dRightRectLeverLen = UpdateVariableIfChanged(strOldRightRectLeverLen, m_strRightRectLeverLen, m_dRightRectLeverLen);
+	m_dRightRectH = UpdateVariableIfChanged(strOldRightRectH, m_strRightRectH, m_dRightRectH);
+	m_dRightRectLen = UpdateVariableIfChanged(strOldRightRectLen, m_strRightRectLen, m_dRightRectLen);
+	m_dRightRectW = UpdateVariableIfChanged(strOldRightRectW, m_strRightRectW, m_dRightRectW);
+	m_dBearingRadius = UpdateVariableIfChanged(strOldBearingRadius, m_strBearingRadius, m_dBearingRadius);
+	m_dBearingPosX = UpdateVariableIfChanged(strOldBearingPosX, m_strBearingPosX, m_dBearingPosX);
+	m_dBearingPosY = UpdateVariableIfChanged(strOldBearingPosY, m_strBearingPosY, m_dBearingPosY);
+	m_dRightLeverRadius = UpdateVariableIfChanged(strOldRightLeverRadius, m_strRightLeverRadius, m_dRightLeverRadius);
+	m_dRightAng = UpdateVariableIfChanged(strOldRightAng, m_strRightAng, m_dRightAng);
+	m_dLeftLeverRadius = UpdateVariableIfChanged(strOldLeftLeverRadius, m_strLeftLeverRadius, m_dLeftLeverRadius);
+	m_dLeftAng = UpdateVariableIfChanged(strOldLeftAng, m_strLeftAng, m_dLeftAng);
+	m_dRPM = UpdateVariableIfChanged(strOldRPM, m_strRPM, m_dRPM);
+	m_dAngAcc = UpdateVariableIfChanged(strOldAngAcc, m_strAngAcc, m_dAngAcc);
+	m_dAngDec = UpdateVariableIfChanged(strOldAngDec, m_strAngDec, m_dAngDec);
+
 
 
 	// Start 啟動後，關閉輸入框
@@ -724,45 +734,45 @@ void CMFClinkagetestDlg::OnBnClickedButtonStart()
 			g_dwStartTime = timeGetTime();
 			SetTimer(1, nInterval, NULL);
 
-			UpdateData(TRUE);
-			m_editLeftRectLever.GetWindowText(m_strLeftRectLeverLen);
-			m_editLeftRectH.GetWindowText(m_strLeftRectH);
-			m_editLeftRectLen.GetWindowText(m_strLeftRectLen);
-			m_editLeftRectW.GetWindowText(m_strLeftRectW);
-			m_editRightRectLever.GetWindowText(m_strRightRectLeverLen);
-			m_editRightRectH.GetWindowText(m_strRightRectH);
-			m_editRightRectLen.GetWindowText(m_strRightRectLen);
-			m_editRightRectW.GetWindowText(m_strRightRectW);
-			m_editBearingRadius.GetWindowText(m_strBearingRadius);
-			m_editBearingPosX.GetWindowText(m_strBearingPosX);
-			m_editBearingPosY.GetWindowText(m_strBearingPosY);
-			m_editRightLeverRadius.GetWindowText(m_strRightLeverRadius);
-			m_editRightAng.GetWindowText(m_strRightAng);
-			m_editLeftLeverRadius.GetWindowText(m_strLeftLeverRadius);
-			m_editLeftAng.GetWindowText(m_strLeftAng);
-			m_editRPM.GetWindowText(m_strRPM);
-			m_editAngAcc.GetWindowText(m_strAngAcc);
-			m_editAngDec.GetWindowText(m_strAngDec);
+			//UpdateData(TRUE);
+			//m_editLeftRectLever.GetWindowText(m_strLeftRectLeverLen);
+			//m_editLeftRectH.GetWindowText(m_strLeftRectH);
+			//m_editLeftRectLen.GetWindowText(m_strLeftRectLen);
+			//m_editLeftRectW.GetWindowText(m_strLeftRectW);
+			//m_editRightRectLever.GetWindowText(m_strRightRectLeverLen);
+			//m_editRightRectH.GetWindowText(m_strRightRectH);
+			//m_editRightRectLen.GetWindowText(m_strRightRectLen);
+			//m_editRightRectW.GetWindowText(m_strRightRectW);
+			//m_editBearingRadius.GetWindowText(m_strBearingRadius);
+			//m_editBearingPosX.GetWindowText(m_strBearingPosX);
+			//m_editBearingPosY.GetWindowText(m_strBearingPosY);
+			//m_editRightLeverRadius.GetWindowText(m_strRightLeverRadius);
+			//m_editRightAng.GetWindowText(m_strRightAng);
+			//m_editLeftLeverRadius.GetWindowText(m_strLeftLeverRadius);
+			//m_editLeftAng.GetWindowText(m_strLeftAng);
+			//m_editRPM.GetWindowText(m_strRPM);
+			//m_editAngAcc.GetWindowText(m_strAngAcc);
+			//m_editAngDec.GetWindowText(m_strAngDec);
 
-			// 將 string 轉為 double
-			m_dLeftRectLeverLen = _ttof(m_strLeftRectLeverLen);
-			m_dLeftRectH = _ttof(m_strLeftRectH);
-			m_dLeftRectLen = _ttof(m_strLeftRectLen);
-			m_dLeftRectW = _ttof(m_strLeftRectW);
-			m_dRightRectLeverLen = _ttof(m_strRightRectLeverLen);
-			m_dRightRectH = _ttof(m_strRightRectH);
-			m_dRightRectLen = _ttof(m_strRightRectLen);
-			m_dRightRectW = _ttof(m_strRightRectW);
-			m_dBearingRadius = _ttof(m_strBearingRadius);
-			m_dBearingPosX = _ttof(m_strBearingPosX);
-			m_dBearingPosY = _ttof(m_strBearingPosY);
-			m_dRightLeverRadius = _ttof(m_strRightLeverRadius);
-			m_dRightAng = _ttof(m_strRightAng);
-			m_dLeftLeverRadius = _ttof(m_strLeftLeverRadius);
-			m_dLeftAng = _ttof(m_strLeftAng);
-			m_dRPM = _ttof(m_strRPM);
-			m_dAngAcc = _ttof(m_strAngAcc);
-			m_dAngDec = _ttof(m_strAngDec);
+			//// 將 string 轉為 double
+			//m_dLeftRectLeverLen = _ttof(m_strLeftRectLeverLen);
+			//m_dLeftRectH = _ttof(m_strLeftRectH);
+			//m_dLeftRectLen = _ttof(m_strLeftRectLen);
+			//m_dLeftRectW = _ttof(m_strLeftRectW);
+			//m_dRightRectLeverLen = _ttof(m_strRightRectLeverLen);
+			//m_dRightRectH = _ttof(m_strRightRectH);
+			//m_dRightRectLen = _ttof(m_strRightRectLen);
+			//m_dRightRectW = _ttof(m_strRightRectW);
+			//m_dBearingRadius = _ttof(m_strBearingRadius);
+			//m_dBearingPosX = _ttof(m_strBearingPosX);
+			//m_dBearingPosY = _ttof(m_strBearingPosY);
+			//m_dRightLeverRadius = _ttof(m_strRightLeverRadius);
+			//m_dRightAng = _ttof(m_strRightAng);
+			//m_dLeftLeverRadius = _ttof(m_strLeftLeverRadius);
+			//m_dLeftAng = _ttof(m_strLeftAng);
+			//m_dRPM = _ttof(m_strRPM);
+			//m_dAngAcc = _ttof(m_strAngAcc);
+			//m_dAngDec = _ttof(m_strAngDec);
 
 		}
 	}
@@ -848,6 +858,13 @@ void CMFClinkagetestDlg::OnBnClickedButtonStart()
 	////////////////////////////////////////////////////////////////////////////////////////
 	// 加減速度限制
 	if ((m_dAngAcc < 0) || (m_dAngDec < 0))
+	{
+		KillTimer(1);
+		OpenOrCloseAllInputEdit(TRUE);
+		g_bFirstStart = TRUE;
+	}
+
+	if (m_dRPM == 0)
 	{
 		KillTimer(1);
 		OpenOrCloseAllInputEdit(TRUE);
