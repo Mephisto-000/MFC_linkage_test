@@ -366,51 +366,32 @@ CPoint RightRectCenter (double dRightLeverLen, double dRightRectH, double dRight
 	return ptRightRectCenterPos;
 }
 
-// 開啟所有輸入框
-void CMFClinkagetestDlg::OpenAllInputEdit()
+// 開關樞紐輸入框
+void CMFClinkagetestDlg::OpenOrCloseAllInputEdit(BOOL bTurnOn)
 {
-	m_editLeftRectLever.EnableWindow(TRUE);
-	m_editLeftRectH.EnableWindow(TRUE);
-	m_editLeftRectLen.EnableWindow(TRUE);
-	m_editLeftRectW.EnableWindow(TRUE);
-	m_editRightRectLever.EnableWindow(TRUE);
-	m_editRightRectH.EnableWindow(TRUE);
-	m_editRightRectLen.EnableWindow(TRUE);
-	m_editRightRectW.EnableWindow(TRUE);
-	m_editBearingRadius.EnableWindow(TRUE);
-	m_editBearingPosX.EnableWindow(TRUE);
-	m_editBearingPosY.EnableWindow(TRUE);
-	m_editRightLeverRadius.EnableWindow(TRUE);
-	m_editRightAng.EnableWindow(TRUE);
-	m_editLeftLeverRadius.EnableWindow(TRUE);
-	m_editLeftAng.EnableWindow(TRUE);
-	m_editRPM.EnableWindow(TRUE);
-	m_editAngAcc.EnableWindow(TRUE);
-	m_editAngDec.EnableWindow(TRUE);
+	m_editLeftRectLever.EnableWindow(bTurnOn);
+	m_editLeftRectH.EnableWindow(bTurnOn);
+	m_editLeftRectLen.EnableWindow(bTurnOn);
+	m_editLeftRectW.EnableWindow(bTurnOn);
+	m_editRightRectLever.EnableWindow(bTurnOn);
+	m_editRightRectH.EnableWindow(bTurnOn);
+	m_editRightRectLen.EnableWindow(bTurnOn);
+	m_editRightRectW.EnableWindow(bTurnOn);
+	m_editBearingRadius.EnableWindow(bTurnOn);
+	m_editBearingPosX.EnableWindow(bTurnOn);
+	m_editBearingPosY.EnableWindow(bTurnOn);
+	m_editRightLeverRadius.EnableWindow(bTurnOn);
+	m_editRightAng.EnableWindow(bTurnOn);
+	m_editLeftLeverRadius.EnableWindow(bTurnOn);
+	m_editLeftAng.EnableWindow(bTurnOn);
+	m_editRPM.EnableWindow(bTurnOn);
+	m_editAngAcc.EnableWindow(bTurnOn);
+	m_editAngDec.EnableWindow(bTurnOn);
 }
 
-// 關閉所有輸入框
-void CMFClinkagetestDlg::CloseAllInputEdit()
-{
-	m_editLeftRectLever.EnableWindow(FALSE);
-	m_editLeftRectH.EnableWindow(FALSE);
-	m_editLeftRectLen.EnableWindow(FALSE);
-	m_editLeftRectW.EnableWindow(FALSE);
-	m_editRightRectLever.EnableWindow(FALSE);
-	m_editRightRectH.EnableWindow(FALSE);
-	m_editRightRectLen.EnableWindow(FALSE);
-	m_editRightRectW.EnableWindow(FALSE);
-	m_editBearingRadius.EnableWindow(FALSE);
-	m_editBearingPosX.EnableWindow(FALSE);
-	m_editBearingPosY.EnableWindow(FALSE);
-	m_editRightLeverRadius.EnableWindow(FALSE);
-	m_editRightAng.EnableWindow(FALSE);
-	m_editLeftLeverRadius.EnableWindow(FALSE);
-	m_editLeftAng.EnableWindow(FALSE);
-	m_editRPM.EnableWindow(FALSE);
-	m_editAngAcc.EnableWindow(FALSE);
-	m_editAngDec.EnableWindow(FALSE);
-}
+
+
+
 ////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////
 
@@ -653,7 +634,7 @@ void CMFClinkagetestDlg::OnBnClickedButtonStart()
 
 
 	// Start 啟動後，關閉輸入框
-	CloseAllInputEdit();
+	OpenOrCloseAllInputEdit(FALSE);
 
 	// 中心圓軸與滑塊最大距離條件設定
 	// 當桿長長度大於此條件時，直接暫停並重新輸入
@@ -793,21 +774,21 @@ void CMFClinkagetestDlg::OnBnClickedButtonStart()
 	if ((dLeftClientMaxLenX >= dLeftMaxLenX) || (dRightClientMaxLenX >= dRightMaxLenX))
 	{
 		KillTimer(1);
-		OpenAllInputEdit();
+		OpenOrCloseAllInputEdit(TRUE);
 		g_bFirstStart = TRUE;
 	}
 
 	if ((dLeftClientMinLeverLen <= 0) || (dRightClientMinLeverLen <= 0))
 	{
 		KillTimer(1);
-		OpenAllInputEdit();
+		OpenOrCloseAllInputEdit(TRUE);
 		g_bFirstStart = TRUE;
 	}
 
 	if ((m_dLeftRectLeverLen <= 0) || (m_dRightRectLeverLen <= 0))
 	{
 		KillTimer(1);
-		OpenAllInputEdit();
+		OpenOrCloseAllInputEdit(TRUE);
 		g_bFirstStart = TRUE;
 	}
 	////////////////////////////////////////////////////////////////////////////////////////
@@ -816,21 +797,21 @@ void CMFClinkagetestDlg::OnBnClickedButtonStart()
 	if ((m_dLeftRectH < 0) || (m_dRightRectH < 0))
 	{
 		KillTimer(1);
-		OpenAllInputEdit();
+		OpenOrCloseAllInputEdit(TRUE);
 		g_bFirstStart = TRUE;
 	}
 
 	if ((m_dLeftRectLen <= 0) || (m_dRightRectLen <= 0))
 	{
 		KillTimer(1);
-		OpenAllInputEdit();
+		OpenOrCloseAllInputEdit(TRUE);
 		g_bFirstStart = TRUE;
 	}
 
 	if ((m_dLeftRectW <= 0) || (m_dRightRectW <= 0))
 	{
 		KillTimer(1);
-		OpenAllInputEdit();
+		OpenOrCloseAllInputEdit(TRUE);
 		g_bFirstStart = TRUE;
 	}
 	////////////////////////////////////////////////////////////////////////////////////////
@@ -839,28 +820,28 @@ void CMFClinkagetestDlg::OnBnClickedButtonStart()
 	if ((dBearingTopState <= 0) || (m_dBearingPosY < m_dBearingRadius) || (m_dBearingPosY > iHeightPaintRegion))
 	{
 		KillTimer(1);
-		OpenAllInputEdit();
+		OpenOrCloseAllInputEdit(TRUE);
 		g_bFirstStart = TRUE;
 	}
 	// 中心圓軸
 	if ((dBearingLeftStateW <= 0) || (dBearingRightStateW <= 0))
 	{
 		KillTimer(1);
-		OpenAllInputEdit();
+		OpenOrCloseAllInputEdit(TRUE);
 		g_bFirstStart = TRUE;
 	}
 	// 中心圓軸與左右側半徑限制
 	if ((m_dBearingRadius < m_dLeftLeverRadius) || (m_dBearingRadius < m_dRightLeverRadius))
 	{
 		KillTimer(1);
-		OpenAllInputEdit();
+		OpenOrCloseAllInputEdit(TRUE);
 		g_bFirstStart = TRUE;
 	}
 	// 中心圓軸半徑
 	if (m_dBearingRadius <= 0)
 	{
 		KillTimer(1);
-		OpenAllInputEdit();
+		OpenOrCloseAllInputEdit(TRUE);
 		g_bFirstStart = TRUE;
 	}
 	////////////////////////////////////////////////////////////////////////////////////////
@@ -869,7 +850,7 @@ void CMFClinkagetestDlg::OnBnClickedButtonStart()
 	if ((m_dAngAcc < 0) || (m_dAngDec < 0))
 	{
 		KillTimer(1);
-		OpenAllInputEdit();
+		OpenOrCloseAllInputEdit(TRUE);
 		g_bFirstStart = TRUE;
 	}
 	////////////////////////////////////////////////////////////////////////////////////////
@@ -897,7 +878,7 @@ void CMFClinkagetestDlg::OnBnClickedButtonStop()
 	// 關閉輸入框
 	if ((g_bStopState == TRUE))
 	{
-		OpenAllInputEdit();
+		OpenOrCloseAllInputEdit(TRUE);
 	}
 
 	// 計算減速度區歷時時間長
@@ -1081,7 +1062,7 @@ void CMFClinkagetestDlg::OnTimer(UINT_PTR nIDEvent)
 		// 當速度為零時初始化前一秒記錄的時間並且重新計時
 		if (m_dNowRPM == 0)
 		{
-			OpenAllInputEdit();
+			OpenOrCloseAllInputEdit(TRUE);
 			m_dTimeBefore = 0;
 			KillTimer(1);
 		}
