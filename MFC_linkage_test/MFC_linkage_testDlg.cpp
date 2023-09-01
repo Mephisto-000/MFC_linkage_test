@@ -291,6 +291,16 @@ CRect BearingPos (double dRadius, double dBearingX, double dBearingY, int iPaint
 	return rectBearingPos;
 }
 
+// 傳回左右側轉軸內切矩形
+CRect LeftRightBearingPos(CPoint ptLeftRightBearingCenter)
+{
+	CPoint ptX1Y1(RoundDoubleToInt(ptLeftRightBearingCenter.x - 20), RoundDoubleToInt(ptLeftRightBearingCenter.y - 20));
+	CPoint ptX2Y2(RoundDoubleToInt(ptLeftRightBearingCenter.x + 20), RoundDoubleToInt(ptLeftRightBearingCenter.y + 20));
+	CRect rectLeftRightBearingPos(ptX1Y1, ptX2Y2);
+
+	return rectLeftRightBearingPos;
+}
+
 
 // 傳回圓軸圓心座標
 CPoint BearingCenter (CRect rectBearing)
@@ -529,7 +539,7 @@ void CMFClinkagetestDlg::DrawToBuffer(CDC* pDC)
 	CPen penBearingBoarder(PS_SOLID, m_iBearingBoarderW * 2, RGB(0, 0, 0));
 
 	// 定義兩桿線段
-	CPen penLever(PS_SOLID, 4, RGB(0, 0, 0));
+	CPen penLever(PS_SOLID, 8, RGB(0, 0, 0));
 
 	// 下方矩形顏色
 	CBrush brushLowerRect;
@@ -543,6 +553,10 @@ void CMFClinkagetestDlg::DrawToBuffer(CDC* pDC)
 	CBrush brushMainBearing;
 	brushMainBearing.CreateSolidBrush(RGB(255, 0, 0));
 
+	// 左右轉軸樞紐顏色
+	CBrush brushLeftRightBearing;
+	brushLeftRightBearing.CreateSolidBrush(RGB(0, 0, 255));
+
 	// 將黑色邊界 UpperRectBoarderPen 選入 dc
 	CPen* pOldPenUpperRectBoarder = pDC->SelectObject(&penUpperRectBoarder);
 
@@ -554,6 +568,7 @@ void CMFClinkagetestDlg::DrawToBuffer(CDC* pDC)
 
 	// 中心圓軸圓心
 	CPoint ptBearingCenterPos = BearingCenter(rectBearingRect);
+
 
 	// 計算左右滑塊中心座標
 	CPoint ptLeftBearingCenter = LeftBearingCenter(m_dLeftLeverRadius, m_dLeftAng, ptBearingCenterPos);
@@ -611,6 +626,15 @@ void CMFClinkagetestDlg::DrawToBuffer(CDC* pDC)
 	pDC->MoveTo(ptRightBearingCenter);
 	pDC->LineTo(ptRightUpperCenter);
 	pDC->SelectObject(pOldPenLever);
+
+	// 左右轉軸樞紐繪圖
+	CBrush* pOldBrushLeftRightBearing = pDC->SelectObject(&brushLeftRightBearing);
+	CRect rectLeftBearingRect = LeftRightBearingPos(ptLeftBearingCenter);
+	CRect rectRightBearingRect = LeftRightBearingPos(ptRightBearingCenter);
+
+	pDC->Ellipse(rectLeftBearingRect);
+	pDC->Ellipse(rectRightBearingRect);
+	pDC->SelectObject(pOldBrushLeftRightBearing);
 
 }
 
@@ -763,47 +787,6 @@ void CMFClinkagetestDlg::OnBnClickedButtonStart()
 			// 記錄按下 Start 的絕對時間
 			g_dwStartTime = timeGetTime();
 			SetTimer(1, nInterval, NULL);
-
-			//UpdateData(TRUE);
-			//m_editLeftRectLever.GetWindowText(m_strLeftRectLeverLen);
-			//m_editLeftRectH.GetWindowText(m_strLeftRectH);
-			//m_editLeftRectLen.GetWindowText(m_strLeftRectLen);
-			//m_editLeftRectW.GetWindowText(m_strLeftRectW);
-			//m_editRightRectLever.GetWindowText(m_strRightRectLeverLen);
-			//m_editRightRectH.GetWindowText(m_strRightRectH);
-			//m_editRightRectLen.GetWindowText(m_strRightRectLen);
-			//m_editRightRectW.GetWindowText(m_strRightRectW);
-			//m_editBearingRadius.GetWindowText(m_strBearingRadius);
-			//m_editBearingPosX.GetWindowText(m_strBearingPosX);
-			//m_editBearingPosY.GetWindowText(m_strBearingPosY);
-			//m_editRightLeverRadius.GetWindowText(m_strRightLeverRadius);
-			//m_editRightAng.GetWindowText(m_strRightAng);
-			//m_editLeftLeverRadius.GetWindowText(m_strLeftLeverRadius);
-			//m_editLeftAng.GetWindowText(m_strLeftAng);
-			//m_editRPM.GetWindowText(m_strRPM);
-			//m_editAngAcc.GetWindowText(m_strAngAcc);
-			//m_editAngDec.GetWindowText(m_strAngDec);
-
-			//// 將 string 轉為 double
-			//m_dLeftRectLeverLen = _ttof(m_strLeftRectLeverLen);
-			//m_dLeftRectH = _ttof(m_strLeftRectH);
-			//m_dLeftRectLen = _ttof(m_strLeftRectLen);
-			//m_dLeftRectW = _ttof(m_strLeftRectW);
-			//m_dRightRectLeverLen = _ttof(m_strRightRectLeverLen);
-			//m_dRightRectH = _ttof(m_strRightRectH);
-			//m_dRightRectLen = _ttof(m_strRightRectLen);
-			//m_dRightRectW = _ttof(m_strRightRectW);
-			//m_dBearingRadius = _ttof(m_strBearingRadius);
-			//m_dBearingPosX = _ttof(m_strBearingPosX);
-			//m_dBearingPosY = _ttof(m_strBearingPosY);
-			//m_dRightLeverRadius = _ttof(m_strRightLeverRadius);
-			//m_dRightAng = _ttof(m_strRightAng);
-			//m_dLeftLeverRadius = _ttof(m_strLeftLeverRadius);
-			//m_dLeftAng = _ttof(m_strLeftAng);
-			//m_dRPM = _ttof(m_strRPM);
-			//m_dAngAcc = _ttof(m_strAngAcc);
-			//m_dAngDec = _ttof(m_strAngDec);
-
 		}
 	}
 
@@ -871,7 +854,7 @@ void CMFClinkagetestDlg::OnBnClickedButtonStart()
 		g_bFirstStart = TRUE;
 	}
 	// 中心圓軸與左右側半徑限制
-	if ((m_dBearingRadius < m_dLeftLeverRadius) || (m_dBearingRadius < m_dRightLeverRadius))
+	if ((m_dBearingRadius < m_dLeftLeverRadius + 20) || (m_dBearingRadius < m_dRightLeverRadius + 20))
 	{
 		KillTimer(1);
 		OpenOrCloseAllInputEdit(TRUE);
