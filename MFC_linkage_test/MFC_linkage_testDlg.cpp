@@ -113,7 +113,26 @@ CMFClinkagetestDlg::CMFClinkagetestDlg(CWnd* pParent /*=nullptr*/)
 	, m_dReduceAng(0.0)                          
 	, m_dwStopTimeRecord(0)                      
 	, m_dNowRPM(0.0)                            
-	, m_strNowRPM(_T(""))                    
+	, m_strNowRPM(_T(""))
+
+	, m_strOldLeftRectLeverLen(_T("400"))
+	, m_strOldLeftRectH(_T("100"))
+	, m_strOldLeftRectLen(_T("60"))
+	, m_strOldLeftRectW(_T("200"))
+	, m_strOldRightRectLeverLen(_T("500"))
+	, m_strOldRightRectH(_T("150"))
+	, m_strOldRightRectLen(_T("60"))
+	, m_strOldRightRectW(_T("200"))
+	, m_strOldBearingRadius(_T("100"))
+	, m_strOldBearingPosX(_T("0"))
+	, m_strOldBearingPosY(_T("300"))
+	, m_strOldRightLeverRadius(_T("70"))
+	, m_strOldRightAng(_T("-90"))
+	, m_strOldLeftLeverRadius(_T("70"))
+	, m_strOldLeftAng(_T("90"))
+	, m_strOldRPM(_T("100"))
+	, m_strOldAngAcc(_T("10"))
+	, m_strOldAngDec(_T("10"))
 {
 	
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
@@ -390,7 +409,7 @@ void CMFClinkagetestDlg::OpenOrCloseAllInputEdit(BOOL bTurnOn)
 }
 
 // 確認是否更改輸入的資料，有更改就更新資料
-double CMFClinkagetestDlg::UpdateVariableIfChanged(CString strOld, CString strNew, double dMemberVariable)
+double CMFClinkagetestDlg::UpdateDoubleVariableIfChanged(CString strOld, CString strNew, double dMemberVariable)
 {
 	if (strOld != strNew)
 	{
@@ -403,6 +422,17 @@ double CMFClinkagetestDlg::UpdateVariableIfChanged(CString strOld, CString strNe
 	}
 }
 
+CString CMFClinkagetestDlg::UpdateStringVariableIfChanged(CString strOld, CString strNew)
+{
+	if (strOld != strNew)
+	{
+		return strNew;
+	}
+	else
+	{
+		return strOld;
+	}
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -601,45 +631,45 @@ void CMFClinkagetestDlg::OnBnClickedButtonStart()
 	// TODO: 在此加入控制項告知處理常式程式碼
 
 	// 更新輸入的長,寬,高
-	CString strOldLeftRectLeverLen(_T("400"));
-	CString strOldLeftRectH(_T("100"));
-	CString strOldLeftRectLen(_T("60"));
-	CString strOldLeftRectW(_T("200"));
-	CString strOldRightRectLeverLen(_T("500"));
-	CString strOldRightRectH(_T("150"));
-	CString strOldRightRectLen(_T("60"));
-	CString strOldRightRectW(_T("200"));
-	CString strOldBearingRadius(_T("100"));
-	CString strOldBearingPosX(_T("0"));
-	CString strOldBearingPosY(_T("300"));
-	CString strOldRightLeverRadius(_T("70"));
-	CString strOldRightAng(_T("-90"));
-	CString strOldLeftLeverRadius(_T("70"));
-	CString strOldLeftAng(_T("90"));
-	CString strOldRPM(_T("100"));
-	CString strOldAngAcc(_T("10"));
-	CString strOldAngDec(_T("10"));
-
 	UpdateData(TRUE);
 
-	m_dLeftRectLeverLen = UpdateVariableIfChanged(strOldLeftRectLeverLen, m_strLeftRectLeverLen, m_dLeftRectLeverLen);
-	m_dLeftRectH = UpdateVariableIfChanged(strOldLeftRectH, m_strLeftRectH, m_dLeftRectH);
-	m_dLeftRectLen = UpdateVariableIfChanged(strOldLeftRectLen, m_strLeftRectLen, m_dLeftRectLen);
-	m_dLeftRectW = UpdateVariableIfChanged(strOldLeftRectW, m_strLeftRectW, m_dLeftRectW);
-	m_dRightRectLeverLen = UpdateVariableIfChanged(strOldRightRectLeverLen, m_strRightRectLeverLen, m_dRightRectLeverLen);
-	m_dRightRectH = UpdateVariableIfChanged(strOldRightRectH, m_strRightRectH, m_dRightRectH);
-	m_dRightRectLen = UpdateVariableIfChanged(strOldRightRectLen, m_strRightRectLen, m_dRightRectLen);
-	m_dRightRectW = UpdateVariableIfChanged(strOldRightRectW, m_strRightRectW, m_dRightRectW);
-	m_dBearingRadius = UpdateVariableIfChanged(strOldBearingRadius, m_strBearingRadius, m_dBearingRadius);
-	m_dBearingPosX = UpdateVariableIfChanged(strOldBearingPosX, m_strBearingPosX, m_dBearingPosX);
-	m_dBearingPosY = UpdateVariableIfChanged(strOldBearingPosY, m_strBearingPosY, m_dBearingPosY);
-	m_dRightLeverRadius = UpdateVariableIfChanged(strOldRightLeverRadius, m_strRightLeverRadius, m_dRightLeverRadius);
-	m_dRightAng = UpdateVariableIfChanged(strOldRightAng, m_strRightAng, m_dRightAng);
-	m_dLeftLeverRadius = UpdateVariableIfChanged(strOldLeftLeverRadius, m_strLeftLeverRadius, m_dLeftLeverRadius);
-	m_dLeftAng = UpdateVariableIfChanged(strOldLeftAng, m_strLeftAng, m_dLeftAng);
-	m_dRPM = UpdateVariableIfChanged(strOldRPM, m_strRPM, m_dRPM);
-	m_dAngAcc = UpdateVariableIfChanged(strOldAngAcc, m_strAngAcc, m_dAngAcc);
-	m_dAngDec = UpdateVariableIfChanged(strOldAngDec, m_strAngDec, m_dAngDec);
+	m_dLeftRectLeverLen = UpdateDoubleVariableIfChanged(m_strOldLeftRectLeverLen, m_strLeftRectLeverLen, m_dLeftRectLeverLen);
+	m_dLeftRectH = UpdateDoubleVariableIfChanged(m_strOldLeftRectH, m_strLeftRectH, m_dLeftRectH);
+	m_dLeftRectLen = UpdateDoubleVariableIfChanged(m_strOldLeftRectLen, m_strLeftRectLen, m_dLeftRectLen);
+	m_dLeftRectW = UpdateDoubleVariableIfChanged(m_strOldLeftRectW, m_strLeftRectW, m_dLeftRectW);
+	m_dRightRectLeverLen = UpdateDoubleVariableIfChanged(m_strOldRightRectLeverLen, m_strRightRectLeverLen, m_dRightRectLeverLen);
+	m_dRightRectH = UpdateDoubleVariableIfChanged(m_strOldRightRectH, m_strRightRectH, m_dRightRectH);
+	m_dRightRectLen = UpdateDoubleVariableIfChanged(m_strOldRightRectLen, m_strRightRectLen, m_dRightRectLen);
+	m_dRightRectW = UpdateDoubleVariableIfChanged(m_strOldRightRectW, m_strRightRectW, m_dRightRectW);
+	m_dBearingRadius = UpdateDoubleVariableIfChanged(m_strOldBearingRadius, m_strBearingRadius, m_dBearingRadius);
+	m_dBearingPosX = UpdateDoubleVariableIfChanged(m_strOldBearingPosX, m_strBearingPosX, m_dBearingPosX);
+	m_dBearingPosY = UpdateDoubleVariableIfChanged(m_strOldBearingPosY, m_strBearingPosY, m_dBearingPosY);
+	m_dRightLeverRadius = UpdateDoubleVariableIfChanged(m_strOldRightLeverRadius, m_strRightLeverRadius, m_dRightLeverRadius);
+	m_dRightAng = UpdateDoubleVariableIfChanged(m_strOldRightAng, m_strRightAng, m_dRightAng);
+	m_dLeftLeverRadius = UpdateDoubleVariableIfChanged(m_strOldLeftLeverRadius, m_strLeftLeverRadius, m_dLeftLeverRadius);
+	m_dLeftAng = UpdateDoubleVariableIfChanged(m_strOldLeftAng, m_strLeftAng, m_dLeftAng);
+	m_dRPM = UpdateDoubleVariableIfChanged(m_strOldRPM, m_strRPM, m_dRPM);
+	m_dAngAcc = UpdateDoubleVariableIfChanged(m_strOldAngAcc, m_strAngAcc, m_dAngAcc);
+	m_dAngDec = UpdateDoubleVariableIfChanged(m_strOldAngDec, m_strAngDec, m_dAngDec);
+
+	m_strOldLeftRectLeverLen = UpdateStringVariableIfChanged(m_strOldLeftRectLeverLen, m_strLeftRectLeverLen);
+	m_strOldLeftRectH = UpdateStringVariableIfChanged(m_strOldLeftRectH, m_strLeftRectH);
+	m_strOldLeftRectLen = UpdateStringVariableIfChanged(m_strOldLeftRectLen, m_strLeftRectLen);
+	m_strOldLeftRectW = UpdateStringVariableIfChanged(m_strOldLeftRectW, m_strLeftRectW);
+	m_strOldRightRectLeverLen = UpdateStringVariableIfChanged(m_strOldRightRectLeverLen, m_strRightRectLeverLen);
+	m_strOldRightRectH = UpdateStringVariableIfChanged(m_strOldRightRectH, m_strRightRectH);
+	m_strOldRightRectLen = UpdateStringVariableIfChanged(m_strOldRightRectLen, m_strRightRectLen);
+	m_strOldRightRectW = UpdateStringVariableIfChanged(m_strOldRightRectW, m_strRightRectW);
+	m_strOldBearingRadius = UpdateStringVariableIfChanged(m_strOldBearingRadius, m_strBearingRadius);
+	m_strOldBearingPosX = UpdateStringVariableIfChanged(m_strOldBearingPosX, m_strBearingPosX);
+	m_strOldBearingPosY = UpdateStringVariableIfChanged(m_strOldBearingPosY, m_strBearingPosY);
+	m_strOldRightLeverRadius = UpdateStringVariableIfChanged(m_strOldRightLeverRadius, m_strRightLeverRadius);
+	m_strOldRightAng = UpdateStringVariableIfChanged(m_strOldRightAng, m_strRightAng);
+	m_strOldLeftLeverRadius = UpdateStringVariableIfChanged(m_strOldLeftLeverRadius, m_strLeftLeverRadius);
+	m_strOldLeftAng = UpdateStringVariableIfChanged(m_strOldLeftAng, m_strLeftAng);
+	m_strOldRPM = UpdateStringVariableIfChanged(m_strOldRPM, m_strRPM);
+	m_strOldAngAcc = UpdateStringVariableIfChanged(m_strOldAngAcc, m_strAngAcc);
+	m_strOldAngDec = UpdateStringVariableIfChanged(m_strOldAngDec, m_strAngDec);
 
 
 

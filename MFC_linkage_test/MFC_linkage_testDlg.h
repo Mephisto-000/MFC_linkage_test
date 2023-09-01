@@ -47,7 +47,8 @@ public:
 	afx_msg void OnBnClickedButtonStop();
 
 	void OpenOrCloseAllInputEdit(BOOL bTurnOn);
-	double UpdateVariableIfChanged(CString strOld, CString strNew, double dMemberVariable);
+	double UpdateDoubleVariableIfChanged(CString strOld, CString strNew, double dMemberVariable);
+	CString UpdateStringVariableIfChanged(CString strOld, CString strNew);
 
 	//////////////////////////////////// 輸入的資料變數 ////////////////////////////////////
 	//左側滑塊區
@@ -73,6 +74,25 @@ public:
 	CString m_strRPM;                                   // 每秒圈數
 	CString m_strAngAcc;                                // 角加速度
 	CString m_strAngDec;                                // 角減速度
+
+	CString m_strOldLeftRectLeverLen;
+	CString m_strOldLeftRectH;
+	CString m_strOldLeftRectLen;
+	CString m_strOldLeftRectW;
+	CString m_strOldRightRectLeverLen;
+	CString m_strOldRightRectH;
+	CString m_strOldRightRectLen;
+	CString m_strOldRightRectW;
+	CString m_strOldBearingRadius;
+	CString m_strOldBearingPosX;
+	CString m_strOldBearingPosY;
+	CString m_strOldRightLeverRadius;
+	CString m_strOldRightAng;
+	CString m_strOldLeftLeverRadius;
+	CString m_strOldLeftAng;
+	CString m_strOldRPM;
+	CString m_strOldAngAcc;
+	CString m_strOldAngDec;
 
 	// 左側滑塊區
 	double m_dLeftRectLeverLen;                         // 左側連桿長度
