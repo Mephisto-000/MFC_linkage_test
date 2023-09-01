@@ -69,7 +69,7 @@ CMFClinkagetestDlg::CMFClinkagetestDlg(CWnd* pParent /*=nullptr*/)
 	, m_strBearingPosX(_T("0"))
 	, m_strBearingPosY(_T("300"))
 	, m_strRightLeverRadius(_T("80"))
-	, m_strRightAng(_T("-90"))
+	, m_strRightAng(_T("270"))
 	, m_strLeftLeverRadius(_T("80"))
 	, m_strLeftAng(_T("90"))
 	, m_strRPM(_T("100"))
@@ -87,7 +87,7 @@ CMFClinkagetestDlg::CMFClinkagetestDlg(CWnd* pParent /*=nullptr*/)
 	, m_dBearingPosX(0.0)      						
 	, m_dBearingPosY(300.0)      						
 	, m_dRightLeverRadius(80.0)     					
-	, m_dRightAng(-90.0)     							
+	, m_dRightAng(270.0)     							
 	, m_dLeftLeverRadius(80.0)      					
 	, m_dLeftAng(90.0)      							
 	, m_dRPM(100.0)      								
@@ -351,11 +351,11 @@ double LimitTo360 (double dAng)
 }
 
 // 傳回左側軸連接點座標
-CPoint LeftBearingCenter (double dLeftLeverRadius, double dLeftAng, CPoint ptBearingCenter)
+CPoint LeftBearingCenter(double dLeftLeverRadius, double dLeftAng, CPoint ptBearingCenter)
 {
 	double dLeftRad = AngToRad(dLeftAng);
-	double dPosX = (ptBearingCenter.x - dLeftLeverRadius * cos(dLeftRad));
-	double dPosY = (ptBearingCenter.y - dLeftLeverRadius * sin(dLeftRad));
+	double dPosX = (dLeftLeverRadius * cos(-dLeftRad) + ptBearingCenter.x);
+	double dPosY = (dLeftLeverRadius * sin(-dLeftRad) + ptBearingCenter.y);
 	CPoint ptLeftBearing(RoundDoubleToInt(dPosX), RoundDoubleToInt(dPosY));
 
 	return ptLeftBearing;
@@ -363,15 +363,17 @@ CPoint LeftBearingCenter (double dLeftLeverRadius, double dLeftAng, CPoint ptBea
 
 
 // 傳回右側軸連接點座標
-CPoint RightBearingCenter (double dRightLeverRadius, double dRightAng, CPoint ptBearingCenter)
+CPoint RightBearingCenter(double dRightLeverRadius, double dRightAng, CPoint ptBearingCenter)
 {
 	double dRightRad = AngToRad(dRightAng);
-	double dPosX = (ptBearingCenter.x - dRightLeverRadius * cos(dRightRad));
-	double dPosY = (ptBearingCenter.y - dRightLeverRadius * sin(dRightRad));
+	double dPosX = (dRightLeverRadius * cos(-dRightRad) + ptBearingCenter.x);
+	double dPosY = (dRightLeverRadius * sin(-dRightRad) + ptBearingCenter.y);
 	CPoint ptRightBearing(RoundDoubleToInt(dPosX), RoundDoubleToInt(dPosY));
 
 	return ptRightBearing;
 }
+
+
 
 
 // 傳回左側滑塊中心座標
@@ -995,18 +997,20 @@ void CMFClinkagetestDlg::OnTimer(UINT_PTR nIDEvent)
 			// 根據最大等速度值 (m_dRPM) 判斷增加的角度為順或逆時針增加
 			if (m_dRPM < 0)
 			{
-				m_dLeftAng += RadToAng(m_dAddAng);
-				m_dRightAng += RadToAng(m_dAddAng);
-				m_dLeftAng = LimitTo360(m_dLeftAng);
-				m_dRightAng = LimitTo360(m_dRightAng);
-			}
-			else
-			{
 				m_dLeftAng -= RadToAng(m_dAddAng);
 				m_dRightAng -= RadToAng(m_dAddAng);
 				m_dLeftAng = LimitTo360(m_dLeftAng);
 				m_dRightAng = LimitTo360(m_dRightAng);
 			}
+			else
+			{
+				m_dLeftAng += RadToAng(m_dAddAng);
+				m_dRightAng += RadToAng(m_dAddAng);
+				m_dLeftAng = LimitTo360(m_dLeftAng);
+				m_dRightAng = LimitTo360(m_dRightAng);
+			}
+
+
 		}
 		else
 		{
@@ -1071,20 +1075,23 @@ void CMFClinkagetestDlg::OnTimer(UINT_PTR nIDEvent)
 			// 根據最大等速度值 (m_dRPM) 判斷減少的角度為順或逆時針減少
 			if (m_dRPM < 0)
 			{
-				m_dLeftAng += RadToAng(m_dReduceAng);
-				m_dRightAng += RadToAng(m_dReduceAng);
-
-				m_dLeftAng = LimitTo360(m_dLeftAng);
-				m_dRightAng = LimitTo360(m_dRightAng);
-			}
-			else
-			{
 				m_dLeftAng -= RadToAng(m_dReduceAng);
 				m_dRightAng -= RadToAng(m_dReduceAng);
 
 				m_dLeftAng = LimitTo360(m_dLeftAng);
 				m_dRightAng = LimitTo360(m_dRightAng);
 			}
+			else
+			{
+				m_dLeftAng += RadToAng(m_dReduceAng);
+				m_dRightAng += RadToAng(m_dReduceAng);
+
+				m_dLeftAng = LimitTo360(m_dLeftAng);
+				m_dRightAng = LimitTo360(m_dRightAng);
+			}
+
+
+
 		}
 
 		m_staticNowRPM.SetWindowText(m_strNowRPM);
