@@ -450,6 +450,7 @@ void CMFClinkagetestDlg::OnPaint()
 		// 取得畫布的長寬高
 		CWnd* pPaintRegion = GetDlgItem(IDC_STATIC_PAINT);
 		CRect rectPaintRegion;
+
 		pPaintRegion->GetClientRect(&rectPaintRegion);
 		int iWidthPaintRegion = rectPaintRegion.Width();
 		int iHeightPaintRegion = rectPaintRegion.Height();
@@ -458,6 +459,7 @@ void CMFClinkagetestDlg::OnPaint()
 		CPaintDC dcO(pPaintRegion);
 		CDC memDC;
 		CBitmap memBitmap;
+
 		memDC.CreateCompatibleDC(&dcO);
 		memBitmap.CreateCompatibleBitmap(&dcO, rectPaintRegion.Width(), rectPaintRegion.Height());
 		memDC.SelectObject(&memBitmap);
@@ -492,6 +494,7 @@ void CMFClinkagetestDlg::DrawToBuffer(CDC* pDC)
 	// 取得上方矩形畫布區域的 dc 並將內部繪成灰色(m_PaintRegionBackgroundColor)
 	CBrush brushPaintRegion;
 	CBrush* pOldBrushPaintRegion = pDC->SelectObject(&brushPaintRegion);
+
 	brushPaintRegion.CreateSolidBrush(m_PaintRegionBackgroundColor);
 	pDC->Rectangle(rectPaintRegion);
 	pDC->FillRect(&rectPaintRegion, &brushPaintRegion);
@@ -537,9 +540,12 @@ void CMFClinkagetestDlg::DrawToBuffer(CDC* pDC)
 
 	// 定義左右上方滑塊
 	CRect rectLeftUpper = CenterPtToRectPts(ptLeftUpperCenter, m_dLeftRectLen, m_dLeftRectW);
+
 	pDC->Rectangle(rectLeftUpper);
 	pDC->FillRect(&rectLeftUpper, &brushUpperRect);
+
 	CRect rectRightUpper = CenterPtToRectPts(ptRightUpperCenter, m_dRightRectLen, m_dRightRectW);
+
 	pDC->Rectangle(rectRightUpper);
 	pDC->FillRect(&rectRightUpper, &brushUpperRect);
 	pDC->SelectObject(pOldPenUpperRectBoarder);
@@ -553,9 +559,12 @@ void CMFClinkagetestDlg::DrawToBuffer(CDC* pDC)
 
 	// 定義左右下方方塊
 	CRect rectLeftLower = LowerLeftRect(rectLeftUpper, m_dLowerRectW, iHeightPaintRegion);
+
 	pDC->Rectangle(rectLeftLower);
 	pDC->FillRect(&rectLeftLower, &brushLowerRect);
+
 	CRect rectRightLower = LowerRightRect(rectRightUpper, m_dLowerRectW, iHeightPaintRegion);
+
 	pDC->Rectangle(rectRightLower);
 	pDC->FillRect(&rectRightLower, &brushLowerRect);
 	pDC->SelectObject(pOldPenLowerRectBoarder);
@@ -564,12 +573,14 @@ void CMFClinkagetestDlg::DrawToBuffer(CDC* pDC)
 	// 中心圓軸繪圖
 	CPen* pOldPenBearingBoarder = pDC->SelectObject(&penBearingBoarder);
 	CBrush* pOldBrushMainBearing =pDC->SelectObject(&brushMainBearing);
+
 	pDC->Ellipse(rectBearingRect);
 	pDC->SelectObject(pOldPenBearingBoarder);
 	pDC->SelectObject(pOldBrushMainBearing);
 
 	// 連桿繪圖
 	CPen* pOldPenLever = pDC->SelectObject(&penLever);
+
 	pDC->SetPixel(ptLeftBearingCenter, RGB(0, 0, 0));
 	pDC->MoveTo(ptLeftBearingCenter);
 	pDC->LineTo(ptLeftUpperCenter);
@@ -912,6 +923,8 @@ void CMFClinkagetestDlg::OnTimer(UINT_PTR nIDEvent)
 		// 判斷是否為按下 Stop 後
 		if (g_bStopState == FALSE)
 		{
+			// 加速、等速區在此
+			
 			// 在 OnTimer 函數中計算經過的時間
 			DWORD dwElapsedTime = dwCurrentTime - g_dwStartTime;
 
@@ -986,7 +999,7 @@ void CMFClinkagetestDlg::OnTimer(UINT_PTR nIDEvent)
 		}
 		else
 		{
-
+			// 減速區
 			DWORD dwStopElapsedTime = dwCurrentTime - m_dwStopTimeRecord;
 
 			// 將毫秒轉為秒
