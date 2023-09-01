@@ -188,6 +188,8 @@ BEGIN_MESSAGE_MAP(CMFClinkagetestDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON_START, &CMFClinkagetestDlg::OnBnClickedButtonStart)
 	ON_BN_CLICKED(IDC_BUTTON_STOP, &CMFClinkagetestDlg::OnBnClickedButtonStop)
 	ON_WM_TIMER()
+	ON_EN_KILLFOCUS(IDC_EDIT_ANGULAR_ACCELERATION, &CMFClinkagetestDlg::OnEnKillfocusEditAngularAcceleration)
+	ON_EN_KILLFOCUS(IDC_EDIT_ANGULAR_DECELERATION, &CMFClinkagetestDlg::OnEnKillfocusEditAngularDeceleration)
 END_MESSAGE_MAP()
 
 
@@ -872,18 +874,20 @@ void CMFClinkagetestDlg::OnBnClickedButtonStart()
 	////////////////////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////
 	// 加減速度限制
-	if ((m_dAngAcc < 0) || (m_dAngDec < 0))
-	{
-		KillTimer(1);
-		OpenOrCloseAllInputEdit(TRUE);
-		g_bFirstStart = TRUE;
-	}
+	//if ((m_dAngAcc < 0) || (m_dAngDec < 0))
+	//{
+	//	KillTimer(1);
+	//	OpenOrCloseAllInputEdit(TRUE);
+	//	g_bFirstStart = TRUE;
+	//}
+
 
 	if (m_dRPM == 0)
 	{
 		KillTimer(1);
 		OpenOrCloseAllInputEdit(TRUE);
 		g_bFirstStart = TRUE;
+		//OnEnKillfocusEditRpm();
 	}
 	////////////////////////////////////////////////////////////////////////////////////////
 
@@ -1090,8 +1094,6 @@ void CMFClinkagetestDlg::OnTimer(UINT_PTR nIDEvent)
 				m_dRightAng = LimitTo360(m_dRightAng);
 			}
 
-
-
 		}
 
 		m_staticNowRPM.SetWindowText(m_strNowRPM);
@@ -1116,3 +1118,57 @@ void CMFClinkagetestDlg::OnTimer(UINT_PTR nIDEvent)
 }
 
 
+
+
+
+
+
+
+
+
+
+
+//void CMFClinkagetestDlg::OnEnKillfocusEditRpm()
+//{
+//	// TODO: 在此加入控制項告知處理常式程式碼
+//
+//	if (m_dRPM == 0)
+//	{
+//		AfxMessageBox(_T("Error!"));
+//		GetDlgItem(IDC_EDIT_RPM)->SetFocus();
+//	}
+//	
+//
+//}
+
+// 加速度限制條件
+void CMFClinkagetestDlg::OnEnKillfocusEditAngularAcceleration()
+{
+	double dOldAngAcc = m_dAngAcc;
+	UpdateData(TRUE);
+	m_editAngAcc.GetWindowText(m_strAngAcc);
+	m_dAngAcc = _ttof(m_strAngAcc);
+	if (m_dAngAcc <= 0)
+	{
+		AfxMessageBox(_T("角加速度 > 0"));
+		UpdateData(FALSE);
+		m_dAngAcc = dOldAngAcc;
+		GetDlgItem(IDC_EDIT_ANGULAR_ACCELERATION)->SetFocus();
+	}
+}
+
+
+void CMFClinkagetestDlg::OnEnKillfocusEditAngularDeceleration()
+{
+	double dOldAngDec = m_dAngDec;
+	UpdateData(TRUE);
+	m_editAngDec.GetWindowText(m_strAngDec);
+	m_dAngDec = _ttof(m_strAngDec);
+	if (m_dAngDec <= 0)
+	{
+		AfxMessageBox(_T("角減速度 > 0"));
+		UpdateData(FALSE);
+		m_dAngDec = dOldAngDec;
+		GetDlgItem(IDC_EDIT_ANGULAR_DECELERATION)->SetFocus();
+	}
+}

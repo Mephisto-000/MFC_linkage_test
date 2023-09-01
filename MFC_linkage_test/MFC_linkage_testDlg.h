@@ -95,82 +95,86 @@ public:
 	CString m_strOldAngDec;
 
 	// 左側滑塊區
-	double m_dLeftRectLeverLen;                         // 左側連桿長度
-	double m_dLeftRectH;      							// 左側滑塊高度
-	double m_dLeftRectLen;      						// 左側滑塊長度 (縱軸方向)
-	double m_dLeftRectW;    							// 左側滑塊寬度 (橫軸方向)
+	double m_dLeftRectLeverLen;								// 左側連桿長度
+	double m_dLeftRectH;      								// 左側滑塊高度
+	double m_dLeftRectLen;      							// 左側滑塊長度 (縱軸方向)
+	double m_dLeftRectW;    								// 左側滑塊寬度 (橫軸方向)
 
 	// 右側滑塊區
-	double m_dRightRectLeverLen;                        // 右側連桿長度
-	double m_dRightRectH;    							// 右側滑塊高度
-	double m_dRightRectLen;     						// 右側滑塊長度 (縱軸方向)
-	double m_dRightRectW;    							// 右側滑塊寬度 (橫軸方向)
+	double m_dRightRectLeverLen;							// 右側連桿長度
+	double m_dRightRectH;    								// 右側滑塊高度
+	double m_dRightRectLen;     							// 右側滑塊長度 (縱軸方向)
+	double m_dRightRectW;    								// 右側滑塊寬度 (橫軸方向)
 
 	// 中心圓軸區
-	double m_dBearingRadius;                            // 中心圓軸半徑
-	double m_dBearingPosX;      						// 中心圓軸 X 位置 (X 軸為繪圖區中線)
-	double m_dBearingPosY;      						// 中心圓軸 Y 位置 (Y 軸為繪圖區底邊)
-	double m_dRightLeverRadius;     					// 右側軸半徑 (中心圓軸圓心到右側連桿連接點的距離)
-	double m_dRightAng;     							// 右側軸角度 (右側軸與中心圓軸的水平半徑之間的夾角)
-	double m_dLeftLeverRadius;      					// 左側軸半徑 (中心圓軸圓心到左側連桿連接點的距離)
-	double m_dLeftAng;      							// 左側軸角度 (左側軸與中心圓軸的水平半徑之間的夾角)
-	double m_dRPM;      								// 每秒圈數
-	double m_dAngAcc;     								// 角加速度
-	double m_dAngDec;   								// 角減速度
+	double m_dBearingRadius;								// 中心圓軸半徑
+	double m_dBearingPosX;      							// 中心圓軸 X 位置 (X 軸為繪圖區中線)
+	double m_dBearingPosY;      							// 中心圓軸 Y 位置 (Y 軸為繪圖區底邊)
+	double m_dRightLeverRadius;     						// 右側軸半徑 (中心圓軸圓心到右側連桿連接點的距離)
+	double m_dRightAng;     								// 右側軸角度 (右側軸與中心圓軸的水平半徑之間的夾角)
+	double m_dLeftLeverRadius;      						// 左側軸半徑 (中心圓軸圓心到左側連桿連接點的距離)
+	double m_dLeftAng;      								// 左側軸角度 (左側軸與中心圓軸的水平半徑之間的夾角)
+	double m_dRPM;      									// 每秒圈數
+	double m_dAngAcc;     									// 角加速度
+	double m_dAngDec;   									// 角減速度
 
 	/////////////////////////////////////// 其他定義變數 ///////////////////////////////////
 
 
-	double m_dLowerRectW;                               // 左右下方方塊寬度 (橫軸方向)
+	double m_dLowerRectW;									// 左右下方方塊寬度 (橫軸方向)
 
-	int m_iLowerRectBoarderW;                           // 左右底部方塊邊寬
-	int m_iUpperRectBoarderW;   						// 左右上方滑塊邊寬
-	int m_iBearingBoarderW; 							// 中心圓軸邊寬
+	int m_iLowerRectBoarderW;								// 左右底部方塊邊寬
+	int m_iUpperRectBoarderW;   							// 左右上方滑塊邊寬
+	int m_iBearingBoarderW; 								// 中心圓軸邊寬
 
-	CPoint m_ptLeftUpperCenterPos;      		        // 左上方滑塊中心點座標
-	CPoint m_ptRightUpperCenterPos;         			// 右上方滑塊中心點座標
-	CPoint m_ptBearingCenterPos;         				//  中心圓軸中心點座標
+	CPoint m_ptLeftUpperCenterPos;      					// 左上方滑塊中心點座標
+	CPoint m_ptRightUpperCenterPos;         				// 右上方滑塊中心點座標
+	CPoint m_ptBearingCenterPos;         					//  中心圓軸中心點座標
 
-	double m_dAcceTotalAng;                             // 加速度區總面積
-	double m_dAcceTotalTime;                            // 加速度區塊歷時時間
-	double m_dTimeCurrentSpan;      				    // 記錄下一秒累積時間長
-	double m_dTimePreviousSpan;                         // 記錄前一秒累積時間長
-	double m_dAddAng;    								// 記錄下一秒要增加的角度
-	double m_dMaxAddAng;                                // 記錄最大增加角度                        
-	double m_dStopNowRPM;   							// 記錄按下 STOP 當下速度
-	double m_dStartNowRPM;                              // 記錄按下 START 當下速度
+	double m_dAcceTotalAng;									// 加速度區總面積
+	double m_dAcceTotalTime;								// 加速度區塊歷時時間
+	double m_dTimeCurrentSpan;      						// 記錄下一秒累積時間長
+	double m_dTimePreviousSpan;								// 記錄前一秒累積時間長
+	double m_dAddAng;    									// 記錄下一秒要增加的角度
+	double m_dMaxAddAng;									// 記錄最大增加角度                        
+	double m_dStopNowRPM;   								// 記錄按下 STOP 當下速度
+	double m_dStartNowRPM;									// 記錄按下 START 當下速度
 
-	double m_dDecTotalAng;                              // 減速度總面積
-	double m_dDecTotalTime;      						// 減速度區塊歷時時間
-	double m_dReduceAng;                                // 記錄下一秒要減少的角度
-	DWORD m_dwStopTimeRecord;                           // 記錄按下 STOP 的時間點
+	double m_dDecTotalAng;									// 減速度總面積
+	double m_dDecTotalTime;      							// 減速度區塊歷時時間
+	double m_dReduceAng;									// 記錄下一秒要減少的角度
+	DWORD m_dwStopTimeRecord;								// 記錄按下 STOP 的時間點
 
-	double m_dNowRPM;                                   // 記錄當下轉速
-	CString m_strNowRPM;                                // 記錄當下轉速
+	double m_dNowRPM;										// 記錄當下轉速
+	CString m_strNowRPM;									// 記錄當下轉速
 
 	////////////////////////////////////////////////////////////////////////////////////////
 	// 個數值設定控制項:	
-	CEdit m_editLeftRectLever;							// 左側連桿長度
-	CEdit m_editLeftRectH;								// 左側滑塊高度
-	CEdit m_editLeftRectLen;							// 左側滑塊長度 (縱軸方向)
-	CEdit m_editLeftRectW;								// 左側滑塊寬度 (橫軸方向)
-	CEdit m_editRightRectLever;							// 右側連桿長度
-	CEdit m_editRightRectH;								// 右側滑塊高度
-	CEdit m_editRightRectLen;							// 右側滑塊長度 (縱軸方向)
-	CEdit m_editRightRectW;								// 右側滑塊寬度 (橫軸方向)
-	CEdit m_editBearingRadius;							// 中心圓軸半徑
-	CEdit m_editBearingPosX;							// 中心圓軸 X 位置 (X 軸為繪圖區中線)
-	CEdit m_editBearingPosY;							// 中心圓軸 Y 位置 (Y 軸為繪圖區底邊)
-	CEdit m_editRightLeverRadius;						// 右側軸半徑 (中心圓軸圓心到右側連桿連接點的距離)
-	CEdit m_editRightAng;								// 右側軸角度 (右側軸與中心圓軸的水平半徑之間的夾角
-	CEdit m_editLeftLeverRadius;						// 左側軸半徑 (中心圓軸圓心到左側連桿連接點的距離)
-	CEdit m_editLeftAng;								// 左側軸角度 (左側軸與中心圓軸的水平半徑之間的夾角
-	CEdit m_editRPM;									// 每秒圈數
-	CEdit m_editAngAcc;									// 角加速度
-	CEdit m_editAngDec;									// 角減速度
-	afx_msg void OnTimer(UINT_PTR nIDEvent);			// 計時函數
-	afx_msg void DrawToBuffer(CDC* pDC);				// 雙緩衝更新區域函數
+	CEdit m_editLeftRectLever;								// 左側連桿長度
+	CEdit m_editLeftRectH;									// 左側滑塊高度
+	CEdit m_editLeftRectLen;								// 左側滑塊長度 (縱軸方向)
+	CEdit m_editLeftRectW;									// 左側滑塊寬度 (橫軸方向)
+	CEdit m_editRightRectLever;								// 右側連桿長度
+	CEdit m_editRightRectH;									// 右側滑塊高度
+	CEdit m_editRightRectLen;								// 右側滑塊長度 (縱軸方向)
+	CEdit m_editRightRectW;									// 右側滑塊寬度 (橫軸方向)
+	CEdit m_editBearingRadius;								// 中心圓軸半徑
+	CEdit m_editBearingPosX;								// 中心圓軸 X 位置 (X 軸為繪圖區中線)
+	CEdit m_editBearingPosY;								// 中心圓軸 Y 位置 (Y 軸為繪圖區底邊)
+	CEdit m_editRightLeverRadius;							// 右側軸半徑 (中心圓軸圓心到右側連桿連接點的距離)
+	CEdit m_editRightAng;									// 右側軸角度 (右側軸與中心圓軸的水平半徑之間的夾角
+	CEdit m_editLeftLeverRadius;							// 左側軸半徑 (中心圓軸圓心到左側連桿連接點的距離)
+	CEdit m_editLeftAng;									// 左側軸角度 (左側軸與中心圓軸的水平半徑之間的夾角
+	CEdit m_editRPM;										// 每秒圈數
+	CEdit m_editAngAcc;										// 角加速度
+	CEdit m_editAngDec;										// 角減速度
+	afx_msg void OnTimer(UINT_PTR nIDEvent);				// 計時函數
+	afx_msg void DrawToBuffer(CDC* pDC);					// 雙緩衝更新區域函數
 
 
-	CStatic m_staticNowRPM;                             // 顯示當下轉速
+	CStatic m_staticNowRPM;									// 顯示當下轉速
+
+
+	afx_msg void OnEnKillfocusEditAngularAcceleration();    // 加速度限制警告
+	afx_msg void OnEnKillfocusEditAngularDeceleration();    // 減速度限制警告
 };
