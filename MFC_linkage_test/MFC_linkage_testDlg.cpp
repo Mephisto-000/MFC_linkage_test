@@ -102,8 +102,8 @@ CMFClinkagetestDlg::CMFClinkagetestDlg(CWnd* pParent /*=nullptr*/)
 	, m_ptBearingCenterPos((0, 0))				
 	, m_dAcceTotalAng(0.0)                      
 	, m_dAcceTotalTime(0.0)                     
-	, m_dTimeAfter(0.0)							
-	, m_dTimeBefore(0.0)                         
+	, m_dTimeCurrentSpan(0.0)							
+	, m_dTimePreviousSpan(0.0)                         
 	, m_dAddAng(0.0)								
 	, m_dMaxAddAng(0.0)                                                
 	, m_dStopNowRPM(0.0)						
@@ -683,7 +683,7 @@ void CMFClinkagetestDlg::OnBnClickedButtonStart()
 	}
 
 	// 初始化前一秒時間
-	m_dTimeBefore = 0;
+	m_dTimePreviousSpan = 0;
 
 	// 假設一個時間間隔，這裡設定為 50 毫秒 (0.05 s.) 等於 20 fps
 	// 當圖片更新率呈現 12 fps 以上時，人眼就會視其為動畫，我這裡假設為 20 fps
@@ -870,7 +870,7 @@ void CMFClinkagetestDlg::OnBnClickedButtonStop()
 	m_dStopNowRPM = abs(m_dNowRPM);
 
 	// 初始化前一秒時間
-	m_dTimeBefore = 0;
+	m_dTimePreviousSpan = 0;
 
 	// 記錄按下 Stop 的時間
 	m_dwStopTimeRecord = timeGetTime();
@@ -911,17 +911,17 @@ void CMFClinkagetestDlg::OnTimer(UINT_PTR nIDEvent)
 
 			// 將毫秒轉為秒
 			double seconds = static_cast<double>(dwElapsedTime) / 1000.0;
-			m_dTimeAfter = seconds;
+			m_dTimeCurrentSpan = seconds;
 
 			// 判斷是否還在加速度運動
-			if (m_dTimeAfter <= m_dAcceTotalTime)
+			if (m_dTimeCurrentSpan <= m_dAcceTotalTime)
 			{
 				// 計算增加的旋轉角度
-				m_dAddAng = 0.5 * RpmToAngVelocity(m_dAngAcc) * (pow(m_dTimeAfter, 2) - pow(m_dTimeBefore, 2))
-					+ RpmToAngVelocity(m_dStartNowRPM) * (m_dTimeAfter - m_dTimeBefore);
+				m_dAddAng = 0.5 * RpmToAngVelocity(m_dAngAcc) * (pow(m_dTimeCurrentSpan, 2) - pow(m_dTimePreviousSpan, 2))
+					+ RpmToAngVelocity(m_dStartNowRPM) * (m_dTimeCurrentSpan - m_dTimePreviousSpan);
 
 				// 計算速度
-				m_dNowRPM = m_dAngAcc * m_dTimeAfter + m_dStartNowRPM;
+				m_dNowRPM = m_dAngAcc * m_dTimeCurrentSpan + m_dStartNowRPM;
 
 				// 判斷順逆時針旋轉 (m_dRPM < 0 : 順時針，m_dRPM > 0 : 逆時針)
 				if (m_dRPM < 0)
@@ -934,32 +934,32 @@ void CMFClinkagetestDlg::OnTimer(UINT_PTR nIDEvent)
 				}
 
 				// 將原本下一秒時間更新為前一秒
-				m_dTimeBefore = m_dTimeAfter;
+				m_dTimePreviousSpan = m_dTimeCurrentSpan;
 			}
-			else if ((m_dTimeBefore < m_dAcceTotalTime) && (m_dTimeAfter > m_dAcceTotalTime))
+			else if ((m_dTimePreviousSpan < m_dAcceTotalTime) && (m_dTimeCurrentSpan > m_dAcceTotalTime))
 			{	// 當下一秒加速超過最大等速度時角度的計算
 				// 計算增加的旋轉角度
-				m_dAddAng = 0.5 * RpmToAngVelocity(m_dAngAcc) * (pow(m_dAcceTotalTime, 2) - pow(m_dTimeBefore, 2))
-					+ abs(RpmToAngVelocity(m_dRPM)) * (m_dTimeAfter - m_dAcceTotalTime);
+				m_dAddAng = 0.5 * RpmToAngVelocity(m_dAngAcc) * (pow(m_dAcceTotalTime, 2) - pow(m_dTimePreviousSpan, 2))
+					+ abs(RpmToAngVelocity(m_dRPM)) * (m_dTimeCurrentSpan - m_dAcceTotalTime);
 
 				// 當下速度為最大等速度值
 				m_dNowRPM = m_dRPM;
 				m_strNowRPM.Format(_T(" % .7f"), m_dNowRPM);
 
 				// 將原本下一秒時間更新為前一秒
-				m_dTimeBefore = m_dTimeAfter;
+				m_dTimePreviousSpan = m_dTimeCurrentSpan;
 			}
 			else
 			{	// 在等速度運動時的角度計算
 				// 計算增加的旋轉角度
-				m_dAddAng = abs(RpmToAngVelocity(m_dRPM)) * (m_dTimeAfter - m_dTimeBefore);
+				m_dAddAng = abs(RpmToAngVelocity(m_dRPM)) * (m_dTimeCurrentSpan - m_dTimePreviousSpan);
 
 				// 當下速度為最大等速度值
 				m_dNowRPM = m_dRPM;
 				m_strNowRPM.Format(_T(" % .7f"), m_dNowRPM);
 
 				// 將原本下一秒時間更新為前一秒
-				m_dTimeBefore = m_dTimeAfter;
+				m_dTimePreviousSpan = m_dTimeCurrentSpan;
 			}
 
 			// 根據最大等速度值 (m_dRPM) 判斷增加的角度為順或逆時針增加
@@ -985,17 +985,17 @@ void CMFClinkagetestDlg::OnTimer(UINT_PTR nIDEvent)
 
 			// 將毫秒轉為秒
 			double seconds = static_cast<double>(dwStopElapsedTime) / 1000.0;
-			m_dTimeAfter = seconds;
+			m_dTimeCurrentSpan = seconds;
 
 			// 判斷是否還在減速度運動
-			if (m_dTimeAfter <= m_dDecTotalTime)
+			if (m_dTimeCurrentSpan <= m_dDecTotalTime)
 			{
 				// 計算減少的旋轉角度
-				m_dReduceAng = RpmToAngVelocity(m_dStopNowRPM) * (m_dTimeAfter - m_dTimeBefore)
-					- (0.5 * RpmToAngVelocity(m_dAngDec) * (pow(m_dTimeAfter, 2) - pow(m_dTimeBefore, 2)));
+				m_dReduceAng = RpmToAngVelocity(m_dStopNowRPM) * (m_dTimeCurrentSpan - m_dTimePreviousSpan)
+					- (0.5 * RpmToAngVelocity(m_dAngDec) * (pow(m_dTimeCurrentSpan, 2) - pow(m_dTimePreviousSpan, 2)));
 
 				// 計算速度
-				m_dNowRPM = m_dStopNowRPM - m_dAngDec * m_dTimeAfter;
+				m_dNowRPM = m_dStopNowRPM - m_dAngDec * m_dTimeCurrentSpan;
 
 				// 判斷順逆時針旋轉 (m_dRPM < 0 : 順時針，m_dRPM > 0 : 逆時針)
 				if (m_dRPM < 0)
@@ -1008,19 +1008,19 @@ void CMFClinkagetestDlg::OnTimer(UINT_PTR nIDEvent)
 				}
 
 				// 將原本下一秒時間更新為前一秒
-				m_dTimeBefore = m_dTimeAfter;
+				m_dTimePreviousSpan = m_dTimeCurrentSpan;
 			}
-			else if ((m_dTimeBefore <= m_dDecTotalTime) && (m_dTimeAfter > m_dDecTotalTime))
+			else if ((m_dTimePreviousSpan <= m_dDecTotalTime) && (m_dTimeCurrentSpan > m_dDecTotalTime))
 			{	// 當下一秒減速低過速度0時角度的計算
 				// 計算減少的旋轉角度
-				m_dReduceAng = pow((m_dDecTotalTime - m_dTimeBefore), 2) * RpmToAngVelocity(m_dAngDec) * 0.5;
+				m_dReduceAng = pow((m_dDecTotalTime - m_dTimePreviousSpan), 2) * RpmToAngVelocity(m_dAngDec) * 0.5;
 
 				// 當下速度為 0.0
 				m_dNowRPM = 0.0;
 				m_strNowRPM.Format(_T(" % .7f"), m_dNowRPM);
 
 				// 將原本下一秒時間更新為前一秒
-				m_dTimeBefore = m_dTimeAfter;
+				m_dTimePreviousSpan = m_dTimeCurrentSpan;
 
 				// 將第一次按下 Start 條件設為 FALSE
 				g_bFirstStart = FALSE;
@@ -1031,7 +1031,7 @@ void CMFClinkagetestDlg::OnTimer(UINT_PTR nIDEvent)
 				m_strNowRPM.Format(_T(" % .7f"), m_dNowRPM);
 
 				// 將原本下一秒時間更新為前一秒
-				m_dTimeBefore = m_dTimeAfter;
+				m_dTimePreviousSpan = m_dTimeCurrentSpan;
 
 				// 將第一次按下 Start 條件設為 FALSE
 				g_bFirstStart = FALSE;
@@ -1063,7 +1063,7 @@ void CMFClinkagetestDlg::OnTimer(UINT_PTR nIDEvent)
 		if (m_dNowRPM == 0)
 		{
 			OpenOrCloseAllInputEdit(TRUE);
-			m_dTimeBefore = 0;
+			m_dTimePreviousSpan = 0;
 			KillTimer(1);
 		}
 

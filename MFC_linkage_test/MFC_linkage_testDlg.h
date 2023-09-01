@@ -112,8 +112,8 @@ public:
 
 	double m_dAcceTotalAng;                             // 加速度區總面積
 	double m_dAcceTotalTime;                            // 加速度區塊歷時時間
-	double m_dTimeAfter;      							// 記錄下一秒累積時間長
-	double m_dTimeBefore;                               // 記錄前一秒累積時間長
+	double m_dTimeCurrentSpan;      				    // 記錄下一秒累積時間長
+	double m_dTimePreviousSpan;                         // 記錄前一秒累積時間長
 	double m_dAddAng;    								// 記錄下一秒要增加的角度
 	double m_dMaxAddAng;                                // 記錄最大增加角度                        
 	double m_dStopNowRPM;   							// 記錄按下 STOP 當下速度
