@@ -174,7 +174,8 @@ public:
 
 	CStatic m_staticNowRPM;									// 顯示當下轉速
 
-
+	////////////////////////////////////////////////////////////////////////////////////////
+	// 輸入資料限制警告設定區塊:
 	afx_msg void OnEnKillfocusEditAngularAcceleration();    // 加速度限制警告
 	afx_msg void OnEnKillfocusEditAngularDeceleration();    // 減速度限制警告
 };

@@ -1119,27 +1119,10 @@ void CMFClinkagetestDlg::OnTimer(UINT_PTR nIDEvent)
 
 
 
+////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////
+// 輸入資料限制警告設定區塊 : 
 
-
-
-
-
-
-
-
-
-//void CMFClinkagetestDlg::OnEnKillfocusEditRpm()
-//{
-//	// TODO: 在此加入控制項告知處理常式程式碼
-//
-//	if (m_dRPM == 0)
-//	{
-//		AfxMessageBox(_T("Error!"));
-//		GetDlgItem(IDC_EDIT_RPM)->SetFocus();
-//	}
-//	
-//
-//}
 
 // 加速度限制條件
 void CMFClinkagetestDlg::OnEnKillfocusEditAngularAcceleration()
