@@ -194,6 +194,7 @@ BEGIN_MESSAGE_MAP(CMFClinkagetestDlg, CDialogEx)
 	ON_EN_KILLFOCUS(IDC_EDIT_LEFT_REC_LEVER, &CMFClinkagetestDlg::OnEnKillfocusEditLeftRecLever)
 	ON_EN_KILLFOCUS(IDC_EDIT_LEFT_REC_HEIGHT, &CMFClinkagetestDlg::OnEnKillfocusEditLeftRecHeight)
 	ON_EN_KILLFOCUS(IDC_EDIT_LEFT_REC_LENGTH, &CMFClinkagetestDlg::OnEnKillfocusEditLeftRecLength)
+	ON_EN_KILLFOCUS(IDC_EDIT_LEFT_REC_WIDTH, &CMFClinkagetestDlg::OnEnKillfocusEditLeftRecWidth)
 END_MESSAGE_MAP()
 
 
@@ -858,33 +859,33 @@ void CMFClinkagetestDlg::OnBnClickedButtonStart()
 	////////////////////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////
 	// 中心圓軸高度限制
-	if ((dBearingTopState <= 0) || (m_dBearingPosY < m_dBearingRadius) || (m_dBearingPosY > iHeightPaintRegion))
-	{
-		KillTimer(1);
-		OpenOrCloseAllInputEdit(TRUE);
-		g_bFirstStart = TRUE;
-	}
-	// 中心圓軸
-	if ((dBearingLeftStateW <= 0) || (dBearingRightStateW <= 0))
-	{
-		KillTimer(1);
-		OpenOrCloseAllInputEdit(TRUE);
-		g_bFirstStart = TRUE;
-	}
-	// 中心圓軸與左右側半徑限制
-	if ((m_dBearingRadius < m_dLeftLeverRadius + 20) || (m_dBearingRadius < m_dRightLeverRadius + 20))
-	{
-		KillTimer(1);
-		OpenOrCloseAllInputEdit(TRUE);
-		g_bFirstStart = TRUE;
-	}
-	// 中心圓軸半徑
-	if (m_dBearingRadius <= 0)
-	{
-		KillTimer(1);
-		OpenOrCloseAllInputEdit(TRUE);
-		g_bFirstStart = TRUE;
-	}
+	//if ((dBearingTopState <= 0) || (m_dBearingPosY < m_dBearingRadius) || (m_dBearingPosY > iHeightPaintRegion))
+	//{
+	//	KillTimer(1);
+	//	OpenOrCloseAllInputEdit(TRUE);
+	//	g_bFirstStart = TRUE;
+	//}
+	//// 中心圓軸
+	//if ((dBearingLeftStateW <= 0) || (dBearingRightStateW <= 0))
+	//{
+	//	KillTimer(1);
+	//	OpenOrCloseAllInputEdit(TRUE);
+	//	g_bFirstStart = TRUE;
+	//}
+	//// 中心圓軸與左右側半徑限制
+	//if ((m_dBearingRadius < m_dLeftLeverRadius + 20) || (m_dBearingRadius < m_dRightLeverRadius + 20))
+	//{
+	//	KillTimer(1);
+	//	OpenOrCloseAllInputEdit(TRUE);
+	//	g_bFirstStart = TRUE;
+	//}
+	//// 中心圓軸半徑
+	//if (m_dBearingRadius <= 0)
+	//{
+	//	KillTimer(1);
+	//	OpenOrCloseAllInputEdit(TRUE);
+	//	g_bFirstStart = TRUE;
+	//}
 	////////////////////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////
 
@@ -1274,7 +1275,7 @@ void CMFClinkagetestDlg::OnEnKillfocusEditLeftRecHeight()
 		GetDlgItem(IDC_EDIT_LEFT_REC_HEIGHT)->SetFocus();
 	}
 }
-
+ 
 // 滑塊長
 void CMFClinkagetestDlg::OnEnKillfocusEditLeftRecLength()
 {
@@ -1311,4 +1312,42 @@ void CMFClinkagetestDlg::OnEnKillfocusEditLeftRecLength()
 		GetDlgItem(IDC_EDIT_LEFT_REC_LENGTH)->SetWindowText(strOrigin);
 		GetDlgItem(IDC_EDIT_LEFT_REC_LENGTH)->SetFocus();
 	}
+}
+
+
+// 滑塊寬
+void CMFClinkagetestDlg::OnEnKillfocusEditLeftRecWidth()
+{
+	double dOldLeftRectW = m_dLeftRectW;
+	CString strOrigin;
+	CString strMinConstraint;
+	CString strMaxConstraint;
+	CRect rectPaintRegion;
+
+	UpdateData(TRUE);
+	m_editLeftRectW.GetWindowText(m_strLeftRectW);
+
+	m_dLeftRectW = _ttof(m_strLeftRectW);
+
+	CWnd* pPaintRegion = GetDlgItem(IDC_STATIC_PAINT);
+	pPaintRegion->GetClientRect(&rectPaintRegion);
+	int iWidthPaintRegion = rectPaintRegion.Width();
+
+	double dMaxRectW = iWidthPaintRegion * 0.5;
+	strMaxConstraint.Format(_T("%.1f"), dMaxRectW);
+
+	double dMinRectW = 0.0;
+	strMinConstraint.Format(_T("%.1f"), dMinRectW);
+
+	if ((m_dLeftRectW >= dMaxRectW) || (m_dLeftRectW <= dMinRectW))
+	{
+		AfxMessageBox(_T("寬度 < ") + strMaxConstraint + _T(" 或是 寬度 > ") + strMinConstraint);
+
+		m_dLeftRectW = dOldLeftRectW;
+		strOrigin.Format(_T("%.1f"), m_dLeftRectW);
+
+		GetDlgItem(IDC_EDIT_LEFT_REC_WIDTH)->SetWindowText(strOrigin);
+		GetDlgItem(IDC_EDIT_LEFT_REC_WIDTH)->SetFocus();
+	}
+
 }

@@ -182,4 +182,5 @@ public:
 	afx_msg void OnEnKillfocusEditLeftRecLever();           // 左滑塊長度限制警告
 	afx_msg void OnEnKillfocusEditLeftRecHeight();          // 左邊滑塊高度限制警告
 	afx_msg void OnEnKillfocusEditLeftRecLength();          // 左邊滑塊長限制警告
+	afx_msg void OnEnKillfocusEditLeftRecWidth();           // 左邊滑塊寬限制警告
 };
