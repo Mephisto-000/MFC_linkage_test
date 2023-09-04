@@ -202,6 +202,11 @@ BEGIN_MESSAGE_MAP(CMFClinkagetestDlg, CDialogEx)
 	ON_EN_KILLFOCUS(IDC_EDIT_SHAFT_RADIUS, &CMFClinkagetestDlg::OnEnKillfocusEditShaftRadius)
 	ON_EN_KILLFOCUS(IDC_EDIT_SHAFT_X_POS, &CMFClinkagetestDlg::OnEnKillfocusEditShaftXPos)
 	ON_EN_KILLFOCUS(IDC_EDIT_SHAFT_Y_POS, &CMFClinkagetestDlg::OnEnKillfocusEditShaftYPos)
+	ON_EN_KILLFOCUS(IDC_EDIT_RIGHT_LEVER_RADIUS, &CMFClinkagetestDlg::OnEnKillfocusEditRightLeverRadius)
+	ON_EN_KILLFOCUS(IDC_EDIT_LEFT_LEVER_RADIUS, &CMFClinkagetestDlg::OnEnKillfocusEditLeftLeverRadius)
+	ON_EN_KILLFOCUS(IDC_EDIT_RIGHT_ANGLE, &CMFClinkagetestDlg::OnEnKillfocusEditRightAngle)
+	ON_EN_KILLFOCUS(IDC_EDIT_LEFT_ANGLE, &CMFClinkagetestDlg::OnEnKillfocusEditLeftAngle)
+	ON_WM_DESTROY()
 END_MESSAGE_MAP()
 
 
@@ -529,7 +534,7 @@ void CMFClinkagetestDlg::OnPaint()
 
 		memDC.CreateCompatibleDC(&dcO);
 		memBitmap.CreateCompatibleBitmap(&dcO, rectPaintRegion.Width(), rectPaintRegion.Height());
-		memDC.SelectObject(&memBitmap);
+		CBitmap* pOldMemBitMap = memDC.SelectObject(&memBitmap);
 
 		// 在雙緩衝 DC 上進行繪圖
 		DrawToBuffer(&memDC);
@@ -538,6 +543,7 @@ void CMFClinkagetestDlg::OnPaint()
 		dcO.BitBlt(0, 0, rectPaintRegion.Width(), rectPaintRegion.Height(), &memDC, 0, 0, SRCCOPY);
 
 		// 清理
+		memDC.SelectObject(pOldMemBitMap);
 		memBitmap.DeleteObject();
 		memDC.DeleteDC();
 	}
@@ -1655,7 +1661,6 @@ void CMFClinkagetestDlg::OnEnKillfocusEditShaftYPos()
 	m_dLeftRectH = _ttof(m_strLeftRectH);
 	m_dRightRectH = _ttof(m_strRightRectH);
 
-
 	CWnd* pPaintRegion = GetDlgItem(IDC_STATIC_PAINT);
 	pPaintRegion->GetClientRect(&rectPaintRegion);
 	int iHeightPaintRegion = rectPaintRegion.Height();
@@ -1689,4 +1694,128 @@ void CMFClinkagetestDlg::OnEnKillfocusEditShaftYPos()
 		GetDlgItem(IDC_EDIT_SHAFT_Y_POS)->SetWindowText(strOrigin);
 		GetDlgItem(IDC_EDIT_SHAFT_Y_POS)->SetFocus();
 	}
+}
+
+
+// 右側軸半徑
+void CMFClinkagetestDlg::OnEnKillfocusEditRightLeverRadius()
+{
+	double dOldRightLeverRadius = m_dRightLeverRadius;
+	CString strOrigin;
+	CString strMinConstraint;
+	CString strMaxConstraint;
+
+	UpdateData(TRUE);
+	m_editRightLeverRadius.GetWindowText(m_strRightLeverRadius);
+	m_editBearingRadius.GetWindowText(m_strBearingRadius);
+
+	m_dRightLeverRadius = _ttof(m_strRightLeverRadius);
+	m_dBearingRadius = _ttof(m_strBearingRadius);
+
+	double dMaxRightLeverRadius = m_dBearingRadius - 20;
+	strMaxConstraint.Format(_T("%.1f"), dMaxRightLeverRadius);
+
+	double dMinRightLeverRadius = 0;
+	strMinConstraint.Format(_T("%.1f"), dMinRightLeverRadius);
+
+	if ((m_dRightLeverRadius > dMaxRightLeverRadius) || (m_dRightLeverRadius <= dMinRightLeverRadius))
+	{
+		AfxMessageBox(_T("右側軸半徑 <= ") + strMaxConstraint + _T(" 或是 右側軸半徑 > ") + strMinConstraint);
+
+		m_dRightLeverRadius = dOldRightLeverRadius;
+		strOrigin.Format(_T("%.1f"), m_dRightLeverRadius);
+
+		GetDlgItem(IDC_EDIT_RIGHT_LEVER_RADIUS)->SetWindowText(strOrigin);
+		GetDlgItem(IDC_EDIT_RIGHT_LEVER_RADIUS)->SetFocus();
+	}
+}
+
+
+// 左側軸半徑
+void CMFClinkagetestDlg::OnEnKillfocusEditLeftLeverRadius()
+{
+	double dOldLeftLeverRadius = m_dLeftLeverRadius;
+	CString strOrigin;
+	CString strMinConstraint;
+	CString strMaxConstraint;
+
+	UpdateData(TRUE);
+	m_editLeftLeverRadius.GetWindowText(m_strLeftLeverRadius);
+	m_editBearingRadius.GetWindowText(m_strBearingRadius);
+
+	m_dLeftLeverRadius = _ttof(m_strLeftLeverRadius);
+	m_dBearingRadius = _ttof(m_strBearingRadius);
+
+	double dMaxLeftLeverRadius = m_dBearingRadius - 20;
+	strMaxConstraint.Format(_T("%.1f"), dMaxLeftLeverRadius);
+
+	double dMinLeftLeverRadius = 0;
+	strMinConstraint.Format(_T("%.1f"), dMinLeftLeverRadius);
+
+	if ((m_dLeftLeverRadius > dMaxLeftLeverRadius) || (m_dLeftLeverRadius <= dMinLeftLeverRadius))
+	{
+		AfxMessageBox(_T("左側軸半徑 <= ") + strMaxConstraint + _T(" 或是 左側軸半徑 > ") + strMinConstraint);
+
+		m_dLeftLeverRadius = dOldLeftLeverRadius;
+		strOrigin.Format(_T("%.1f"), m_dLeftLeverRadius);
+
+		GetDlgItem(IDC_EDIT_LEFT_LEVER_RADIUS)->SetWindowText(strOrigin);
+		GetDlgItem(IDC_EDIT_LEFT_LEVER_RADIUS)->SetFocus();
+	}
+}
+
+
+// 右側軸角度位置
+void CMFClinkagetestDlg::OnEnKillfocusEditRightAngle()
+{
+	double dOldRightAng = m_dRightAng;
+	CString strOrigin;
+	
+	UpdateData(TRUE);
+	m_editRightAng.GetWindowText(m_strRightAng);
+	
+	m_dRightAng = _ttof(m_strRightAng);
+
+	if (m_strRightAng.IsEmpty())
+	{
+		AfxMessageBox(_T("請輸入任意實數值"));
+
+		m_dRightAng = dOldRightAng;
+		strOrigin.Format(_T("%.1f"), m_dRightAng);
+
+		GetDlgItem(IDC_EDIT_RIGHT_ANGLE)->SetWindowText(strOrigin);
+		GetDlgItem(IDC_EDIT_RIGHT_ANGLE)->SetFocus();
+	}
+}
+
+
+// 左側軸角度位置
+void CMFClinkagetestDlg::OnEnKillfocusEditLeftAngle()
+{
+	double dOldLeftAng = m_dLeftAng;
+	CString strOrigin;
+
+	UpdateData(TRUE);
+	m_editLeftAng.GetWindowText(m_strLeftAng);
+
+	m_dLeftAng = _ttof(m_strLeftAng);
+
+	if (m_strLeftAng.IsEmpty())
+	{
+		AfxMessageBox(_T("請輸入任意實數值"));
+
+		m_dLeftAng = dOldLeftAng;
+		strOrigin.Format(_T("%.1f"), m_dLeftAng);
+
+		GetDlgItem(IDC_EDIT_LEFT_ANGLE)->SetWindowText(strOrigin);
+		GetDlgItem(IDC_EDIT_LEFT_ANGLE)->SetFocus();
+	}
+}
+
+
+void CMFClinkagetestDlg::OnDestroy()
+{
+	CDialogEx::OnDestroy();
+
+	// TODO: 在此加入您的訊息處理常式程式碼
 }

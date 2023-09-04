@@ -190,4 +190,11 @@ public:
 	afx_msg void OnEnKillfocusEditShaftRadius();            // 中心圓軸半徑限制警告
 	afx_msg void OnEnKillfocusEditShaftXPos();              // 中心圓軸 X 位置限制警告
 	afx_msg void OnEnKillfocusEditShaftYPos();				// 中心圓軸 Y 位置限制警告
+	afx_msg void OnEnKillfocusEditRightLeverRadius();       // 右側軸半徑限制警告
+	afx_msg void OnEnKillfocusEditLeftLeverRadius();		// 左側軸半徑限制警告
+	afx_msg void OnEnKillfocusEditRightAngle();             // 右側軸角度位置限制警告
+	afx_msg void OnEnKillfocusEditLeftAngle();				// 左側軸角度位置限制警告
+
+
+	afx_msg void OnDestroy();
 };
