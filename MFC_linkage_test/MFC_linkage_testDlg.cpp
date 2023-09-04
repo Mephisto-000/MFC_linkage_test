@@ -159,11 +159,11 @@ void CMFClinkagetestDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_RPM, m_strRPM);
 	DDX_Text(pDX, IDC_EDIT_ANGULAR_ACCELERATION, m_strAngAcc);
 	DDX_Text(pDX, IDC_EDIT_ANGULAR_DECELERATION, m_strAngDec);
-	DDX_Control(pDX, IDC_EDIT_LEFT_REC_LEVER, m_editLeftRectLever);
+	DDX_Control(pDX, IDC_EDIT_LEFT_REC_LEVER, m_editLeftRectLeverLen);
 	DDX_Control(pDX, IDC_EDIT_LEFT_REC_HEIGHT, m_editLeftRectH);
 	DDX_Control(pDX, IDC_EDIT_LEFT_REC_LENGTH, m_editLeftRectLen);
 	DDX_Control(pDX, IDC_EDIT_LEFT_REC_WIDTH, m_editLeftRectW);
-	DDX_Control(pDX, IDC_EDIT_RIGHT_REC_LEVER, m_editRightRectLever);
+	DDX_Control(pDX, IDC_EDIT_RIGHT_REC_LEVER, m_editRightRectLeverLen);
 	DDX_Control(pDX, IDC_EDIT_RIGHT_REC_HEIGHT, m_editRightRectH);
 	DDX_Control(pDX, IDC_EDIT_RIGHT_REC_LENGTH, m_editRightRectLen);
 	DDX_Control(pDX, IDC_EDIT_RIGHT_REC_WIDTH, m_editRightRectW);
@@ -191,6 +191,7 @@ BEGIN_MESSAGE_MAP(CMFClinkagetestDlg, CDialogEx)
 	ON_EN_KILLFOCUS(IDC_EDIT_ANGULAR_ACCELERATION, &CMFClinkagetestDlg::OnEnKillfocusEditAngularAcceleration)
 	ON_EN_KILLFOCUS(IDC_EDIT_ANGULAR_DECELERATION, &CMFClinkagetestDlg::OnEnKillfocusEditAngularDeceleration)
 	ON_EN_KILLFOCUS(IDC_EDIT_RPM, &CMFClinkagetestDlg::OnEnKillfocusEditRpm)
+	ON_EN_KILLFOCUS(IDC_EDIT_LEFT_REC_LEVER, &CMFClinkagetestDlg::OnEnKillfocusEditLeftRecLever)
 END_MESSAGE_MAP()
 
 
@@ -304,6 +305,26 @@ CRect LeftRightBearingPos(CPoint ptLeftRightBearingCenter)
 	return rectLeftRightBearingPos;
 }
 
+// 傳回左右側滑塊內轉軸內切矩形
+CRect LeftRightCenterBearingPos(CPoint ptLeftRightUpperCenter, double dLeftRightRectW, double dLeftRightRectLen)
+{
+	if (dLeftRightRectW > dLeftRightRectLen)
+	{
+		CPoint ptX1Y1(RoundDoubleToInt(ptLeftRightUpperCenter.x - 0.25 * dLeftRightRectLen), RoundDoubleToInt(ptLeftRightUpperCenter.y - 0.25 * dLeftRightRectLen));
+		CPoint ptX2Y2(RoundDoubleToInt(ptLeftRightUpperCenter.x + 0.25 * dLeftRightRectLen), RoundDoubleToInt(ptLeftRightUpperCenter.y + 0.25 * dLeftRightRectLen));
+		CRect rectLeftRightCenterBearingPos(ptX1Y1, ptX2Y2);
+
+		return rectLeftRightCenterBearingPos;
+	}
+	else
+	{
+		CPoint ptX1Y1(RoundDoubleToInt(ptLeftRightUpperCenter.x - 0.25 * dLeftRightRectW), RoundDoubleToInt(ptLeftRightUpperCenter.y - 0.25 * dLeftRightRectW));
+		CPoint ptX2Y2(RoundDoubleToInt(ptLeftRightUpperCenter.x + 0.25 * dLeftRightRectW), RoundDoubleToInt(ptLeftRightUpperCenter.y + 0.25 * dLeftRightRectW));
+		CRect rectLeftRightCenterBearingPos(ptX1Y1, ptX2Y2);
+
+		return rectLeftRightCenterBearingPos;
+	}
+}
 
 // 傳回圓軸圓心座標
 CPoint BearingCenter (CRect rectBearing)
@@ -377,8 +398,6 @@ CPoint RightBearingCenter(double dRightLeverRadius, double dRightAng, CPoint ptB
 }
 
 
-
-
 // 傳回左側滑塊中心座標
 CPoint LeftRectCenter (double dLeftLeverLen, double dLeftRectH, double dLeftRectLen, CPoint ptLeftBearingCenter, CPoint ptBearingCenter, int iPaintH)
 {
@@ -403,11 +422,11 @@ CPoint RightRectCenter (double dRightLeverLen, double dRightRectH, double dRight
 // 開關樞紐輸入框
 void CMFClinkagetestDlg::OpenOrCloseAllInputEdit(BOOL bTurnOn)
 {
-	m_editLeftRectLever.EnableWindow(bTurnOn);
+	m_editLeftRectLeverLen.EnableWindow(bTurnOn);
 	m_editLeftRectH.EnableWindow(bTurnOn);
 	m_editLeftRectLen.EnableWindow(bTurnOn);
 	m_editLeftRectW.EnableWindow(bTurnOn);
-	m_editRightRectLever.EnableWindow(bTurnOn);
+	m_editRightRectLeverLen.EnableWindow(bTurnOn);
 	m_editRightRectH.EnableWindow(bTurnOn);
 	m_editRightRectLen.EnableWindow(bTurnOn);
 	m_editRightRectW.EnableWindow(bTurnOn);
@@ -621,6 +640,24 @@ void CMFClinkagetestDlg::DrawToBuffer(CDC* pDC)
 	pDC->SelectObject(pOldPenBearingBoarder);
 	pDC->SelectObject(pOldBrushMainBearing);
 
+	// 左右轉軸樞紐繪圖
+	CBrush* pOldBrushLeftRightBearing = pDC->SelectObject(&brushLeftRightBearing);
+	CRect rectLeftBearingRect = LeftRightBearingPos(ptLeftBearingCenter);
+	CRect rectRightBearingRect = LeftRightBearingPos(ptRightBearingCenter);
+
+	pDC->Ellipse(rectLeftBearingRect);
+	pDC->Ellipse(rectRightBearingRect);
+	pDC->SelectObject(pOldBrushLeftRightBearing);
+
+	// 左右滑塊中心轉軸紐繪圖
+	CBrush* pOldBrushLeftRightUpperCenterBearing = pDC->SelectObject(&brushLeftRightBearing);
+	CRect rectLeftUpperCenterRect = LeftRightCenterBearingPos(ptLeftUpperCenter, m_dLeftRectW, m_dLeftRectLen);
+	CRect rectRightUpperCenterRect = LeftRightCenterBearingPos(ptRightUpperCenter, m_dRightRectW, m_dRightRectLen);
+
+	pDC->Ellipse(rectLeftUpperCenterRect);
+	pDC->Ellipse(rectRightUpperCenterRect);
+	pDC->SelectObject(pOldBrushLeftRightUpperCenterBearing);
+
 	// 連桿繪圖
 	CPen* pOldPenLever = pDC->SelectObject(&penLever);
 
@@ -631,15 +668,6 @@ void CMFClinkagetestDlg::DrawToBuffer(CDC* pDC)
 	pDC->MoveTo(ptRightBearingCenter);
 	pDC->LineTo(ptRightUpperCenter);
 	pDC->SelectObject(pOldPenLever);
-
-	// 左右轉軸樞紐繪圖
-	CBrush* pOldBrushLeftRightBearing = pDC->SelectObject(&brushLeftRightBearing);
-	CRect rectLeftBearingRect = LeftRightBearingPos(ptLeftBearingCenter);
-	CRect rectRightBearingRect = LeftRightBearingPos(ptRightBearingCenter);
-
-	pDC->Ellipse(rectLeftBearingRect);
-	pDC->Ellipse(rectRightBearingRect);
-	pDC->SelectObject(pOldBrushLeftRightBearing);
 
 }
 
@@ -710,14 +738,19 @@ void CMFClinkagetestDlg::OnBnClickedButtonStart()
 	double dLeftMaxLenY = m_dBearingPosY - (m_dLeftRectLen * 0.5 + m_dLeftRectH);
 	double dLeftMaxLenX = m_dLowerRectW - 0.5 * m_dLeftRectW;
 	double dLeftClientMaxLenX = sqrt(pow((m_dLeftRectLeverLen + m_dBearingRadius), 2) - pow(dLeftMaxLenY, 2));
+
 	double dRightMaxLenY = m_dBearingPosY - (m_dRightRectLen * 0.5 + m_dRightRectH);
 	double dRightMaxLenX = m_dLowerRectW - 0.5 * m_dRightRectW;
 	double dRightClientMaxLenX = sqrt(pow((m_dRightRectLeverLen + m_dBearingRadius), 2) - pow(dRightMaxLenY, 2));
 
 	// 中心圓軸與滑塊最小距離條件設定
 	// 當桿長長度小於此條件時，直接暫停輸入
-	double dLeftRectSmallSide = sqrt(pow((m_dLeftRectLen * 0.5 + m_dLeftRectH), 2) + pow((m_dLeftRectLen + m_dLeftRectH), 2));
-	double dLeftClientMinLeverLen = m_dLeftRectLeverLen - m_dLeftLeverRadius - dLeftRectSmallSide;
+	//double dLeftRectSmallSide = sqrt(pow((m_dLeftRectLen * 0.5 + m_dLeftRectH), 2) + pow((m_dLeftRectLen + m_dLeftRectH), 2));
+	//double dLeftClientMinLeverLen = m_dLeftRectLeverLen - m_dLeftLeverRadius - dLeftRectSmallSide;
+
+	double dLeftRectSmallSide = sqrt(pow((0.5 * m_dLeftRectLen), 2) + pow((0.5 * m_dLeftRectW), 2));
+	double dLeftClientMinLeverLen = m_dLeftRectLeverLen - m_dLeftLeverRadius - m_dBearingRadius - dLeftRectSmallSide;
+
 	double dRightRectSmallSide = sqrt(pow((m_dRightRectLen * 0.5 + m_dRightRectH), 2) + pow((m_dRightRectLen + m_dRightRectH), 2));
 	double dRightClientMinLeverLen = m_dRightRectLeverLen - m_dRightLeverRadius - dRightRectSmallSide;
 
@@ -798,28 +831,6 @@ void CMFClinkagetestDlg::OnBnClickedButtonStart()
 	g_bFirstStart = FALSE;
 
 	////////////////////////////////////////////////////////////////////////////////////////
-	// 桿長限制
-	if ((dLeftClientMaxLenX >= dLeftMaxLenX) || (dRightClientMaxLenX >= dRightMaxLenX))
-	{
-		KillTimer(1);
-		OpenOrCloseAllInputEdit(TRUE);
-		g_bFirstStart = TRUE;
-	}
-
-	if ((dLeftClientMinLeverLen <= 0) || (dRightClientMinLeverLen <= 0))
-	{
-		KillTimer(1);
-		OpenOrCloseAllInputEdit(TRUE);
-		g_bFirstStart = TRUE;
-	}
-
-	if ((m_dLeftRectLeverLen <= 0) || (m_dRightRectLeverLen <= 0))
-	{
-		KillTimer(1);
-		OpenOrCloseAllInputEdit(TRUE);
-		g_bFirstStart = TRUE;
-	}
-	////////////////////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////
 	// 方塊個別資訊限制 (高、長、寬)
 	if ((m_dLeftRectH < 0) || (m_dRightRectH < 0))
@@ -873,23 +884,6 @@ void CMFClinkagetestDlg::OnBnClickedButtonStart()
 		g_bFirstStart = TRUE;
 	}
 	////////////////////////////////////////////////////////////////////////////////////////
-	////////////////////////////////////////////////////////////////////////////////////////
-	// 加減速度限制
-	//if ((m_dAngAcc < 0) || (m_dAngDec < 0))
-	//{
-	//	KillTimer(1);
-	//	OpenOrCloseAllInputEdit(TRUE);
-	//	g_bFirstStart = TRUE;
-	//}
-
-
-	if (m_dRPM == 0)
-	{
-		KillTimer(1);
-		OpenOrCloseAllInputEdit(TRUE);
-		g_bFirstStart = TRUE;
-		//OnEnKillfocusEditRpm();
-	}
 	////////////////////////////////////////////////////////////////////////////////////////
 
 	g_bStartState = TRUE;
@@ -1170,10 +1164,11 @@ void CMFClinkagetestDlg::OnEnKillfocusEditAngularDeceleration()
 }
 
 
-// 最大速度限制條件
+// 等速度限制條件
 void CMFClinkagetestDlg::OnEnKillfocusEditRpm()
 {
 	double dOldRPM = m_dRPM;
+	CString strOrigin;
 
 	UpdateData(TRUE);
 	m_editRPM.GetWindowText(m_strRPM);
@@ -1181,12 +1176,60 @@ void CMFClinkagetestDlg::OnEnKillfocusEditRpm()
 
 	if (m_dRPM == 0)
 	{
+		AfxMessageBox(_T(" RPM > 0 或 RPM < 0"));
 
+		m_dRPM = dOldRPM;
+		strOrigin.Format(_T("%.1f"), m_dRPM);
+
+		GetDlgItem(IDC_EDIT_RPM)->SetWindowText(strOrigin);
+		GetDlgItem(IDC_EDIT_RPM)->SetFocus();
 	}
-
-
 }
 
 
+// 左側滑塊限制條件
+// 桿長
+void CMFClinkagetestDlg::OnEnKillfocusEditLeftRecLever()
+{
+	double dOldLeftRectLeverLen = m_dLeftRectLeverLen;
+	CString strOrigin;
+	CString strMinConstraint;
+	CString strMaxConstraint;
 
+	UpdateData(TRUE);
+	m_editLeftRectLeverLen.SetWindowText(m_strLeftRectLeverLen);
+	m_editLeftRectLen.SetWindowText(m_strLeftRectLen);
+	m_editLeftRectH.SetWindowText(m_strLeftRectH);
+	m_editLeftRectW.SetWindowText(m_strLeftRectW);
+	m_editLeftLeverRadius.SetWindowText(m_strLeftLeverRadius);
+	m_editBearingPosY.SetWindowText(m_strBearingPosY);
+	m_editBearingRadius.SetWindowText(m_strBearingRadius);
 
+	m_dLeftRectLeverLen = _ttof(m_strLeftRectLeverLen);
+	m_dLeftRectLen = _ttof(m_strLeftRectLen);
+	m_dLeftRectH = _ttof(m_strLeftRectH);
+	m_dLeftRectW = _ttof(m_strLeftRectW);
+	m_dLeftLeverRadius = _ttof(m_strLeftLeverRadius);
+	m_dBearingPosY = _ttof(m_strBearingPosY);
+	m_dBearingRadius = _ttof(m_strBearingRadius);
+
+	double dLeftMaxLenY = m_dBearingPosY - (m_dLeftRectLen * 0.5 + m_dLeftRectH); // k
+	double dLeftMaxLenX = m_dLowerRectW - 0.5 * m_dLeftRectW;
+	double dLeftClientMaxLeverLen = sqrt(pow(dLeftMaxLenX, 2) + pow(dLeftMaxLenY, 2)) - m_dBearingRadius;
+	strMaxConstraint.Format(_T("%.1f"), dLeftClientMaxLeverLen);
+
+	double dLeftRectSmallSideY = m_dBearingPosY - (m_dLeftRectH + 0.5 * m_dLeftRectLen);
+	double dLeftClientMinLeverLen = sqrt(pow((0.5 * m_dLeftRectW), 2) + pow(dLeftRectSmallSideY, 2)) + m_dLeftLeverRadius;
+	strMinConstraint.Format(_T("%.1f"), dLeftClientMinLeverLen);
+
+	if ((m_dLeftRectLeverLen >= dLeftClientMaxLeverLen) || (m_dLeftRectLeverLen <= dLeftClientMinLeverLen))
+	{
+		AfxMessageBox(_T("桿長 <= ") + strMaxConstraint + _T(" 或是 桿長 >= ") + strMinConstraint);
+
+		m_dLeftRectLeverLen = dOldLeftRectLeverLen;
+		strOrigin.Format(_T("%.1f"), m_dLeftRectLeverLen);
+
+		GetDlgItem(IDC_EDIT_LEFT_REC_LEVER)->SetWindowText(strOrigin);
+		GetDlgItem(IDC_EDIT_LEFT_REC_LEVER)->SetFocus();
+	}
+}

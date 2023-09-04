@@ -150,11 +150,11 @@ public:
 
 	////////////////////////////////////////////////////////////////////////////////////////
 	// 個數值設定控制項:	
-	CEdit m_editLeftRectLever;								// 左側連桿長度
+	CEdit m_editLeftRectLeverLen;							// 左側連桿長度
 	CEdit m_editLeftRectH;									// 左側滑塊高度
 	CEdit m_editLeftRectLen;								// 左側滑塊長度 (縱軸方向)
 	CEdit m_editLeftRectW;									// 左側滑塊寬度 (橫軸方向)
-	CEdit m_editRightRectLever;								// 右側連桿長度
+	CEdit m_editRightRectLeverLen;							// 右側連桿長度
 	CEdit m_editRightRectH;									// 右側滑塊高度
 	CEdit m_editRightRectLen;								// 右側滑塊長度 (縱軸方向)
 	CEdit m_editRightRectW;									// 右側滑塊寬度 (橫軸方向)
@@ -178,5 +178,6 @@ public:
 	// 輸入資料限制警告設定區塊:
 	afx_msg void OnEnKillfocusEditAngularAcceleration();    // 加速度限制警告
 	afx_msg void OnEnKillfocusEditAngularDeceleration();    // 減速度限制警告
-	afx_msg void OnEnKillfocusEditRpm();                    // 最大速度限制警告
+	afx_msg void OnEnKillfocusEditRpm();                    // 等速度限制警告
+	afx_msg void OnEnKillfocusEditLeftRecLever();           // 左滑塊長度限制警告
 };
