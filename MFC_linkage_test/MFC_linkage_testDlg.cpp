@@ -57,24 +57,24 @@ END_MESSAGE_MAP()
 
 CMFClinkagetestDlg::CMFClinkagetestDlg(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_MFC_LINKAGE_TEST_DIALOG, pParent)
-	, m_strLeftRectLeverLen(_T("400"))
-	, m_strLeftRectH(_T("100"))
-	, m_strLeftRectLen(_T("60"))
-	, m_strLeftRectW(_T("200"))
-	, m_strRightRectLeverLen(_T("500"))
-	, m_strRightRectH(_T("150"))
-	, m_strRightRectLen(_T("60"))
-	, m_strRightRectW(_T("200"))
-	, m_strBearingRadius(_T("100"))
-	, m_strBearingPosX(_T("0"))
-	, m_strBearingPosY(_T("300"))
-	, m_strRightLeverRadius(_T("80"))
-	, m_strRightAng(_T("270"))
-	, m_strLeftLeverRadius(_T("80"))
-	, m_strLeftAng(_T("90"))
-	, m_strRPM(_T("100"))
-	, m_strAngAcc(_T("10"))
-	, m_strAngDec(_T("10"))
+	, m_strLeftRectLeverLen(_T("400.0"))
+	, m_strLeftRectH(_T("100.0"))
+	, m_strLeftRectLen(_T("60.0"))
+	, m_strLeftRectW(_T("200.0"))
+	, m_strRightRectLeverLen(_T("500.0"))
+	, m_strRightRectH(_T("150.0"))
+	, m_strRightRectLen(_T("60.0"))
+	, m_strRightRectW(_T("200.0"))
+	, m_strBearingRadius(_T("100.0"))
+	, m_strBearingPosX(_T("0.0"))
+	, m_strBearingPosY(_T("300.0"))
+	, m_strRightLeverRadius(_T("80.0"))
+	, m_strRightAng(_T("270.0"))
+	, m_strLeftLeverRadius(_T("80.0"))
+	, m_strLeftAng(_T("90.0"))
+	, m_strRPM(_T("100.0"))
+	, m_strAngAcc(_T("10.0"))
+	, m_strAngDec(_T("10.0"))
 	, m_dLeftRectLeverLen(400.0)                     
 	, m_dLeftRectH(100.0)
 	, m_dLeftRectLen(60.0)      						
@@ -190,6 +190,7 @@ BEGIN_MESSAGE_MAP(CMFClinkagetestDlg, CDialogEx)
 	ON_WM_TIMER()
 	ON_EN_KILLFOCUS(IDC_EDIT_ANGULAR_ACCELERATION, &CMFClinkagetestDlg::OnEnKillfocusEditAngularAcceleration)
 	ON_EN_KILLFOCUS(IDC_EDIT_ANGULAR_DECELERATION, &CMFClinkagetestDlg::OnEnKillfocusEditAngularDeceleration)
+	ON_EN_KILLFOCUS(IDC_EDIT_RPM, &CMFClinkagetestDlg::OnEnKillfocusEditRpm)
 END_MESSAGE_MAP()
 
 
@@ -1128,30 +1129,64 @@ void CMFClinkagetestDlg::OnTimer(UINT_PTR nIDEvent)
 void CMFClinkagetestDlg::OnEnKillfocusEditAngularAcceleration()
 {
 	double dOldAngAcc = m_dAngAcc;
+	CString strOrigin;
+
 	UpdateData(TRUE);
 	m_editAngAcc.GetWindowText(m_strAngAcc);
 	m_dAngAcc = _ttof(m_strAngAcc);
+
 	if (m_dAngAcc <= 0)
 	{
 		AfxMessageBox(_T("角加速度 > 0"));
-		UpdateData(FALSE);
+		
 		m_dAngAcc = dOldAngAcc;
+		strOrigin.Format(_T("%.1f"), m_dAngAcc);
+
+		GetDlgItem(IDC_EDIT_ANGULAR_ACCELERATION)->SetWindowText(strOrigin);
 		GetDlgItem(IDC_EDIT_ANGULAR_ACCELERATION)->SetFocus();
 	}
 }
 
-
+// 減速度限制條件
 void CMFClinkagetestDlg::OnEnKillfocusEditAngularDeceleration()
 {
 	double dOldAngDec = m_dAngDec;
+	CString strOrigin;
+
 	UpdateData(TRUE);
 	m_editAngDec.GetWindowText(m_strAngDec);
 	m_dAngDec = _ttof(m_strAngDec);
+
 	if (m_dAngDec <= 0)
 	{
 		AfxMessageBox(_T("角減速度 > 0"));
-		UpdateData(FALSE);
+
 		m_dAngDec = dOldAngDec;
+		strOrigin.Format(_T("%.1f"), m_dAngDec);
+
+		GetDlgItem(IDC_EDIT_ANGULAR_DECELERATION)->SetWindowText(strOrigin);
 		GetDlgItem(IDC_EDIT_ANGULAR_DECELERATION)->SetFocus();
 	}
 }
+
+
+// 最大速度限制條件
+void CMFClinkagetestDlg::OnEnKillfocusEditRpm()
+{
+	double dOldRPM = m_dRPM;
+
+	UpdateData(TRUE);
+	m_editRPM.GetWindowText(m_strRPM);
+	m_dRPM = _ttof(m_strRPM);
+
+	if (m_dRPM == 0)
+	{
+
+	}
+
+
+}
+
+
+
+
