@@ -180,4 +180,5 @@ public:
 	afx_msg void OnEnKillfocusEditAngularDeceleration();    // 減速度限制警告
 	afx_msg void OnEnKillfocusEditRpm();                    // 等速度限制警告
 	afx_msg void OnEnKillfocusEditLeftRecLever();           // 左滑塊長度限制警告
+	afx_msg void OnEnKillfocusEditLeftRecHeight();          // 左邊滑塊高度限制警告
 };

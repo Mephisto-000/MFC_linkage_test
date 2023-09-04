@@ -192,6 +192,7 @@ BEGIN_MESSAGE_MAP(CMFClinkagetestDlg, CDialogEx)
 	ON_EN_KILLFOCUS(IDC_EDIT_ANGULAR_DECELERATION, &CMFClinkagetestDlg::OnEnKillfocusEditAngularDeceleration)
 	ON_EN_KILLFOCUS(IDC_EDIT_RPM, &CMFClinkagetestDlg::OnEnKillfocusEditRpm)
 	ON_EN_KILLFOCUS(IDC_EDIT_LEFT_REC_LEVER, &CMFClinkagetestDlg::OnEnKillfocusEditLeftRecLever)
+	ON_EN_KILLFOCUS(IDC_EDIT_LEFT_REC_HEIGHT, &CMFClinkagetestDlg::OnEnKillfocusEditLeftRecHeight)
 END_MESSAGE_MAP()
 
 
@@ -833,26 +834,26 @@ void CMFClinkagetestDlg::OnBnClickedButtonStart()
 	////////////////////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////
 	// 方塊個別資訊限制 (高、長、寬)
-	if ((m_dLeftRectH < 0) || (m_dRightRectH < 0))
-	{
-		KillTimer(1);
-		OpenOrCloseAllInputEdit(TRUE);
-		g_bFirstStart = TRUE;
-	}
+	//if ((m_dLeftRectH < 0) || (m_dRightRectH < 0))
+	//{
+	//	KillTimer(1);
+	//	OpenOrCloseAllInputEdit(TRUE);
+	//	g_bFirstStart = TRUE;
+	//}
 
-	if ((m_dLeftRectLen <= 0) || (m_dRightRectLen <= 0))
-	{
-		KillTimer(1);
-		OpenOrCloseAllInputEdit(TRUE);
-		g_bFirstStart = TRUE;
-	}
+	//if ((m_dLeftRectLen <= 0) || (m_dRightRectLen <= 0))
+	//{
+	//	KillTimer(1);
+	//	OpenOrCloseAllInputEdit(TRUE);
+	//	g_bFirstStart = TRUE;
+	//}
 
-	if ((m_dLeftRectW <= 0) || (m_dRightRectW <= 0))
-	{
-		KillTimer(1);
-		OpenOrCloseAllInputEdit(TRUE);
-		g_bFirstStart = TRUE;
-	}
+	//if ((m_dLeftRectW <= 0) || (m_dRightRectW <= 0))
+	//{
+	//	KillTimer(1);
+	//	OpenOrCloseAllInputEdit(TRUE);
+	//	g_bFirstStart = TRUE;
+	//}
 	////////////////////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////
 	// 中心圓軸高度限制
@@ -1233,3 +1234,46 @@ void CMFClinkagetestDlg::OnEnKillfocusEditLeftRecLever()
 		GetDlgItem(IDC_EDIT_LEFT_REC_LEVER)->SetFocus();
 	}
 }
+
+
+// 滑塊高
+void CMFClinkagetestDlg::OnEnKillfocusEditLeftRecHeight()
+{
+	double dOldLeftRectH = m_dLeftRectH;
+	CString strOrigin;
+	CString strMinConstraint;
+	CString strMaxConstraint;
+	CRect rectPaintRegion;
+
+	UpdateData(TRUE);
+	m_editLeftRectH.GetWindowText(m_strLeftRectH);
+	m_editLeftRectLen.GetWindowText(m_strLeftRectLen);
+
+	m_dLeftRectH = _ttof(m_strLeftRectH);
+	m_dLeftRectLen = _ttof(m_strLeftRectLen);
+
+	CWnd* pPaintRegion = GetDlgItem(IDC_STATIC_PAINT);
+	pPaintRegion->GetClientRect(&rectPaintRegion);
+	int iHeightPaintRegion = rectPaintRegion.Height();
+
+	double dMaxRectH = iHeightPaintRegion - m_dLeftRectLen;
+	strMaxConstraint.Format(_T("%.1f"), dMaxRectH);
+
+	double dMinRectH = 0.0;
+	strMinConstraint.Format(_T("%.1f"), dMinRectH);
+
+	if ((m_dLeftRectH > dMaxRectH) || (m_dLeftRectH < dMinRectH))
+	{
+		AfxMessageBox(_T("高度 <= ") + strMaxConstraint + _T(" 或是 高度 >= ") + strMinConstraint);
+
+		m_dLeftRectH = dOldLeftRectH;
+		strOrigin.Format(_T("%.1f"), m_dLeftRectH);
+
+		GetDlgItem(IDC_EDIT_LEFT_REC_HEIGHT)->SetWindowText(strOrigin);
+		GetDlgItem(IDC_EDIT_LEFT_REC_HEIGHT)->SetFocus();
+	}
+}
+
+
+
+
