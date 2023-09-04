@@ -195,6 +195,10 @@ BEGIN_MESSAGE_MAP(CMFClinkagetestDlg, CDialogEx)
 	ON_EN_KILLFOCUS(IDC_EDIT_LEFT_REC_HEIGHT, &CMFClinkagetestDlg::OnEnKillfocusEditLeftRecHeight)
 	ON_EN_KILLFOCUS(IDC_EDIT_LEFT_REC_LENGTH, &CMFClinkagetestDlg::OnEnKillfocusEditLeftRecLength)
 	ON_EN_KILLFOCUS(IDC_EDIT_LEFT_REC_WIDTH, &CMFClinkagetestDlg::OnEnKillfocusEditLeftRecWidth)
+	ON_EN_KILLFOCUS(IDC_EDIT_RIGHT_REC_LEVER, &CMFClinkagetestDlg::OnEnKillfocusEditRightRecLever)
+	ON_EN_KILLFOCUS(IDC_EDIT_RIGHT_REC_HEIGHT, &CMFClinkagetestDlg::OnEnKillfocusEditRightRecHeight)
+	ON_EN_KILLFOCUS(IDC_EDIT_RIGHT_REC_LENGTH, &CMFClinkagetestDlg::OnEnKillfocusEditRightRecLength)
+	ON_EN_KILLFOCUS(IDC_EDIT_RIGHT_REC_WIDTH, &CMFClinkagetestDlg::OnEnKillfocusEditRightRecWidth)
 END_MESSAGE_MAP()
 
 
@@ -1349,5 +1353,171 @@ void CMFClinkagetestDlg::OnEnKillfocusEditLeftRecWidth()
 		GetDlgItem(IDC_EDIT_LEFT_REC_WIDTH)->SetWindowText(strOrigin);
 		GetDlgItem(IDC_EDIT_LEFT_REC_WIDTH)->SetFocus();
 	}
-
 }
+
+
+// 左側滑塊限制條件
+// 桿長
+void CMFClinkagetestDlg::OnEnKillfocusEditRightRecLever()
+{
+	double dOldRightRectLeverLen = m_dRightRectLeverLen;
+	CString strOrigin;
+	CString strMinConstraint;
+	CString strMaxConstraint;
+
+	UpdateData(TRUE);
+	m_editRightRectLeverLen.SetWindowText(m_strRightRectLeverLen);
+	m_editRightRectLen.SetWindowText(m_strRightRectLen);
+	m_editRightRectH.SetWindowText(m_strRightRectH);
+	m_editRightRectW.SetWindowText(m_strRightRectW);
+	m_editRightLeverRadius.SetWindowText(m_strRightLeverRadius);
+	m_editBearingPosY.SetWindowText(m_strBearingPosY);
+	m_editBearingRadius.SetWindowText(m_strBearingRadius);
+
+	m_dRightRectLeverLen = _ttof(m_strRightRectLeverLen);
+	m_dRightRectLen = _ttof(m_strRightRectLen);
+	m_dRightRectH = _ttof(m_strRightRectH);
+	m_dRightRectW = _ttof(m_strRightRectW);
+	m_dRightLeverRadius = _ttof(m_strRightLeverRadius);
+	m_dBearingPosY = _ttof(m_strBearingPosY);
+	m_dBearingRadius = _ttof(m_strBearingRadius);
+
+	double dRightMaxLenY = m_dBearingPosY - (m_dRightRectLen * 0.5 + m_dRightRectH); // k
+	double dRightMaxLenX = m_dLowerRectW - 0.5 * m_dLeftRectW;
+	double dRightClientMaxLeverLen = sqrt(pow(dRightMaxLenX, 2) + pow(dRightMaxLenY, 2)) - m_dBearingRadius;
+	strMaxConstraint.Format(_T("%.1f"), dRightClientMaxLeverLen);
+
+	double dRightRectSmallSideY = m_dBearingPosY - (m_dRightRectH + 0.5 * m_dRightRectLen);
+	double dRightClientMinLeverLen = sqrt(pow((0.5 * m_dRightRectW), 2) + pow(dRightRectSmallSideY, 2)) + m_dRightLeverRadius;
+	strMinConstraint.Format(_T("%.1f"), dRightClientMinLeverLen);
+
+	if ((m_dRightRectLeverLen >= dRightClientMaxLeverLen) || (m_dRightRectLeverLen <= dRightClientMinLeverLen))
+	{
+		AfxMessageBox(_T("桿長 <= ") + strMaxConstraint + _T(" 或是 桿長 >= ") + strMinConstraint);
+
+		m_dRightRectLeverLen = dOldRightRectLeverLen;
+		strOrigin.Format(_T("%.1f"), m_dRightRectLeverLen);
+
+		GetDlgItem(IDC_EDIT_RIGHT_REC_LEVER)->SetWindowText(strOrigin);
+		GetDlgItem(IDC_EDIT_RIGHT_REC_LEVER)->SetFocus();
+	}
+}
+
+
+// 滑塊高
+void CMFClinkagetestDlg::OnEnKillfocusEditRightRecHeight()
+{
+	double dOldRightRectH = m_dRightRectH;
+	CString strOrigin;
+	CString strMinConstraint;
+	CString strMaxConstraint;
+	CRect rectPaintRegion;
+
+	UpdateData(TRUE);
+	m_editRightRectH.GetWindowText(m_strRightRectH);
+	m_editRightRectLen.GetWindowText(m_strRightRectLen);
+
+	m_dRightRectH = _ttof(m_strRightRectH);
+	m_dRightRectLen = _ttof(m_strRightRectLen);
+
+	CWnd* pPaintRegion = GetDlgItem(IDC_STATIC_PAINT);
+	pPaintRegion->GetClientRect(&rectPaintRegion);
+	int iHeightPaintRegion = rectPaintRegion.Height();
+
+	double dMaxRectH = iHeightPaintRegion - m_dRightRectLen;
+	strMaxConstraint.Format(_T("%.1f"), dMaxRectH);
+
+	double dMinRectH = 0.0;
+	strMinConstraint.Format(_T("%.1f"), dMinRectH);
+
+	if ((m_dRightRectH > dMaxRectH) || (m_dRightRectH < dMinRectH))
+	{
+		AfxMessageBox(_T("高度 <= ") + strMaxConstraint + _T(" 或是 高度 >= ") + strMinConstraint);
+
+		m_dRightRectH = dOldRightRectH;
+		strOrigin.Format(_T("%.1f"), m_dRightRectH);
+
+		GetDlgItem(IDC_EDIT_RIGHT_REC_HEIGHT)->SetWindowText(strOrigin);
+		GetDlgItem(IDC_EDIT_RIGHT_REC_HEIGHT)->SetFocus();
+	}
+}
+
+
+// 滑塊長
+void CMFClinkagetestDlg::OnEnKillfocusEditRightRecLength()
+{
+	double dOldRightRectLen = m_dRightRectLen;
+	CString strOrigin;
+	CString strMinConstraint;
+	CString strMaxConstraint;
+	CRect rectPaintRegion;
+
+	UpdateData(TRUE);
+	m_editRightRectLen.GetWindowText(m_strRightRectLen);
+	m_editRightRectH.GetWindowText(m_strRightRectH);
+
+	m_dRightRectLen = _ttof(m_strRightRectLen);
+	m_dRightRectH = _ttof(m_strRightRectH);
+
+	CWnd* pPaintRegion = GetDlgItem(IDC_STATIC_PAINT);
+	pPaintRegion->GetClientRect(&rectPaintRegion);
+	int iHeightPaintRegion = rectPaintRegion.Height();
+
+	double dMaxRectLen = iHeightPaintRegion - m_dRightRectH;
+	strMaxConstraint.Format(_T("%.1f"), dMaxRectLen);
+
+	double dMinRectLen = 0.0;
+	strMinConstraint.Format(_T("%.1f"), dMinRectLen);
+
+	if ((m_dRightRectLen > dMaxRectLen) || (m_dRightRectLen <= dMinRectLen))
+	{
+		AfxMessageBox(_T("長度 <= ") + strMaxConstraint + _T(" 或是 長度 > ") + strMinConstraint);
+
+		m_dRightRectLen = dOldRightRectLen;
+		strOrigin.Format(_T("%.1f"), m_dRightRectLen);
+
+		GetDlgItem(IDC_EDIT_RIGHT_REC_LENGTH)->SetWindowText(strOrigin);
+		GetDlgItem(IDC_EDIT_RIGHT_REC_LENGTH)->SetFocus();
+	}
+}
+
+
+// 滑塊寬
+void CMFClinkagetestDlg::OnEnKillfocusEditRightRecWidth()
+{
+	double dOldRightRectW = m_dRightRectW;
+	CString strOrigin;
+	CString strMinConstraint;
+	CString strMaxConstraint;
+	CRect rectPaintRegion;
+
+	UpdateData(TRUE);
+	m_editRightRectW.GetWindowText(m_strRightRectW);
+
+	m_dRightRectW = _ttof(m_strRightRectW);
+
+	CWnd* pPaintRegion = GetDlgItem(IDC_STATIC_PAINT);
+	pPaintRegion->GetClientRect(&rectPaintRegion);
+	int iWidthPaintRegion = rectPaintRegion.Width();
+
+	double dMaxRectW = iWidthPaintRegion * 0.5;
+	strMaxConstraint.Format(_T("%.1f"), dMaxRectW);
+
+	double dMinRectW = 0.0;
+	strMinConstraint.Format(_T("%.1f"), dMinRectW);
+
+	if ((m_dRightRectW >= dMaxRectW) || (m_dRightRectW <= dMinRectW))
+	{
+		AfxMessageBox(_T("寬度 < ") + strMaxConstraint + _T(" 或是 寬度 > ") + strMinConstraint);
+
+		m_dRightRectW = dOldRightRectW;
+		strOrigin.Format(_T("%.1f"), m_dRightRectW);
+
+		GetDlgItem(IDC_EDIT_RIGHT_REC_WIDTH)->SetWindowText(strOrigin);
+		GetDlgItem(IDC_EDIT_RIGHT_REC_WIDTH)->SetFocus();
+	}
+}
+
+
+
+

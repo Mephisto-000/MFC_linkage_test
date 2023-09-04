@@ -179,8 +179,12 @@ public:
 	afx_msg void OnEnKillfocusEditAngularAcceleration();    // 加速度限制警告
 	afx_msg void OnEnKillfocusEditAngularDeceleration();    // 減速度限制警告
 	afx_msg void OnEnKillfocusEditRpm();                    // 等速度限制警告
-	afx_msg void OnEnKillfocusEditLeftRecLever();           // 左滑塊長度限制警告
+	afx_msg void OnEnKillfocusEditLeftRecLever();           // 左邊滑塊桿長限制警告
 	afx_msg void OnEnKillfocusEditLeftRecHeight();          // 左邊滑塊高度限制警告
 	afx_msg void OnEnKillfocusEditLeftRecLength();          // 左邊滑塊長限制警告
 	afx_msg void OnEnKillfocusEditLeftRecWidth();           // 左邊滑塊寬限制警告
+	afx_msg void OnEnKillfocusEditRightRecLever();          // 右邊滑塊桿長限制警告
+	afx_msg void OnEnKillfocusEditRightRecHeight();			// 右邊滑塊高度限制警告
+	afx_msg void OnEnKillfocusEditRightRecLength();			// 右邊滑塊長限制警告
+	afx_msg void OnEnKillfocusEditRightRecWidth();			// 右邊滑塊寬限制警告
 };
