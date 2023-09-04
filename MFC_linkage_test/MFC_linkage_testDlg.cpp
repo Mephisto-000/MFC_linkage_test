@@ -199,6 +199,9 @@ BEGIN_MESSAGE_MAP(CMFClinkagetestDlg, CDialogEx)
 	ON_EN_KILLFOCUS(IDC_EDIT_RIGHT_REC_HEIGHT, &CMFClinkagetestDlg::OnEnKillfocusEditRightRecHeight)
 	ON_EN_KILLFOCUS(IDC_EDIT_RIGHT_REC_LENGTH, &CMFClinkagetestDlg::OnEnKillfocusEditRightRecLength)
 	ON_EN_KILLFOCUS(IDC_EDIT_RIGHT_REC_WIDTH, &CMFClinkagetestDlg::OnEnKillfocusEditRightRecWidth)
+	ON_EN_KILLFOCUS(IDC_EDIT_SHAFT_RADIUS, &CMFClinkagetestDlg::OnEnKillfocusEditShaftRadius)
+	ON_EN_KILLFOCUS(IDC_EDIT_SHAFT_X_POS, &CMFClinkagetestDlg::OnEnKillfocusEditShaftXPos)
+	ON_EN_KILLFOCUS(IDC_EDIT_SHAFT_Y_POS, &CMFClinkagetestDlg::OnEnKillfocusEditShaftYPos)
 END_MESSAGE_MAP()
 
 
@@ -1519,5 +1522,171 @@ void CMFClinkagetestDlg::OnEnKillfocusEditRightRecWidth()
 }
 
 
+// 中心圓軸半徑
+void CMFClinkagetestDlg::OnEnKillfocusEditShaftRadius()
+{
+	double dOldBearingRadius = m_dBearingRadius;
+	CString strOrigin;
+	CString strMinLeftConstraint;
+	CString strMinRightConstraint;
+	CString strMaxConstraint;
+	CRect rectPaintRegion;
+
+	UpdateData(TRUE);
+	m_editBearingRadius.GetWindowText(m_strBearingRadius);
+	m_editLeftLeverRadius.GetWindowText(m_strLeftLeverRadius);
+	m_editRightLeverRadius.GetWindowText(m_strRightLeverRadius);
+
+	m_dBearingRadius = _ttof(m_strBearingRadius);
+	m_dLeftLeverRadius = _ttof(m_strLeftLeverRadius);
+	m_dRightLeverRadius = _ttof(m_strRightLeverRadius);
+
+	CWnd* pPaintRegion = GetDlgItem(IDC_STATIC_PAINT);
+	pPaintRegion->GetClientRect(&rectPaintRegion);
+	int iHeightPaintRegion = rectPaintRegion.Height();
+
+	double dMaxBearingRadius = 0.5 * iHeightPaintRegion;
+	strMaxConstraint.Format(_T("%.1f"), dMaxBearingRadius);
+
+	double dMinLeftBearingRadius = m_dLeftLeverRadius + 20;
+	double dMinRightBearingRadius = m_dRightLeverRadius + 20;
+	strMinLeftConstraint.Format(_T("%.1f"), dMinLeftBearingRadius);
+	strMinRightConstraint.Format(_T("%.1f"), dMinRightBearingRadius);
 
 
+	if ((m_dBearingRadius >= dMaxBearingRadius) || (m_dBearingRadius < dMinLeftBearingRadius))
+	{
+		AfxMessageBox(_T("半徑 < ") + strMaxConstraint + _T(" 或是 半徑 >= ") + strMinLeftConstraint);
+
+		m_dBearingRadius = dOldBearingRadius;
+		strOrigin.Format(_T("%.1f"), m_dBearingRadius);
+
+		GetDlgItem(IDC_EDIT_SHAFT_RADIUS)->SetWindowText(strOrigin);
+		GetDlgItem(IDC_EDIT_SHAFT_RADIUS)->SetFocus();
+	}
+	
+	if ((m_dBearingRadius >= dMaxBearingRadius) || (m_dBearingRadius < dMinRightBearingRadius))
+	{
+		AfxMessageBox(_T("半徑 < ") + strMaxConstraint + _T(" 或是 半徑 >= ") + strMinRightConstraint);
+
+		m_dBearingRadius = dOldBearingRadius;
+		strOrigin.Format(_T("%.1f"), m_dBearingRadius);
+
+		GetDlgItem(IDC_EDIT_SHAFT_RADIUS)->SetWindowText(strOrigin);
+		GetDlgItem(IDC_EDIT_SHAFT_RADIUS)->SetFocus();
+	}
+}
+
+
+// 中心圓軸 X 位置
+void CMFClinkagetestDlg::OnEnKillfocusEditShaftXPos()
+{
+	double dOldBearingPosX = m_dBearingPosX;
+	CString strOrigin;
+	CString strMinConstraint;
+	CString strMaxConstraint;
+	CRect rectPaintRegion;
+
+	UpdateData(TRUE);
+	m_editBearingPosX.GetWindowText(m_strBearingPosX);
+	m_editBearingRadius.GetWindowText(m_strBearingRadius);
+
+	m_dBearingPosX = _ttof(m_strBearingPosX);
+	m_dBearingRadius = _ttof(m_strBearingRadius);
+
+	CWnd* pPaintRegion = GetDlgItem(IDC_STATIC_PAINT);
+	pPaintRegion->GetClientRect(&rectPaintRegion);
+	int iWidthPaintRegion = rectPaintRegion.Width();
+
+	double dMaxBearingPosX = 0.5 * iWidthPaintRegion - m_dBearingRadius;
+	strMaxConstraint.Format(_T("%.1f"), dMaxBearingPosX);
+
+	double dMinBearingPosX = -0.5 * iWidthPaintRegion + m_dBearingRadius;
+	strMinConstraint.Format(_T("%.1f"), dMinBearingPosX);
+
+	if ((m_dBearingPosX > dMaxBearingPosX) || (m_dBearingPosX < dMinBearingPosX))
+	{
+		AfxMessageBox(_T("位置 X <= ") + strMaxConstraint + _T(" 或是 位置 X >= ") + strMinConstraint);
+
+		m_dBearingPosX = dOldBearingPosX;
+		strOrigin.Format(_T("%.1f"), m_dBearingPosX);
+
+		GetDlgItem(IDC_EDIT_SHAFT_X_POS)->SetWindowText(strOrigin);
+		GetDlgItem(IDC_EDIT_SHAFT_X_POS)->SetFocus();
+	}
+}
+
+
+// 中心圓軸 Y 位置
+void CMFClinkagetestDlg::OnEnKillfocusEditShaftYPos()
+{
+	double dOldBearingPosY = m_dBearingPosY;
+	CString strOrigin;
+	CString strMinLeftConstraint;
+	CString strMinRightConstraint;
+	CString strMaxLeftConstraint;
+	CString strMaxRightConstraint;
+	CRect rectPaintRegion;
+
+	UpdateData(TRUE);
+	m_editBearingPosY.GetWindowText(m_strBearingPosY);
+	m_editBearingRadius.GetWindowText(m_strBearingRadius);
+	m_editLeftRectLeverLen.GetWindowText(m_strLeftRectLeverLen);
+	m_editLeftLeverRadius.GetWindowText(m_strLeftLeverRadius);
+	m_editRightLeverRadius.GetWindowText(m_strRightLeverRadius);
+	m_editRightRectLeverLen.GetWindowText(m_strRightRectLeverLen);
+	m_editLeftRectW.GetWindowText(m_strLeftRectW);
+	m_editRightRectW.GetWindowText(m_strRightRectW);
+	m_editLeftRectLen.GetWindowText(m_strLeftRectLen);
+	m_editRightRectLen.GetWindowText(m_strRightRectLen);
+	m_editLeftRectH.GetWindowText(m_strLeftRectH);
+	m_editRightRectH.GetWindowText(m_strRightRectH);
+
+	m_dBearingPosY = _ttof(m_strBearingPosY);
+	m_dBearingRadius = _ttof(m_strBearingRadius);
+	m_dLeftRectLeverLen = _ttof(m_strLeftRectLeverLen);
+	m_dRightRectLeverLen = _ttof(m_strRightRectLeverLen);
+	m_dLeftLeverRadius = _ttof(m_strLeftLeverRadius);
+	m_dRightLeverRadius = _ttof(m_strRightLeverRadius);
+	m_dLeftRectW = _ttof(m_strLeftRectW);
+	m_dRightRectW = _ttof(m_strRightRectW);
+	m_dLeftRectLen = _ttof(m_strLeftRectLen);
+	m_dRightRectLen = _ttof(m_strRightRectLen);
+	m_dLeftRectH = _ttof(m_strLeftRectH);
+	m_dRightRectH = _ttof(m_strRightRectH);
+
+
+	CWnd* pPaintRegion = GetDlgItem(IDC_STATIC_PAINT);
+	pPaintRegion->GetClientRect(&rectPaintRegion);
+	int iHeightPaintRegion = rectPaintRegion.Height();
+
+	double dMaxBearingLeftPosY = sqrt(pow((m_dLeftRectLeverLen - m_dLeftLeverRadius), 2) - pow((0.5 * m_dLeftRectW), 2)) + 0.5 * m_dLeftRectLen + m_dLeftRectH;
+	strMaxLeftConstraint.Format(_T("%.1f"), dMaxBearingLeftPosY);
+	double dMaxBearingRightPosY = sqrt(pow((m_dRightRectLeverLen - m_dRightLeverRadius), 2) - pow((0.5 * m_dRightRectW), 2)) + 0.5 * m_dRightRectLen + m_dRightRectH;
+	strMaxRightConstraint.Format(_T("%.1f"), dMaxBearingRightPosY);
+	double dMinBearingLeftPosY = (m_dLeftRectLen + m_dLeftRectH) - sqrt(pow((m_dLeftRectLeverLen - m_dLeftLeverRadius), 2) - pow((0.5 * m_dLeftRectW), 2));
+	strMinLeftConstraint.Format(_T("%.1f"), dMinBearingLeftPosY);
+	double dMinBearingRightPosY = (m_dRightRectLen + m_dRightRectH) - sqrt(pow((m_dRightRectLeverLen - m_dRightLeverRadius), 2) - pow((0.5 * m_dRightRectW), 2));
+	strMinRightConstraint.Format(_T("%.1f"), dMinBearingRightPosY);
+
+	if ((m_dBearingPosY > dMaxBearingLeftPosY) || (m_dBearingPosY < dMinBearingLeftPosY))
+	{
+		AfxMessageBox(_T("位置 Y < ") + strMaxLeftConstraint + _T(" 或是 位置 Y > ") + strMinLeftConstraint);
+
+		m_dBearingPosY = dOldBearingPosY;
+		strOrigin.Format(_T("%.1f"), m_dBearingPosY);
+
+		GetDlgItem(IDC_EDIT_SHAFT_Y_POS)->SetWindowText(strOrigin);
+		GetDlgItem(IDC_EDIT_SHAFT_Y_POS)->SetFocus();
+	}
+	else if ((m_dBearingPosY > dMaxBearingRightPosY) || (m_dBearingPosY < dMinBearingRightPosY))
+	{
+		AfxMessageBox(_T("位置 Y < ") + strMaxRightConstraint + _T(" 或是 位置 Y > ") + strMinRightConstraint);
+
+		m_dBearingPosY = dOldBearingPosY;
+		strOrigin.Format(_T("%.1f"), m_dBearingPosY);
+
+		GetDlgItem(IDC_EDIT_SHAFT_Y_POS)->SetWindowText(strOrigin);
+		GetDlgItem(IDC_EDIT_SHAFT_Y_POS)->SetFocus();
+	}
+}

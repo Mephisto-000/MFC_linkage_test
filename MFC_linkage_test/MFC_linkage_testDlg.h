@@ -187,4 +187,7 @@ public:
 	afx_msg void OnEnKillfocusEditRightRecHeight();			// 右邊滑塊高度限制警告
 	afx_msg void OnEnKillfocusEditRightRecLength();			// 右邊滑塊長限制警告
 	afx_msg void OnEnKillfocusEditRightRecWidth();			// 右邊滑塊寬限制警告
+	afx_msg void OnEnKillfocusEditShaftRadius();            // 中心圓軸半徑限制警告
+	afx_msg void OnEnKillfocusEditShaftXPos();              // 中心圓軸 X 位置限制警告
+	afx_msg void OnEnKillfocusEditShaftYPos();				// 中心圓軸 Y 位置限制警告
 };
