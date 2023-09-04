@@ -1674,25 +1674,63 @@ void CMFClinkagetestDlg::OnEnKillfocusEditShaftYPos()
 	double dMinBearingRightPosY = (m_dRightRectLen + m_dRightRectH) - sqrt(pow((m_dRightRectLeverLen - m_dRightLeverRadius), 2) - pow((0.5 * m_dRightRectW), 2));
 	strMinRightConstraint.Format(_T("%.1f"), dMinBearingRightPosY);
 
-	if ((m_dBearingPosY > dMaxBearingLeftPosY) || (m_dBearingPosY < dMinBearingLeftPosY))
+	if (dMaxBearingLeftPosY >= dMaxBearingRightPosY)
 	{
-		AfxMessageBox(_T("位置 Y < ") + strMaxLeftConstraint + _T(" 或是 位置 Y > ") + strMinLeftConstraint);
+		if (dMinBearingLeftPosY >= dMinBearingRightPosY)
+		{
+			if ((m_dBearingPosY >= dMaxBearingRightPosY) || (m_dBearingPosY <= dMinBearingLeftPosY))
+			{
+				AfxMessageBox(_T("位置 Y < ") + strMaxRightConstraint + _T(" 或是 位置 Y > ") + strMinLeftConstraint);
 
-		m_dBearingPosY = dOldBearingPosY;
-		strOrigin.Format(_T("%.1f"), m_dBearingPosY);
+				m_dBearingPosY = dOldBearingPosY;
+				strOrigin.Format(_T("%.1f"), m_dBearingPosY);
 
-		GetDlgItem(IDC_EDIT_SHAFT_Y_POS)->SetWindowText(strOrigin);
-		GetDlgItem(IDC_EDIT_SHAFT_Y_POS)->SetFocus();
+				GetDlgItem(IDC_EDIT_SHAFT_Y_POS)->SetWindowText(strOrigin);
+				GetDlgItem(IDC_EDIT_SHAFT_Y_POS)->SetFocus();
+			}
+		}
+		else
+		{
+			if ((m_dBearingPosY >= dMaxBearingRightPosY) || (m_dBearingPosY <= dMinBearingRightPosY))
+			{
+				AfxMessageBox(_T("位置 Y < ") + strMaxRightConstraint + _T(" 或是 位置 Y > ") + strMinRightConstraint);
+
+				m_dBearingPosY = dOldBearingPosY;
+				strOrigin.Format(_T("%.1f"), m_dBearingPosY);
+
+				GetDlgItem(IDC_EDIT_SHAFT_Y_POS)->SetWindowText(strOrigin);
+				GetDlgItem(IDC_EDIT_SHAFT_Y_POS)->SetFocus();
+			}
+		}
 	}
-	else if ((m_dBearingPosY > dMaxBearingRightPosY) || (m_dBearingPosY < dMinBearingRightPosY))
+	else
 	{
-		AfxMessageBox(_T("位置 Y < ") + strMaxRightConstraint + _T(" 或是 位置 Y > ") + strMinRightConstraint);
+		if (dMinBearingLeftPosY >= dMinBearingRightPosY)
+		{
+			if ((m_dBearingPosY >= dMaxBearingLeftPosY) || (m_dBearingPosY <= dMinBearingLeftPosY))
+			{
+				AfxMessageBox(_T("位置 Y < ") + strMaxLeftConstraint + _T(" 或是 位置 Y > ") + strMinLeftConstraint);
 
-		m_dBearingPosY = dOldBearingPosY;
-		strOrigin.Format(_T("%.1f"), m_dBearingPosY);
+				m_dBearingPosY = dOldBearingPosY;
+				strOrigin.Format(_T("%.1f"), m_dBearingPosY);
 
-		GetDlgItem(IDC_EDIT_SHAFT_Y_POS)->SetWindowText(strOrigin);
-		GetDlgItem(IDC_EDIT_SHAFT_Y_POS)->SetFocus();
+				GetDlgItem(IDC_EDIT_SHAFT_Y_POS)->SetWindowText(strOrigin);
+				GetDlgItem(IDC_EDIT_SHAFT_Y_POS)->SetFocus();
+			}
+		}
+		else
+		{
+			if ((m_dBearingPosY >= dMaxBearingLeftPosY) || (m_dBearingPosY <= dMinBearingRightPosY))
+			{
+				AfxMessageBox(_T("位置 Y < ") + strMaxLeftConstraint + _T(" 或是 位置 Y > ") + strMinRightConstraint);
+
+				m_dBearingPosY = dOldBearingPosY;
+				strOrigin.Format(_T("%.1f"), m_dBearingPosY);
+
+				GetDlgItem(IDC_EDIT_SHAFT_Y_POS)->SetWindowText(strOrigin);
+				GetDlgItem(IDC_EDIT_SHAFT_Y_POS)->SetFocus();
+			}
+		}
 	}
 }
 
