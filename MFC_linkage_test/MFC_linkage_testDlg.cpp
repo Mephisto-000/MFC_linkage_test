@@ -845,63 +845,6 @@ void CMFClinkagetestDlg::OnBnClickedButtonStart()
 	}
 
 	g_bFirstStart = FALSE;
-
-	////////////////////////////////////////////////////////////////////////////////////////
-	////////////////////////////////////////////////////////////////////////////////////////
-	// 方塊個別資訊限制 (高、長、寬)
-	//if ((m_dLeftRectH < 0) || (m_dRightRectH < 0))
-	//{
-	//	KillTimer(1);
-	//	OpenOrCloseAllInputEdit(TRUE);
-	//	g_bFirstStart = TRUE;
-	//}
-
-	//if ((m_dLeftRectLen <= 0) || (m_dRightRectLen <= 0))
-	//{
-	//	KillTimer(1);
-	//	OpenOrCloseAllInputEdit(TRUE);
-	//	g_bFirstStart = TRUE;
-	//}
-
-	//if ((m_dLeftRectW <= 0) || (m_dRightRectW <= 0))
-	//{
-	//	KillTimer(1);
-	//	OpenOrCloseAllInputEdit(TRUE);
-	//	g_bFirstStart = TRUE;
-	//}
-	////////////////////////////////////////////////////////////////////////////////////////
-	////////////////////////////////////////////////////////////////////////////////////////
-	// 中心圓軸高度限制
-	//if ((dBearingTopState <= 0) || (m_dBearingPosY < m_dBearingRadius) || (m_dBearingPosY > iHeightPaintRegion))
-	//{
-	//	KillTimer(1);
-	//	OpenOrCloseAllInputEdit(TRUE);
-	//	g_bFirstStart = TRUE;
-	//}
-	//// 中心圓軸
-	//if ((dBearingLeftStateW <= 0) || (dBearingRightStateW <= 0))
-	//{
-	//	KillTimer(1);
-	//	OpenOrCloseAllInputEdit(TRUE);
-	//	g_bFirstStart = TRUE;
-	//}
-	//// 中心圓軸與左右側半徑限制
-	//if ((m_dBearingRadius < m_dLeftLeverRadius + 20) || (m_dBearingRadius < m_dRightLeverRadius + 20))
-	//{
-	//	KillTimer(1);
-	//	OpenOrCloseAllInputEdit(TRUE);
-	//	g_bFirstStart = TRUE;
-	//}
-	//// 中心圓軸半徑
-	//if (m_dBearingRadius <= 0)
-	//{
-	//	KillTimer(1);
-	//	OpenOrCloseAllInputEdit(TRUE);
-	//	g_bFirstStart = TRUE;
-	//}
-	////////////////////////////////////////////////////////////////////////////////////////
-	////////////////////////////////////////////////////////////////////////////////////////
-
 	g_bStartState = TRUE;
 	g_bStopState = FALSE;
 }
