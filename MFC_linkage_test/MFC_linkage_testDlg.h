@@ -46,7 +46,7 @@ public:
 	afx_msg void OnBnClickedButtonStart();
 	afx_msg void OnBnClickedButtonStop();
 
-	void OpenOrCloseAllInputEdit(BOOL bTurnOn);
+	void EnableAllInputEdit(BOOL bTurnOn);
 	double UpdateDoubleVariableIfChanged(CString strOld, CString strNew, double dMemberVariable);
 	CString UpdateStringVariableIfChanged(CString strOld, CString strNew);
 
@@ -169,7 +169,7 @@ public:
 	CEdit m_editAngAcc;										// 角加速度
 	CEdit m_editAngDec;										// 角減速度
 	afx_msg void OnTimer(UINT_PTR nIDEvent);				// 計時函數
-	afx_msg void DrawToBuffer(CDC* pDC);					// 雙緩衝更新區域函數
+	void DrawToBuffer(CDC* pDC);							// 雙緩衝更新區域函數
 
 
 	CStatic m_staticNowRPM;									// 顯示當下轉速

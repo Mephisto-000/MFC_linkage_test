@@ -447,7 +447,7 @@ CPoint RightRectCenter (double dRightLeverLen, double dRightRectH, double dRight
 }
 
 // 開關樞紐輸入框
-void CMFClinkagetestDlg::OpenOrCloseAllInputEdit(BOOL bTurnOn)
+void CMFClinkagetestDlg::EnableAllInputEdit(BOOL bTurnOn)
 {
 	m_editLeftRectLeverLen.EnableWindow(bTurnOn);
 	m_editLeftRectH.EnableWindow(bTurnOn);
@@ -761,7 +761,7 @@ void CMFClinkagetestDlg::OnBnClickedButtonStart()
 
 
 	// Start 啟動後，關閉輸入框
-	OpenOrCloseAllInputEdit(FALSE);
+	EnableAllInputEdit(FALSE);
 
 
 	// 判斷是否為按下 Stop 後，並且在 RPM 還未為 0時 ，重啟 Start
@@ -850,7 +850,7 @@ void CMFClinkagetestDlg::OnBnClickedButtonStop()
 	// 關閉輸入框
 	if ((g_bStopState == TRUE))
 	{
-		OpenOrCloseAllInputEdit(TRUE);
+		EnableAllInputEdit(TRUE);
 	}
 
 	// 計算減速度區歷時時間長
@@ -1037,7 +1037,7 @@ void CMFClinkagetestDlg::OnTimer(UINT_PTR nIDEvent)
 		// 當速度為零時初始化前一秒記錄的時間並且重新計時
 		if (m_dNowRPM == 0)
 		{
-			OpenOrCloseAllInputEdit(TRUE);
+			EnableAllInputEdit(TRUE);
 			m_dTimePreviousSpan = 0;
 			KillTimer(1);
 		}
@@ -1494,7 +1494,7 @@ void CMFClinkagetestDlg::OnEnKillfocusEditShaftRadius()
 	if ((m_dBearingRadius > dMinLeftBearingRadius) && (dMinLeftBearingRadius < dMinRightBearingRadius))
 	{
 
-		if ((m_dBearingRadius > dMaxTopBearingRadius) && (dMaxLowerBearingRadius > dMaxTopBearingRadius))
+		if ((m_dBearingRadius > dMaxTopBearingRadius) && (dMaxLowerBearingRadius > dMaxTopBearingRadius) || (m_dBearingRadius < dMinLeftBearingRadius))
 		{
 			AfxMessageBox(_T("半徑 < ") + strMaxTopConstraint + _T(" 或是 半徑 >= ") + strMinLeftConstraint);
 
@@ -1505,7 +1505,7 @@ void CMFClinkagetestDlg::OnEnKillfocusEditShaftRadius()
 			GetDlgItem(IDC_EDIT_SHAFT_RADIUS)->SetFocus();
 		}
 		
-		if ((m_dBearingRadius > dMaxLowerBearingRadius) && (dMaxLowerBearingRadius < dMaxTopBearingRadius))
+		if ((m_dBearingRadius > dMaxLowerBearingRadius) && (dMaxLowerBearingRadius < dMaxTopBearingRadius) || (m_dBearingRadius < dMinLeftBearingRadius))
 		{
 			AfxMessageBox(_T("半徑 < ") + strMaxLowerConstraint + _T(" 或是 半徑 >= ") + strMinLeftConstraint);
 
@@ -1518,7 +1518,7 @@ void CMFClinkagetestDlg::OnEnKillfocusEditShaftRadius()
 	}
 	else if ((m_dBearingRadius > dMinRightBearingRadius) && (dMinRightBearingRadius <= dMinLeftBearingRadius))
 	{
-		if ((m_dBearingRadius > dMaxTopBearingRadius) && (dMaxLowerBearingRadius > dMaxTopBearingRadius))
+		if ((m_dBearingRadius > dMaxTopBearingRadius) && (dMaxLowerBearingRadius > dMaxTopBearingRadius) || (m_dBearingRadius < dMinRightBearingRadius))
 		{
 			AfxMessageBox(_T("半徑 < ") + strMaxTopConstraint + _T(" 或是 半徑 >= ") + strMinRightConstraint);
 
@@ -1529,7 +1529,7 @@ void CMFClinkagetestDlg::OnEnKillfocusEditShaftRadius()
 			GetDlgItem(IDC_EDIT_SHAFT_RADIUS)->SetFocus();
 		}
 		
-		if ((m_dBearingRadius > dMaxLowerBearingRadius) && (dMaxLowerBearingRadius < dMaxTopBearingRadius))
+		if ((m_dBearingRadius > dMaxLowerBearingRadius) && (dMaxLowerBearingRadius < dMaxTopBearingRadius) || (m_dBearingRadius < dMinRightBearingRadius))
 		{
 			AfxMessageBox(_T("半徑 < ") + strMaxLowerConstraint + _T(" 或是 半徑 >= ") + strMinRightConstraint);
 
@@ -1540,10 +1540,29 @@ void CMFClinkagetestDlg::OnEnKillfocusEditShaftRadius()
 			GetDlgItem(IDC_EDIT_SHAFT_RADIUS)->SetFocus();
 		}
 	}
-
-	if (m_dBearingRadius <= 0)
+	else if ((m_dBearingRadius < dMinLeftBearingRadius) && (dMinLeftBearingRadius > dMinRightBearingRadius))
 	{
-		AfxMessageBox(_T("半徑 > 0"));
+		AfxMessageBox(_T("半徑 < ") + strMaxTopConstraint + _T(" 或是 半徑 >= ") + strMinRightConstraint);
+
+		m_dBearingRadius = dOldBearingRadius;
+		strOrigin.Format(_T("%.1f"), m_dBearingRadius);
+
+		GetDlgItem(IDC_EDIT_SHAFT_RADIUS)->SetWindowText(strOrigin);
+		GetDlgItem(IDC_EDIT_SHAFT_RADIUS)->SetFocus();
+	}
+	else if ((m_dBearingRadius < dMinLeftBearingRadius) && (dMinLeftBearingRadius > dMinRightBearingRadius))
+	{
+		AfxMessageBox(_T("半徑 < ") + strMaxTopConstraint + _T(" 或是 半徑 >= ") + strMinLeftConstraint);
+
+		m_dBearingRadius = dOldBearingRadius;
+		strOrigin.Format(_T("%.1f"), m_dBearingRadius);
+
+		GetDlgItem(IDC_EDIT_SHAFT_RADIUS)->SetWindowText(strOrigin);
+		GetDlgItem(IDC_EDIT_SHAFT_RADIUS)->SetFocus();
+	}
+	else if ((m_dBearingRadius < dMinRightBearingRadius) && (dMinLeftBearingRadius <= dMinRightBearingRadius))
+	{
+		AfxMessageBox(_T("半徑 < ") + strMaxTopConstraint + _T(" 或是 半徑 >= ") + strMinRightConstraint);
 
 		m_dBearingRadius = dOldBearingRadius;
 		strOrigin.Format(_T("%.1f"), m_dBearingRadius);
