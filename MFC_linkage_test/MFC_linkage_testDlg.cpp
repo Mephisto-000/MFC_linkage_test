@@ -207,6 +207,8 @@ BEGIN_MESSAGE_MAP(CMFClinkagetestDlg, CDialogEx)
 	ON_EN_KILLFOCUS(IDC_EDIT_RIGHT_ANGLE, &CMFClinkagetestDlg::OnEnKillfocusEditRightAngle)
 	ON_EN_KILLFOCUS(IDC_EDIT_LEFT_ANGLE, &CMFClinkagetestDlg::OnEnKillfocusEditLeftAngle)
 	ON_WM_DESTROY()
+	ON_COMMAND(IDCANCEL, &CMFClinkagetestDlg::OnIdcancel)
+	ON_COMMAND(IDOK, &CMFClinkagetestDlg::OnIdok)
 END_MESSAGE_MAP()
 
 
@@ -243,7 +245,7 @@ BOOL CMFClinkagetestDlg::OnInitDialog()
 
 	// TODO: 在此加入額外的初始設定
 
-	m_PaintRegionBackgroundColor = RGB(169, 169, 169);
+	m_PaintRegionBackgroundColor = RGB(169, 169, 169);  // 上方動畫顯示區背景顏色
 
 	return TRUE;  // 傳回 TRUE，除非您對控制項設定焦點
 }
@@ -265,10 +267,11 @@ void CMFClinkagetestDlg::OnSysCommand(UINT nID, LPARAM lParam)
 ////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////
 // double 四捨五入轉型 int
-int RoundDoubleToInt(double dValue)
+int RoundDoubleToInt (double dValue)
 {
 	return static_cast<int>(dValue + 0.5);
 }
+
 
 // 給矩形中心點，傳回矩形 x1,y1,x2,y2
 CRect CenterPtToRectPts (CPoint ptRectCenterPoint, double dRectLen, double dRectW)
@@ -282,8 +285,9 @@ CRect CenterPtToRectPts (CPoint ptRectCenterPoint, double dRectLen, double dRect
 	return rect;
 }
 
+
 // 從輸入的寬、高條件，定義左下角方塊
-CRect LowerLeftRect(double dLeftH, double dLeftW, double iPaintH)
+CRect LowerLeftRect (double dLeftH, double dLeftW, double iPaintH)
 {
 	double dLowerRectH = iPaintH - dLeftH;
 	CRect rectLower(CPoint(0, RoundDoubleToInt(dLowerRectH)), CPoint(RoundDoubleToInt(dLeftW), RoundDoubleToInt(iPaintH)));
@@ -293,7 +297,7 @@ CRect LowerLeftRect(double dLeftH, double dLeftW, double iPaintH)
 
 
 // 從輸入的寬、高條件，定義右下角方塊
-CRect LowerRightRect(double dRightH, double dRightW, double iPaintH)
+CRect LowerRightRect (double dRightH, double dRightW, double iPaintH)
 {
 	double dLowerRectH = iPaintH - dRightH;
 	CRect rectLower(CPoint(RoundDoubleToInt(dRightW), RoundDoubleToInt(dLowerRectH)), CPoint(RoundDoubleToInt(dRightW) * 2, RoundDoubleToInt(iPaintH)));
@@ -312,8 +316,9 @@ CRect BearingPos (double dRadius, double dBearingX, double dBearingY, int iPaint
 	return rectBearingPos;
 }
 
+
 // 傳回左右側轉軸內切矩形
-CRect LeftRightBearingPos(CPoint ptLeftRightBearingCenter)
+CRect LeftRightBearingPos (CPoint ptLeftRightBearingCenter)
 {
 	CPoint ptX1Y1(RoundDoubleToInt(ptLeftRightBearingCenter.x - 20), RoundDoubleToInt(ptLeftRightBearingCenter.y - 20));
 	CPoint ptX2Y2(RoundDoubleToInt(ptLeftRightBearingCenter.x + 20), RoundDoubleToInt(ptLeftRightBearingCenter.y + 20));
@@ -322,28 +327,9 @@ CRect LeftRightBearingPos(CPoint ptLeftRightBearingCenter)
 	return rectLeftRightBearingPos;
 }
 
-// 傳回左右側滑塊內轉軸內切矩形
-//CRect LeftRightCenterBearingPos(CPoint ptLeftRightUpperCenter, double dLeftRightRectW, double dLeftRightRectLen)
-//{
-//	if (dLeftRightRectW > dLeftRightRectLen)
-//	{
-//		CPoint ptX1Y1(RoundDoubleToInt(ptLeftRightUpperCenter.x - 0.25 * dLeftRightRectLen), RoundDoubleToInt(ptLeftRightUpperCenter.y - 0.25 * dLeftRightRectLen));
-//		CPoint ptX2Y2(RoundDoubleToInt(ptLeftRightUpperCenter.x + 0.25 * dLeftRightRectLen), RoundDoubleToInt(ptLeftRightUpperCenter.y + 0.25 * dLeftRightRectLen));
-//		CRect rectLeftRightCenterBearingPos(ptX1Y1, ptX2Y2);
-//
-//		return rectLeftRightCenterBearingPos;
-//	}
-//	else
-//	{
-//		CPoint ptX1Y1(RoundDoubleToInt(ptLeftRightUpperCenter.x - 0.25 * dLeftRightRectW), RoundDoubleToInt(ptLeftRightUpperCenter.y - 0.25 * dLeftRightRectW));
-//		CPoint ptX2Y2(RoundDoubleToInt(ptLeftRightUpperCenter.x + 0.25 * dLeftRightRectW), RoundDoubleToInt(ptLeftRightUpperCenter.y + 0.25 * dLeftRightRectW));
-//		CRect rectLeftRightCenterBearingPos(ptX1Y1, ptX2Y2);
-//
-//		return rectLeftRightCenterBearingPos;
-//	}
-//}
 
-CRect LeftRightCenterBearingPos(CPoint ptLeftRightUpperCenter, double dLeftRightRectW, double dLeftRightRectLen)
+// 傳回左右側滑塊內轉軸內切矩形
+CRect LeftRightCenterBearingPos (CPoint ptLeftRightUpperCenter, double dLeftRightRectW, double dLeftRightRectLen)
 {
 	CPoint ptX1Y1(RoundDoubleToInt(ptLeftRightUpperCenter.x - 25), RoundDoubleToInt(ptLeftRightUpperCenter.y - 25));
 	CPoint ptX2Y2(RoundDoubleToInt(ptLeftRightUpperCenter.x + 25), RoundDoubleToInt(ptLeftRightUpperCenter.y + 25));
@@ -390,6 +376,7 @@ double RpmToAngVelocity (double dRpm)
 	return dAngVelocity;
 }
 
+
 // 角度限制在 360 度內
 double LimitTo360 (double dAng)
 {
@@ -401,8 +388,9 @@ double LimitTo360 (double dAng)
 	return dAng;
 }
 
+
 // 傳回左側軸連接點座標
-CPoint LeftBearingCenter(double dLeftLeverRadius, double dLeftAng, CPoint ptBearingCenter)
+CPoint LeftBearingCenter (double dLeftLeverRadius, double dLeftAng, CPoint ptBearingCenter)
 {
 	double dLeftRad = AngToRad(dLeftAng);
 	double dPosX = (dLeftLeverRadius * cos(-dLeftRad) + ptBearingCenter.x);
@@ -414,7 +402,7 @@ CPoint LeftBearingCenter(double dLeftLeverRadius, double dLeftAng, CPoint ptBear
 
 
 // 傳回右側軸連接點座標
-CPoint RightBearingCenter(double dRightLeverRadius, double dRightAng, CPoint ptBearingCenter)
+CPoint RightBearingCenter (double dRightLeverRadius, double dRightAng, CPoint ptBearingCenter)
 {
 	double dRightRad = AngToRad(dRightAng);
 	double dPosX = (dRightLeverRadius * cos(-dRightRad) + ptBearingCenter.x);
@@ -446,6 +434,7 @@ CPoint RightRectCenter (double dRightLeverLen, double dRightRectH, double dRight
 	return ptRightRectCenterPos;
 }
 
+
 // 開關樞紐輸入框
 void CMFClinkagetestDlg::EnableAllInputEdit(BOOL bTurnOn)
 {
@@ -469,7 +458,7 @@ void CMFClinkagetestDlg::EnableAllInputEdit(BOOL bTurnOn)
 	m_editAngDec.EnableWindow(bTurnOn);
 }
 
-// 確認是否更改輸入的資料，有更改就更新資料
+// 確認是否更改輸入的資料，有更改就更新資料，針對 double 
 double CMFClinkagetestDlg::UpdateDoubleVariableIfChanged(CString strOld, CString strNew, double dMemberVariable)
 {
 	if (strOld != strNew)
@@ -483,6 +472,7 @@ double CMFClinkagetestDlg::UpdateDoubleVariableIfChanged(CString strOld, CString
 	}
 }
 
+// 確認是否更改輸入的資料，有更改就更新資料，針對 string 
 CString CMFClinkagetestDlg::UpdateStringVariableIfChanged(CString strOld, CString strNew)
 {
 	if (strOld != strNew)
@@ -648,13 +638,11 @@ void CMFClinkagetestDlg::DrawToBuffer(CDC* pDC)
 	CBrush* pOldBrushLowerRect = pDC->SelectObject(&brushLowerRect);
 
 	// 定義左右下方方塊
-	/*CRect rectLeftLower = LowerLeftRect(rectLeftUpper, m_dLowerRectW, iHeightPaintRegion);*/
 	CRect rectLeftLower = LowerLeftRect(m_dLeftRectH, m_dLowerRectW, iHeightPaintRegion);
 
 	pDC->Rectangle(rectLeftLower);
 	pDC->FillRect(&rectLeftLower, &brushLowerRect);
 
-	/*CRect rectRightLower = LowerRightRect(rectRightUpper, m_dLowerRectW, iHeightPaintRegion);*/
 	CRect rectRightLower = LowerRightRect(m_dRightRectH, m_dLowerRectW, iHeightPaintRegion);
 
 	pDC->Rectangle(rectRightLower);
@@ -715,8 +703,6 @@ HCURSOR CMFClinkagetestDlg::OnQueryDragIcon()
 //按鈕 START
 void CMFClinkagetestDlg::OnBnClickedButtonStart()
 {
-	// TODO: 在此加入控制項告知處理常式程式碼
-
 	// 更新輸入的長,寬,高
 	UpdateData(TRUE);
 
@@ -757,7 +743,6 @@ void CMFClinkagetestDlg::OnBnClickedButtonStart()
 	m_strOldRPM = UpdateStringVariableIfChanged(m_strOldRPM, m_strRPM);
 	m_strOldAngAcc = UpdateStringVariableIfChanged(m_strOldAngAcc, m_strAngAcc);
 	m_strOldAngDec = UpdateStringVariableIfChanged(m_strOldAngDec, m_strAngDec);
-
 
 
 	// Start 啟動後，關閉輸入框
@@ -806,6 +791,7 @@ void CMFClinkagetestDlg::OnBnClickedButtonStart()
 	}
 	else
 	{
+		// 不是第一次按下 START 後，判斷當下速度是否為 0 
 		if (m_dNowRPM != 0)
 		{
 			// 記錄初速
@@ -826,6 +812,7 @@ void CMFClinkagetestDlg::OnBnClickedButtonStart()
 		}
 	}
 
+	// 更新當前狀態
 	g_bFirstStart = FALSE;
 	g_bStartState = TRUE;
 	g_bStopState = FALSE;
@@ -835,9 +822,6 @@ void CMFClinkagetestDlg::OnBnClickedButtonStart()
 //按鈕 STOP
 void CMFClinkagetestDlg::OnBnClickedButtonStop()
 {
-	// TODO: 在此加入控制項告知處理常式程式碼
-
-
 	// 記錄停下的時間
 	m_dStopNowRPM = abs(m_dNowRPM);
 
@@ -859,6 +843,7 @@ void CMFClinkagetestDlg::OnBnClickedButtonStop()
 	// 計算減速度區總面積
 	m_dDecTotalAng = 0.5 * m_dStopNowRPM * m_dDecTotalTime;
 
+	// 更新當前狀態
 	g_bStopState = TRUE;
 	g_bStartState = FALSE;
 
@@ -868,9 +853,10 @@ void CMFClinkagetestDlg::OnBnClickedButtonStop()
 // 每等間隔時間做的計算、變數更新
 void CMFClinkagetestDlg::OnTimer(UINT_PTR nIDEvent)
 {
-	// TODO: 在此加入您的訊息處理常式程式碼和 (或) 呼叫預設值
+	// 處理 SetTimer ID = 1 的程序
 	if (nIDEvent == 1)
 	{
+		// 紀錄程序開始當前時間
 		DWORD dwCurrentTime = timeGetTime();
 
 		// 判斷是否為按下 Stop 後
@@ -1032,6 +1018,7 @@ void CMFClinkagetestDlg::OnTimer(UINT_PTR nIDEvent)
 
 		}
 
+		// 顯示當前速度數值
 		m_staticNowRPM.SetWindowText(m_strNowRPM);
 
 		// 當速度為零時初始化前一秒記錄的時間並且重新計時
@@ -1067,9 +1054,11 @@ void CMFClinkagetestDlg::OnEnKillfocusEditAngularAcceleration()
 	CString strOrigin;
 
 	UpdateData(TRUE);
+
 	m_editAngAcc.GetWindowText(m_strAngAcc);
 	m_dAngAcc = _ttof(m_strAngAcc);
 
+	// 加速度輸入數值不能為 0
 	if (m_dAngAcc <= 0)
 	{
 		AfxMessageBox(_T("角加速度 > 0"));
@@ -1089,9 +1078,11 @@ void CMFClinkagetestDlg::OnEnKillfocusEditAngularDeceleration()
 	CString strOrigin;
 
 	UpdateData(TRUE);
+
 	m_editAngDec.GetWindowText(m_strAngDec);
 	m_dAngDec = _ttof(m_strAngDec);
 
+	// 減速度輸入數值不得為 0 
 	if (m_dAngDec <= 0)
 	{
 		AfxMessageBox(_T("角減速度 > 0"));
@@ -1105,16 +1096,19 @@ void CMFClinkagetestDlg::OnEnKillfocusEditAngularDeceleration()
 }
 
 
-// 等速度限制條件
+// 最終等速度數值限制條件
 void CMFClinkagetestDlg::OnEnKillfocusEditRpm()
 {
 	double dOldRPM = m_dRPM;
 	CString strOrigin;
 
 	UpdateData(TRUE);
+
 	m_editRPM.GetWindowText(m_strRPM);
 	m_dRPM = _ttof(m_strRPM);
 
+	// 最大等速度輸入數值不為 0
+	// 大於 0 為逆時針旋轉，小於 0 為順時針旋轉 
 	if (m_dRPM == 0)
 	{
 		AfxMessageBox(_T(" RPM > 0 或 RPM < 0"));
@@ -1128,8 +1122,7 @@ void CMFClinkagetestDlg::OnEnKillfocusEditRpm()
 }
 
 
-// 左側滑塊限制條件
-// 桿長
+// 左側滑塊連桿桿長限制條件
 void CMFClinkagetestDlg::OnEnKillfocusEditLeftRecLever()
 {
 	double dOldLeftRectLeverLen = m_dLeftRectLeverLen;
@@ -1138,6 +1131,7 @@ void CMFClinkagetestDlg::OnEnKillfocusEditLeftRecLever()
 	CString strMaxConstraint;
 
 	UpdateData(TRUE);
+
 	m_editLeftRectLeverLen.SetWindowText(m_strLeftRectLeverLen);
 	m_editLeftRectLen.SetWindowText(m_strLeftRectLen);
 	m_editLeftRectH.SetWindowText(m_strLeftRectH);
@@ -1154,15 +1148,20 @@ void CMFClinkagetestDlg::OnEnKillfocusEditLeftRecLever()
 	m_dBearingPosY = _ttof(m_strBearingPosY);
 	m_dBearingRadius = _ttof(m_strBearingRadius);
 
-	double dLeftMaxLenY = m_dBearingPosY - (m_dLeftRectLen * 0.5 + m_dLeftRectH); // k
+	// 計算桿長最大值限制
+	double dLeftMaxLenY = m_dBearingPosY - (m_dLeftRectLen * 0.5 + m_dLeftRectH);
 	double dLeftMaxLenX = m_dLowerRectW - 0.5 * m_dLeftRectW;
 	double dLeftClientMaxLeverLen = sqrt(pow(dLeftMaxLenX, 2) + pow(dLeftMaxLenY, 2)) - m_dBearingRadius;
+
 	strMaxConstraint.Format(_T("%.1f"), dLeftClientMaxLeverLen);
 
+	// 計算桿長最小值限制
 	double dLeftRectSmallSideY = m_dBearingPosY - (m_dLeftRectH + 0.5 * m_dLeftRectLen);
 	double dLeftClientMinLeverLen = sqrt(pow((0.5 * m_dLeftRectW), 2) + pow(dLeftRectSmallSideY, 2)) + m_dLeftLeverRadius;
+
 	strMinConstraint.Format(_T("%.1f"), dLeftClientMinLeverLen);
 
+	// 判斷數值是否滿足在最大值與最小值限制之間
 	if ((m_dLeftRectLeverLen >= dLeftClientMaxLeverLen) || (m_dLeftRectLeverLen <= dLeftClientMinLeverLen))
 	{
 		AfxMessageBox(_T("桿長 <= ") + strMaxConstraint + _T(" 或是 桿長 >= ") + strMinConstraint);
@@ -1176,7 +1175,7 @@ void CMFClinkagetestDlg::OnEnKillfocusEditLeftRecLever()
 }
 
 
-// 滑塊高
+// 左側滑塊高度限制條件
 void CMFClinkagetestDlg::OnEnKillfocusEditLeftRecHeight()
 {
 	double dOldLeftRectH = m_dLeftRectH;
@@ -1186,12 +1185,14 @@ void CMFClinkagetestDlg::OnEnKillfocusEditLeftRecHeight()
 	CRect rectPaintRegion;
 
 	UpdateData(TRUE);
+
 	m_editLeftRectH.GetWindowText(m_strLeftRectH);
 	m_editLeftRectLen.GetWindowText(m_strLeftRectLen);
 
 	m_dLeftRectH = _ttof(m_strLeftRectH);
 	m_dLeftRectLen = _ttof(m_strLeftRectLen);
 
+	// 得到顯示區高度資訊
 	CWnd* pPaintRegion = GetDlgItem(IDC_STATIC_PAINT);
 	pPaintRegion->GetClientRect(&rectPaintRegion);
 	int iHeightPaintRegion = rectPaintRegion.Height();
@@ -1202,6 +1203,7 @@ void CMFClinkagetestDlg::OnEnKillfocusEditLeftRecHeight()
 	double dMinRectH = 0.0;
 	strMinConstraint.Format(_T("%.1f"), dMinRectH);
 
+	// 判斷滑塊高度是否超出或低於顯示區
 	if ((m_dLeftRectH > dMaxRectH) || (m_dLeftRectH < dMinRectH))
 	{
 		AfxMessageBox(_T("高度 <= ") + strMaxConstraint + _T(" 或是 高度 >= ") + strMinConstraint);
@@ -1214,7 +1216,7 @@ void CMFClinkagetestDlg::OnEnKillfocusEditLeftRecHeight()
 	}
 }
  
-// 滑塊長
+// 左側滑塊長度限制條件
 void CMFClinkagetestDlg::OnEnKillfocusEditLeftRecLength()
 {
 	double dOldLeftRectLen = m_dLeftRectLen;
@@ -1224,12 +1226,14 @@ void CMFClinkagetestDlg::OnEnKillfocusEditLeftRecLength()
 	CRect rectPaintRegion;
 
 	UpdateData(TRUE);
+
 	m_editLeftRectLen.GetWindowText(m_strLeftRectLen);
 	m_editLeftRectH.GetWindowText(m_strLeftRectH);
 
 	m_dLeftRectLen = _ttof(m_strLeftRectLen);
 	m_dLeftRectH = _ttof(m_strLeftRectH);
 
+	// 得到顯示區高度資訊
 	CWnd* pPaintRegion = GetDlgItem(IDC_STATIC_PAINT);
 	pPaintRegion->GetClientRect(&rectPaintRegion);
 	int iHeightPaintRegion = rectPaintRegion.Height();
@@ -1240,6 +1244,7 @@ void CMFClinkagetestDlg::OnEnKillfocusEditLeftRecLength()
 	double dMinRectLen = 50;
 	strMinConstraint.Format(_T("%.1f"), dMinRectLen);
 
+	// 判斷滑塊長度是否超出或低於顯示區
 	if ((m_dLeftRectLen > dMaxRectLen) || (m_dLeftRectLen <= dMinRectLen))
 	{
 		AfxMessageBox(_T("長度 <= ") + strMaxConstraint + _T(" 或是 長度 > ") + strMinConstraint);
@@ -1253,7 +1258,7 @@ void CMFClinkagetestDlg::OnEnKillfocusEditLeftRecLength()
 }
 
 
-// 滑塊寬
+// 左側滑塊寬
 void CMFClinkagetestDlg::OnEnKillfocusEditLeftRecWidth()
 {
 	double dOldLeftRectW = m_dLeftRectW;
@@ -1263,10 +1268,12 @@ void CMFClinkagetestDlg::OnEnKillfocusEditLeftRecWidth()
 	CRect rectPaintRegion;
 
 	UpdateData(TRUE);
+
 	m_editLeftRectW.GetWindowText(m_strLeftRectW);
 
 	m_dLeftRectW = _ttof(m_strLeftRectW);
 
+	// 得到顯示區寬度資訊
 	CWnd* pPaintRegion = GetDlgItem(IDC_STATIC_PAINT);
 	pPaintRegion->GetClientRect(&rectPaintRegion);
 	int iWidthPaintRegion = rectPaintRegion.Width();
@@ -1277,6 +1284,7 @@ void CMFClinkagetestDlg::OnEnKillfocusEditLeftRecWidth()
 	double dMinRectW = 50;
 	strMinConstraint.Format(_T("%.1f"), dMinRectW);
 
+	// 判斷滑塊寬度是否超出或小於滑塊中心的轉軸半徑
 	if ((m_dLeftRectW >= dMaxRectW) || (m_dLeftRectW <= dMinRectW))
 	{
 		AfxMessageBox(_T("寬度 < ") + strMaxConstraint + _T(" 或是 寬度 > ") + strMinConstraint);
@@ -1290,8 +1298,7 @@ void CMFClinkagetestDlg::OnEnKillfocusEditLeftRecWidth()
 }
 
 
-// 右側滑塊限制條件
-// 桿長
+// 右側滑塊桿長限制條件
 void CMFClinkagetestDlg::OnEnKillfocusEditRightRecLever()
 {
 	double dOldRightRectLeverLen = m_dRightRectLeverLen;
@@ -1300,6 +1307,7 @@ void CMFClinkagetestDlg::OnEnKillfocusEditRightRecLever()
 	CString strMaxConstraint;
 
 	UpdateData(TRUE);
+
 	m_editRightRectLeverLen.SetWindowText(m_strRightRectLeverLen);
 	m_editRightRectLen.SetWindowText(m_strRightRectLen);
 	m_editRightRectH.SetWindowText(m_strRightRectH);
@@ -1316,15 +1324,18 @@ void CMFClinkagetestDlg::OnEnKillfocusEditRightRecLever()
 	m_dBearingPosY = _ttof(m_strBearingPosY);
 	m_dBearingRadius = _ttof(m_strBearingRadius);
 
-	double dRightMaxLenY = m_dBearingPosY - (m_dRightRectLen * 0.5 + m_dRightRectH); // k
+	// 計算桿長最大值限制
+	double dRightMaxLenY = m_dBearingPosY - (m_dRightRectLen * 0.5 + m_dRightRectH);
 	double dRightMaxLenX = m_dLowerRectW - 0.5 * m_dLeftRectW;
 	double dRightClientMaxLeverLen = sqrt(pow(dRightMaxLenX, 2) + pow(dRightMaxLenY, 2)) - m_dBearingRadius;
 	strMaxConstraint.Format(_T("%.1f"), dRightClientMaxLeverLen);
 
+	// 計算桿長最小值限制
 	double dRightRectSmallSideY = m_dBearingPosY - (m_dRightRectH + 0.5 * m_dRightRectLen);
 	double dRightClientMinLeverLen = sqrt(pow((0.5 * m_dRightRectW), 2) + pow(dRightRectSmallSideY, 2)) + m_dRightLeverRadius;
 	strMinConstraint.Format(_T("%.1f"), dRightClientMinLeverLen);
 
+	// 判斷數值是否滿足在最大值與最小值限制之間
 	if ((m_dRightRectLeverLen >= dRightClientMaxLeverLen) || (m_dRightRectLeverLen <= dRightClientMinLeverLen))
 	{
 		AfxMessageBox(_T("桿長 <= ") + strMaxConstraint + _T(" 或是 桿長 >= ") + strMinConstraint);
@@ -1338,7 +1349,7 @@ void CMFClinkagetestDlg::OnEnKillfocusEditRightRecLever()
 }
 
 
-// 滑塊高
+// 右側滑塊高度限制條件
 void CMFClinkagetestDlg::OnEnKillfocusEditRightRecHeight()
 {
 	double dOldRightRectH = m_dRightRectH;
@@ -1348,12 +1359,14 @@ void CMFClinkagetestDlg::OnEnKillfocusEditRightRecHeight()
 	CRect rectPaintRegion;
 
 	UpdateData(TRUE);
+
 	m_editRightRectH.GetWindowText(m_strRightRectH);
 	m_editRightRectLen.GetWindowText(m_strRightRectLen);
 
 	m_dRightRectH = _ttof(m_strRightRectH);
 	m_dRightRectLen = _ttof(m_strRightRectLen);
 
+	// 得到顯示區高度資訊
 	CWnd* pPaintRegion = GetDlgItem(IDC_STATIC_PAINT);
 	pPaintRegion->GetClientRect(&rectPaintRegion);
 	int iHeightPaintRegion = rectPaintRegion.Height();
@@ -1364,6 +1377,7 @@ void CMFClinkagetestDlg::OnEnKillfocusEditRightRecHeight()
 	double dMinRectH = 0.0;
 	strMinConstraint.Format(_T("%.1f"), dMinRectH);
 
+	// 判斷滑塊高度是否超出或低於顯示區
 	if ((m_dRightRectH > dMaxRectH) || (m_dRightRectH < dMinRectH))
 	{
 		AfxMessageBox(_T("高度 <= ") + strMaxConstraint + _T(" 或是 高度 >= ") + strMinConstraint);
@@ -1377,7 +1391,7 @@ void CMFClinkagetestDlg::OnEnKillfocusEditRightRecHeight()
 }
 
 
-// 滑塊長
+// 右側滑塊長度限制條件
 void CMFClinkagetestDlg::OnEnKillfocusEditRightRecLength()
 {
 	double dOldRightRectLen = m_dRightRectLen;
@@ -1387,12 +1401,14 @@ void CMFClinkagetestDlg::OnEnKillfocusEditRightRecLength()
 	CRect rectPaintRegion;
 
 	UpdateData(TRUE);
+
 	m_editRightRectLen.GetWindowText(m_strRightRectLen);
 	m_editRightRectH.GetWindowText(m_strRightRectH);
 
 	m_dRightRectLen = _ttof(m_strRightRectLen);
 	m_dRightRectH = _ttof(m_strRightRectH);
 
+	// 得到顯示區高度資訊
 	CWnd* pPaintRegion = GetDlgItem(IDC_STATIC_PAINT);
 	pPaintRegion->GetClientRect(&rectPaintRegion);
 	int iHeightPaintRegion = rectPaintRegion.Height();
@@ -1403,6 +1419,7 @@ void CMFClinkagetestDlg::OnEnKillfocusEditRightRecLength()
 	double dMinRectLen = 50;
 	strMinConstraint.Format(_T("%.1f"), dMinRectLen);
 
+	// 判斷滑塊長度是否超出或低於顯示區
 	if ((m_dRightRectLen > dMaxRectLen) || (m_dRightRectLen <= dMinRectLen))
 	{
 		AfxMessageBox(_T("長度 <= ") + strMaxConstraint + _T(" 或是 長度 > ") + strMinConstraint);
@@ -1416,7 +1433,7 @@ void CMFClinkagetestDlg::OnEnKillfocusEditRightRecLength()
 }
 
 
-// 滑塊寬
+// 右側滑塊寬度限制條件
 void CMFClinkagetestDlg::OnEnKillfocusEditRightRecWidth()
 {
 	double dOldRightRectW = m_dRightRectW;
@@ -1426,10 +1443,12 @@ void CMFClinkagetestDlg::OnEnKillfocusEditRightRecWidth()
 	CRect rectPaintRegion;
 
 	UpdateData(TRUE);
+
 	m_editRightRectW.GetWindowText(m_strRightRectW);
 
 	m_dRightRectW = _ttof(m_strRightRectW);
 
+	// 得到顯示區寬度資訊
 	CWnd* pPaintRegion = GetDlgItem(IDC_STATIC_PAINT);
 	pPaintRegion->GetClientRect(&rectPaintRegion);
 	int iWidthPaintRegion = rectPaintRegion.Width();
@@ -1440,6 +1459,7 @@ void CMFClinkagetestDlg::OnEnKillfocusEditRightRecWidth()
 	double dMinRectW = 50;
 	strMinConstraint.Format(_T("%.1f"), dMinRectW);
 
+	// 判斷滑塊寬度是否超出或小於滑塊中心的轉軸半徑
 	if ((m_dRightRectW >= dMaxRectW) || (m_dRightRectW <= dMinRectW))
 	{
 		AfxMessageBox(_T("寬度 < ") + strMaxConstraint + _T(" 或是 寬度 > ") + strMinConstraint);
@@ -1453,7 +1473,7 @@ void CMFClinkagetestDlg::OnEnKillfocusEditRightRecWidth()
 }
 
 
-// 中心圓軸半徑
+// 中心圓軸半徑限制條件
 void CMFClinkagetestDlg::OnEnKillfocusEditShaftRadius()
 {
 	double dOldBearingRadius = m_dBearingRadius;
@@ -1465,6 +1485,7 @@ void CMFClinkagetestDlg::OnEnKillfocusEditShaftRadius()
 	CRect rectPaintRegion;
 
 	UpdateData(TRUE);
+
 	m_editBearingRadius.GetWindowText(m_strBearingRadius);
 	m_editLeftLeverRadius.GetWindowText(m_strLeftLeverRadius);
 	m_editRightLeverRadius.GetWindowText(m_strRightLeverRadius);
@@ -1475,6 +1496,7 @@ void CMFClinkagetestDlg::OnEnKillfocusEditShaftRadius()
 	m_dRightLeverRadius = _ttof(m_strRightLeverRadius);
 	m_dBearingPosY = _ttof(m_strBearingPosY);
 
+	// 得到顯示區高度資訊
 	CWnd* pPaintRegion = GetDlgItem(IDC_STATIC_PAINT);
 	pPaintRegion->GetClientRect(&rectPaintRegion);
 	int iHeightPaintRegion = rectPaintRegion.Height();
@@ -1490,10 +1512,10 @@ void CMFClinkagetestDlg::OnEnKillfocusEditShaftRadius()
 	strMinLeftConstraint.Format(_T("%.1f"), dMinLeftBearingRadius);
 	strMinRightConstraint.Format(_T("%.1f"), dMinRightBearingRadius);
 
-
+	// 判斷中心轉軸半徑是否大於左側連接的轉軸半徑長度
 	if ((m_dBearingRadius > dMinLeftBearingRadius) && (dMinLeftBearingRadius < dMinRightBearingRadius))
 	{
-
+		// 判斷中心轉軸半徑是否超出顯示畫面，超出顯示區域的上方
 		if ((m_dBearingRadius > dMaxTopBearingRadius) && (dMaxLowerBearingRadius > dMaxTopBearingRadius) || (m_dBearingRadius < dMinLeftBearingRadius))
 		{
 			AfxMessageBox(_T("半徑 < ") + strMaxTopConstraint + _T(" 或是 半徑 >= ") + strMinLeftConstraint);
@@ -1505,6 +1527,7 @@ void CMFClinkagetestDlg::OnEnKillfocusEditShaftRadius()
 			GetDlgItem(IDC_EDIT_SHAFT_RADIUS)->SetFocus();
 		}
 		
+		// 判斷中心轉軸半徑是否超出顯示畫面，超出顯示區域的下方
 		if ((m_dBearingRadius > dMaxLowerBearingRadius) && (dMaxLowerBearingRadius < dMaxTopBearingRadius) || (m_dBearingRadius < dMinLeftBearingRadius))
 		{
 			AfxMessageBox(_T("半徑 < ") + strMaxLowerConstraint + _T(" 或是 半徑 >= ") + strMinLeftConstraint);
@@ -1518,6 +1541,9 @@ void CMFClinkagetestDlg::OnEnKillfocusEditShaftRadius()
 	}
 	else if ((m_dBearingRadius > dMinRightBearingRadius) && (dMinRightBearingRadius <= dMinLeftBearingRadius))
 	{
+		// 判斷中心轉軸半徑是否大於右側連接的轉軸半徑長度
+
+		// 判斷中心轉軸半徑是否超出顯示畫面，超出顯示區域的上方
 		if ((m_dBearingRadius > dMaxTopBearingRadius) && (dMaxLowerBearingRadius > dMaxTopBearingRadius) || (m_dBearingRadius < dMinRightBearingRadius))
 		{
 			AfxMessageBox(_T("半徑 < ") + strMaxTopConstraint + _T(" 或是 半徑 >= ") + strMinRightConstraint);
@@ -1529,6 +1555,7 @@ void CMFClinkagetestDlg::OnEnKillfocusEditShaftRadius()
 			GetDlgItem(IDC_EDIT_SHAFT_RADIUS)->SetFocus();
 		}
 		
+		// 判斷中心轉軸半徑是否超出顯示畫面，超出顯示區域的下方
 		if ((m_dBearingRadius > dMaxLowerBearingRadius) && (dMaxLowerBearingRadius < dMaxTopBearingRadius) || (m_dBearingRadius < dMinRightBearingRadius))
 		{
 			AfxMessageBox(_T("半徑 < ") + strMaxLowerConstraint + _T(" 或是 半徑 >= ") + strMinRightConstraint);
@@ -1542,17 +1569,9 @@ void CMFClinkagetestDlg::OnEnKillfocusEditShaftRadius()
 	}
 	else if ((m_dBearingRadius < dMinLeftBearingRadius) && (dMinLeftBearingRadius > dMinRightBearingRadius))
 	{
+		// 判斷中心轉軸半徑是否小於左側連接的轉軸半徑長度
+
 		AfxMessageBox(_T("半徑 < ") + strMaxTopConstraint + _T(" 或是 半徑 >= ") + strMinRightConstraint);
-
-		m_dBearingRadius = dOldBearingRadius;
-		strOrigin.Format(_T("%.1f"), m_dBearingRadius);
-
-		GetDlgItem(IDC_EDIT_SHAFT_RADIUS)->SetWindowText(strOrigin);
-		GetDlgItem(IDC_EDIT_SHAFT_RADIUS)->SetFocus();
-	}
-	else if ((m_dBearingRadius < dMinLeftBearingRadius) && (dMinLeftBearingRadius > dMinRightBearingRadius))
-	{
-		AfxMessageBox(_T("半徑 < ") + strMaxTopConstraint + _T(" 或是 半徑 >= ") + strMinLeftConstraint);
 
 		m_dBearingRadius = dOldBearingRadius;
 		strOrigin.Format(_T("%.1f"), m_dBearingRadius);
@@ -1562,6 +1581,8 @@ void CMFClinkagetestDlg::OnEnKillfocusEditShaftRadius()
 	}
 	else if ((m_dBearingRadius < dMinRightBearingRadius) && (dMinLeftBearingRadius <= dMinRightBearingRadius))
 	{
+		// 判斷中心轉軸半徑是否小於右側連接的轉軸半徑長度
+
 		AfxMessageBox(_T("半徑 < ") + strMaxTopConstraint + _T(" 或是 半徑 >= ") + strMinRightConstraint);
 
 		m_dBearingRadius = dOldBearingRadius;
@@ -1573,7 +1594,7 @@ void CMFClinkagetestDlg::OnEnKillfocusEditShaftRadius()
 }
 
 
-// 中心圓軸 X 位置
+// 中心圓軸 X 位置的限制條件
 void CMFClinkagetestDlg::OnEnKillfocusEditShaftXPos()
 {
 	double dOldBearingPosX = m_dBearingPosX;
@@ -1583,22 +1604,27 @@ void CMFClinkagetestDlg::OnEnKillfocusEditShaftXPos()
 	CRect rectPaintRegion;
 
 	UpdateData(TRUE);
+
 	m_editBearingPosX.GetWindowText(m_strBearingPosX);
 	m_editBearingRadius.GetWindowText(m_strBearingRadius);
 
 	m_dBearingPosX = _ttof(m_strBearingPosX);
 	m_dBearingRadius = _ttof(m_strBearingRadius);
 
+	// 得到顯示區寬度資訊
 	CWnd* pPaintRegion = GetDlgItem(IDC_STATIC_PAINT);
 	pPaintRegion->GetClientRect(&rectPaintRegion);
 	int iWidthPaintRegion = rectPaintRegion.Width();
 
+	//  X 位置右邊最大值
 	double dMaxBearingPosX = 0.5 * iWidthPaintRegion - m_dBearingRadius;
 	strMaxConstraint.Format(_T("%.1f"), dMaxBearingPosX);
 
+	// X 位置左邊最大值
 	double dMinBearingPosX = -0.5 * iWidthPaintRegion + m_dBearingRadius;
 	strMinConstraint.Format(_T("%.1f"), dMinBearingPosX);
 
+	// 判斷 X 位置是否在左右兩邊最大值之間
 	if ((m_dBearingPosX > dMaxBearingPosX) || (m_dBearingPosX < dMinBearingPosX))
 	{
 		AfxMessageBox(_T("位置 X <= ") + strMaxConstraint + _T(" 或是 位置 X >= ") + strMinConstraint);
@@ -1612,7 +1638,7 @@ void CMFClinkagetestDlg::OnEnKillfocusEditShaftXPos()
 }
 
 
-// 中心圓軸 Y 位置
+// 中心圓軸 Y 位置限制條件
 void CMFClinkagetestDlg::OnEnKillfocusEditShaftYPos()
 {
 	double dOldBearingPosY = m_dBearingPosY;
@@ -1624,6 +1650,7 @@ void CMFClinkagetestDlg::OnEnKillfocusEditShaftYPos()
 	CRect rectPaintRegion;
 
 	UpdateData(TRUE);
+
 	m_editBearingPosY.GetWindowText(m_strBearingPosY);
 	m_editBearingRadius.GetWindowText(m_strBearingRadius);
 	m_editLeftRectLeverLen.GetWindowText(m_strLeftRectLeverLen);
@@ -1650,19 +1677,28 @@ void CMFClinkagetestDlg::OnEnKillfocusEditShaftYPos()
 	m_dLeftRectH = _ttof(m_strLeftRectH);
 	m_dRightRectH = _ttof(m_strRightRectH);
 
+	// 得到顯示區高度資訊
 	CWnd* pPaintRegion = GetDlgItem(IDC_STATIC_PAINT);
 	pPaintRegion->GetClientRect(&rectPaintRegion);
 	int iHeightPaintRegion = rectPaintRegion.Height();
 
+	// 計算中心轉軸 Y 位置因左側滑塊的位置所導致的最大值限制
 	double dMaxBearingLeftPosY = sqrt(pow((m_dLeftRectLeverLen - m_dLeftLeverRadius), 2) - pow((0.5 * m_dLeftRectW), 2)) + 0.5 * m_dLeftRectLen + m_dLeftRectH;
 	strMaxLeftConstraint.Format(_T("%.1f"), dMaxBearingLeftPosY);
+	
+	// 計算中心轉軸 Y 位置因右側滑塊的位置所導致的最大值限制
 	double dMaxBearingRightPosY = sqrt(pow((m_dRightRectLeverLen - m_dRightLeverRadius), 2) - pow((0.5 * m_dRightRectW), 2)) + 0.5 * m_dRightRectLen + m_dRightRectH;
 	strMaxRightConstraint.Format(_T("%.1f"), dMaxBearingRightPosY);
+	
+	// 計算中心轉軸 Y 位置因左側滑塊的位置所導致的最小值限制
 	double dMinBearingLeftPosY = (m_dLeftRectLen + m_dLeftRectH) - sqrt(pow((m_dLeftRectLeverLen - m_dLeftLeverRadius), 2) - pow((0.5 * m_dLeftRectW), 2));
 	strMinLeftConstraint.Format(_T("%.1f"), dMinBearingLeftPosY);
+	
+	// 計算中心轉軸 Y 位置因右側滑塊的位置所導致的最大值限制
 	double dMinBearingRightPosY = (m_dRightRectLen + m_dRightRectH) - sqrt(pow((m_dRightRectLeverLen - m_dRightLeverRadius), 2) - pow((0.5 * m_dRightRectW), 2));
 	strMinRightConstraint.Format(_T("%.1f"), dMinBearingRightPosY);
 
+	// 判斷是否滿足因左右兩邊滑塊位置所導致的限制條件
 	if (dMaxBearingLeftPosY >= dMaxBearingRightPosY)
 	{
 		if (dMinBearingLeftPosY >= dMinBearingRightPosY)
@@ -1694,6 +1730,7 @@ void CMFClinkagetestDlg::OnEnKillfocusEditShaftYPos()
 	}
 	else
 	{
+		//
 		if (dMinBearingLeftPosY >= dMinBearingRightPosY)
 		{
 			if ((m_dBearingPosY >= dMaxBearingLeftPosY) || (m_dBearingPosY <= dMinBearingLeftPosY))
@@ -1724,7 +1761,7 @@ void CMFClinkagetestDlg::OnEnKillfocusEditShaftYPos()
 }
 
 
-// 右側軸半徑
+// 右側軸半徑限制條件
 void CMFClinkagetestDlg::OnEnKillfocusEditRightLeverRadius()
 {
 	double dOldRightLeverRadius = m_dRightLeverRadius;
@@ -1733,6 +1770,7 @@ void CMFClinkagetestDlg::OnEnKillfocusEditRightLeverRadius()
 	CString strMaxConstraint;
 
 	UpdateData(TRUE);
+
 	m_editRightLeverRadius.GetWindowText(m_strRightLeverRadius);
 	m_editBearingRadius.GetWindowText(m_strBearingRadius);
 
@@ -1745,6 +1783,7 @@ void CMFClinkagetestDlg::OnEnKillfocusEditRightLeverRadius()
 	double dMinRightLeverRadius = 0;
 	strMinConstraint.Format(_T("%.1f"), dMinRightLeverRadius);
 
+	// 判斷右側軸半徑是否滿足最大值與最小值限制條件
 	if ((m_dRightLeverRadius > dMaxRightLeverRadius) || (m_dRightLeverRadius <= dMinRightLeverRadius))
 	{
 		AfxMessageBox(_T("右側軸半徑 <= ") + strMaxConstraint + _T(" 或是 右側軸半徑 > ") + strMinConstraint);
@@ -1779,6 +1818,7 @@ void CMFClinkagetestDlg::OnEnKillfocusEditLeftLeverRadius()
 	double dMinLeftLeverRadius = 0;
 	strMinConstraint.Format(_T("%.1f"), dMinLeftLeverRadius);
 
+	// 判斷右側軸半徑是否滿足最大值與最小值限制條件
 	if ((m_dLeftLeverRadius > dMaxLeftLeverRadius) || (m_dLeftLeverRadius <= dMinLeftLeverRadius))
 	{
 		AfxMessageBox(_T("左側軸半徑 <= ") + strMaxConstraint + _T(" 或是 左側軸半徑 > ") + strMinConstraint);
@@ -1799,10 +1839,12 @@ void CMFClinkagetestDlg::OnEnKillfocusEditRightAngle()
 	CString strOrigin;
 	
 	UpdateData(TRUE);
+
 	m_editRightAng.GetWindowText(m_strRightAng);
 	
 	m_dRightAng = _ttof(m_strRightAng);
 
+	// 判斷是否有輸入角度數值
 	if (m_strRightAng.IsEmpty())
 	{
 		AfxMessageBox(_T("請輸入任意實數值"));
@@ -1823,10 +1865,12 @@ void CMFClinkagetestDlg::OnEnKillfocusEditLeftAngle()
 	CString strOrigin;
 
 	UpdateData(TRUE);
+
 	m_editLeftAng.GetWindowText(m_strLeftAng);
 
 	m_dLeftAng = _ttof(m_strLeftAng);
 
+	// 判斷是否有輸入角度數值
 	if (m_strLeftAng.IsEmpty())
 	{
 		AfxMessageBox(_T("請輸入任意實數值"));
@@ -1844,5 +1888,17 @@ void CMFClinkagetestDlg::OnDestroy()
 {
 	CDialogEx::OnDestroy();
 
+	// TODO: 在此加入您的訊息處理常式程式碼
+}
+
+
+void CMFClinkagetestDlg::OnIdcancel()
+{
+	EndDialog(IDCANCEL);
+}
+
+
+void CMFClinkagetestDlg::OnIdok()
+{
 	// TODO: 在此加入您的訊息處理常式程式碼
 }

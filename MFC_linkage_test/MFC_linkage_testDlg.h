@@ -5,6 +5,7 @@
 #define _USE_MATH_DEFINES
 #include <cmath>
 #include <mmsystem.h>                                   // 包含 timeGetTime 函數的標頭
+//#include <math.h>
 
 #pragma once
 
@@ -197,4 +198,6 @@ public:
 
 
 	afx_msg void OnDestroy();
+	afx_msg void OnIdcancel();
+	afx_msg void OnIdok();
 };
